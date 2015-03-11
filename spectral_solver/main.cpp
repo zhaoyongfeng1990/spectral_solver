@@ -7,9 +7,15 @@
 //
 
 #include <iostream>
+#include "solver.h"
+using namespace std;
 
-int main(int argc, const char * argv[]) {
-    // insert code here...
-    std::cout << "Hello, World!\n";
+
+
+int main(int argc, const char  *argv[])
+{
+    solver test1;
+    test1.initialization();
+    test1.solve(10);
     return 0;
 }
