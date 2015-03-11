@@ -11,7 +11,7 @@
 
 const int Ntheta=128;
 const int Nr=82;
-const double StepT=1.0/16384;
+const double StepT=1.0/16384/128;
 const int NumField=1;
 const double radius=1; //5;
 

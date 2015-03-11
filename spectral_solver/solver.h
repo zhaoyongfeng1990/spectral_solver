@@ -37,6 +37,7 @@ public:
     void solve(int totaliter);
     
     void printstatus();
+    void printdebugM(gsl_matrix* m, string filename);
     
     gsl_matrix *Fields;
     gsl_matrix *dFields;

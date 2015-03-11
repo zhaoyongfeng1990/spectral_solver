@@ -10,6 +10,7 @@
 
 void solver::solve(int totaliter)
 {
+    setBoundary();
     printstatus();
     //RK4
     k1=gsl_matrix_alloc(matrixH, Ntheta);

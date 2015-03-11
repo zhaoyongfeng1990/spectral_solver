@@ -27,3 +27,17 @@ void solver::printstatus()
     }
     outfile.close();
 }
+
+void solver::printdebugM(gsl_matrix* m, string filename)
+{
+    ofstream outfile(filename);
+    for (int iter=0; iter<matrixH; ++iter)
+    {
+        for (int iterc=0; iterc<Ntheta; ++iterc)
+        {
+            outfile << gsl_matrix_get(m, iter, iterc) << " ";
+        }
+        outfile << endl;
+    }
+    outfile.close();
+}
