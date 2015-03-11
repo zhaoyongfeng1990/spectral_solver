@@ -31,9 +31,9 @@ void solver::printstatus()
 void solver::printdebugM(gsl_matrix* m, string filename)
 {
     ofstream outfile(filename);
-    for (int iter=0; iter<matrixH; ++iter)
+    for (int iter=0; iter<m->size1; ++iter)
     {
-        for (int iterc=0; iterc<Ntheta; ++iterc)
+        for (int iterc=0; iterc<m->size2; ++iterc)
         {
             outfile << gsl_matrix_get(m, iter, iterc) << " ";
         }

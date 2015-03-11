@@ -67,6 +67,7 @@ public:
     
     gsl_matrix_complex *fftc;
     gsl_matrix *dctr;
+    //gsl_matrix *odctr;
     
     gsl_vector* tempstore;
     gsl_vector* tempstore2;

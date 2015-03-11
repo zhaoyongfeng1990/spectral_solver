@@ -27,8 +27,8 @@ solver::solver()
     
     for (int iter=0; iter<NumField; ++iter)
     {
-        dFieldView[iter]=gsl_matrix_submatrix(dFields, iter*Nrp, 0, (iter+1)*Nrp-1, Ntheta-1);
-        ctFieldView[iter]=gsl_matrix_submatrix(caltempFields, iter*Nrp, 0, (iter+1)*Nrp-1, Ntheta-1);
+        dFieldView[iter]=gsl_matrix_submatrix(dFields, iter*Nrp, 0, Nrp, Ntheta);
+        ctFieldView[iter]=gsl_matrix_submatrix(caltempFields, iter*Nrp, 0, Nrp, Ntheta);
     }
     
     r=gsl_vector_calloc(Nrp);

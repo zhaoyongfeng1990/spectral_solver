@@ -17,7 +17,8 @@ void solver::initialization()
         {
             for (int iterr=0; iterr<Nrp; ++iterr)
             {
-                gsl_matrix_set(Fields, iterf*Nrp+iterr, itert, exp(-10*r->data[iterr]*r->data[iterr]));
+                //gsl_matrix_set(Fields, iterf*Nrp+iterr, itert, exp(-10*r->data[iterr]*r->data[iterr]));
+                gsl_matrix_set(Fields, iterf*Nrp+iterr, itert, sin(theta->data[itert]));
             }
         }
     }
