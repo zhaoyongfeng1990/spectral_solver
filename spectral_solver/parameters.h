@@ -9,11 +9,12 @@
 #ifndef spectral_solver_parameters_h
 #define spectral_solver_parameters_h
 
-const int Ntheta=128;
+const int Ntheta=64;
 const int Nr=82;
 const double StepT=1.0/16384/128;
 const int NumField=1;
 const double radius=1; //5;
+const double punish=0;
 
 //for solver
 const double tolerance=1e-10;

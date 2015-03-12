@@ -46,6 +46,14 @@ void solver::Fun(gsl_matrix *result)
     
     //derivative of r term
     dr(1);
+    for (int iter=0; iter<NumField; ++iter)
+    {
+        gsl_vector_view tempboundary=gsl_matrix_row(dFields, iter*Nrp);
+        gsl_vector_view destiny=gsl_matrix_row(boundary, iter);
+        gsl_vector_memcpy(&destiny.vector, &tempboundary.vector);
+    }
+    gsl_matrix_scale(boundary, punish);
+    
     gsl_matrix_set_zero(tempFields);
     for (int iterdf=0; iterdf<NumField; ++iterdf)
     {
@@ -64,6 +72,7 @@ void solver::Fun(gsl_matrix *result)
             gsl_vector_mul(&temp.vector, r);
         }
     }
+    
     dr(0);
     gsl_matrix_scale(dFields, 1.0/radius/radius);
     for (int iterf=0; iterf<NumField; ++iterf)
@@ -100,5 +109,12 @@ void solver::Fun(gsl_matrix *result)
         }
     }
     gsl_matrix_add(G, dFields);
+    
+    for (int iter=0; iter<NumField; ++iter)
+    {
+        gsl_vector_view tempboundary=gsl_matrix_row(G, iter*Nrp);
+        gsl_vector_view destiny=gsl_matrix_row(boundary, iter);
+        gsl_vector_sub(&tempboundary.vector, &destiny.vector);
+    }
     gsl_matrix_memcpy(result, G);
 }

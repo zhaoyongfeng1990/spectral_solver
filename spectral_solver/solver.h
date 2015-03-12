@@ -16,6 +16,7 @@
 #include <vector>
 #include <fftw3.h>
 #include "parameters.h"
+#include <string>
 
 using namespace std;
 
@@ -37,12 +38,13 @@ public:
     void solve(int totaliter);
     
     void printstatus();
-    void printdebugM(gsl_matrix* m, string filename);
+    void printdebugM(gsl_matrix* m, const string filename);
     
     gsl_matrix *Fields;
     gsl_matrix *dFields;
     gsl_matrix *tempFields;
     gsl_matrix *caltempFields;
+    gsl_matrix *boundary;
     
     gsl_matrix_view dFieldView[NumField];
     gsl_matrix_view ctFieldView[NumField];

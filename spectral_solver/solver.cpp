@@ -24,6 +24,7 @@ solver::solver()
     gsl_matrix_set_zero(caltempFields);
     G=gsl_matrix_calloc(matrixH, Ntheta);
     gsl_matrix_set_zero(G);
+    boundary=gsl_matrix_calloc(NumField, Ntheta);
     
     for (int iter=0; iter<NumField; ++iter)
     {
@@ -88,6 +89,7 @@ solver::~solver()
     gsl_matrix_free(G);
     gsl_matrix_free(dctr);
     gsl_matrix_complex_free(fftc);
+    gsl_matrix_free(boundary);
     
     fftw_destroy_plan(fftr2c);
     fftw_destroy_plan(ifftc2r);

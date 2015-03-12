@@ -17,9 +17,6 @@ int main(int argc, const char  *argv[])
     solver test1;
     test1.initialization();
     test1.printstatus();
-    test1.dtheta(1);
-    string filename("dtheta.txt");
-    test1.printdebugM(test1.dFields, filename);
-    //test1.solve(10);
+    test1.solve(1000);
     return 0;
 }

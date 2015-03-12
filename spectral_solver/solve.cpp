@@ -53,10 +53,15 @@ void solver::setBoundary()
     {
         for (int iterField=0; iterField<NumField; ++iterField)
         {
-            double d0=gsl_matrix_get(dFields, iterField*Nr, iter);
-            d0*=3/Nr/(Nr-2);
-            d0-=gsl_matrix_get(Fields, iterField*Nr, iter);
-            gsl_matrix_set(Fields, iterField*Nr, iter, d0);
+            double d0=gsl_matrix_get(dFields, iterField*Nrp, iter);
+            d0/=-Nr*(Nr-2);
+            d0*=3;
+            d0+=gsl_matrix_get(Fields, iterField*Nrp, iter);
+            gsl_matrix_set(Fields, iterField*Nrp, iter, d0);
         }
     }
+    
+    //debug
+    dr(1);
+    printdebugM(dFields, "dr.txt");
 }

@@ -28,7 +28,7 @@ void solver::printstatus()
     outfile.close();
 }
 
-void solver::printdebugM(gsl_matrix* m, string filename)
+void solver::printdebugM(gsl_matrix* m, const string filename)
 {
     ofstream outfile(filename);
     for (int iter=0; iter<m->size1; ++iter)
