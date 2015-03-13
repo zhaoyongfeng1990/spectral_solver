@@ -16,7 +16,10 @@ using namespace std;
 int main(int argc, const char  *argv[])
 {
     
+#ifdef MULTIPROCESS
     omp_set_num_threads(8);
+#endif
+    
     time_t ctime1, ctime2;
     time(&ctime1);
     solver test1;

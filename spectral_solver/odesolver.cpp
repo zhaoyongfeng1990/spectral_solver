@@ -46,7 +46,9 @@ void solver::BDF4Step()
         Fun(Fields);
         gsl_matrix_scale(Fields, StepT*0.48);
         error=0;
+#ifdef MULTIPROCESS
 #pragma omp parallel for
+#endif
         for (int iter=0; iter<matrixH*Ntheta; ++iter)
         {
             Fields->data[iter]+=odetempField->data[iter]*1.92-HistoryFields[2]->data[iter]*1.44+HistoryFields[1]->data[iter]*0.64-HistoryFields[0]->data[iter]*0.12;

@@ -11,7 +11,9 @@
 
 void solver::initialization()
 {
+#ifdef MULTIPROCESS
 #pragma omp parallel for
+#endif
     for (int itert=0; itert<Ntheta; ++itert)
     {
         for (int iterf=0; iterf<NumField; ++iterf)

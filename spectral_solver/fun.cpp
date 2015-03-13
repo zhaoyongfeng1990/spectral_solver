@@ -11,7 +11,9 @@
 void solver::HGFuns()
 {
     double f[NumField];
+#ifdef MULTIPROCESS
 #pragma omp parallel for
+#endif
     for (int iter=0; iter<NumPoints; ++iter)
     {
         for (int iterf=0; iterf<NumField; ++iterf)
@@ -49,7 +51,9 @@ void solver::Fun(gsl_matrix *result)
     dr(1);
     
 #ifdef PUNISHTERM
+#ifdef MULTIPROCESS
 #pragma omp parallel for
+#endif
     for (int iter=0; iter<NumField; ++iter)
     {
         gsl_vector_view tempboundary=gsl_matrix_row(dFields, iter*Nrp);
@@ -60,7 +64,9 @@ void solver::Fun(gsl_matrix *result)
 #endif
     
     gsl_matrix_set_zero(tempFields);
+#ifdef MULTIPROCESS
 #pragma omp parallel for
+#endif
     for (int iterdf=0; iterdf<NumField; ++iterdf)
     {
         gsl_matrix_memcpy(caltempFields, Hij[iterdf]);
@@ -70,7 +76,9 @@ void solver::Fun(gsl_matrix *result)
         }
         gsl_matrix_add(tempFields, caltempFields);
     }
+#ifdef MULTIPROCESS
 #pragma omp parallel for
+#endif
     for (int iter=0; iter<Ntheta; ++iter)
     {
         for (int iterf=0; iterf<NumField; ++iterf)
@@ -82,7 +90,9 @@ void solver::Fun(gsl_matrix *result)
     
     dr(0);
     gsl_matrix_scale(dFields, 1.0/radius/radius);
+#ifdef MULTIPROCESS
 #pragma omp parallel for
+#endif
     for (int iter=0; iter<Ntheta; ++iter)
     {
         for (int iterf=0; iterf<NumField; ++iterf)
@@ -96,7 +106,9 @@ void solver::Fun(gsl_matrix *result)
     //derivative of theta term
     dtheta(1);
     gsl_matrix_set_zero(tempFields);
+#ifdef MULTIPROCESS
 #pragma omp parallel for
+#endif
     for (int iterdf=0; iterdf<NumField; ++iterdf)
     {
         gsl_matrix_memcpy(caltempFields, Hij[iterdf]);
@@ -108,7 +120,9 @@ void solver::Fun(gsl_matrix *result)
     }
     dtheta(0);
     gsl_matrix_scale(dFields, 1.0/radius/radius);
+#ifdef MULTIPROCESS
 #pragma omp parallel for
+#endif
     for (int iter=0; iter<Ntheta; ++iter)
     {
         for (int iterf=0; iterf<NumField; ++iterf)
@@ -120,7 +134,9 @@ void solver::Fun(gsl_matrix *result)
     gsl_matrix_add(G, dFields);
     
 #ifdef PUNISHTERM
+#ifdef MULTIPROCESS
 #pragma omp parallel for
+#endif
     for (int iter=0; iter<NumField; ++iter)
     {
         gsl_vector_view tempboundary=gsl_matrix_row(G, iter*Nrp);

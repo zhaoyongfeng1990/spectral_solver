@@ -18,7 +18,9 @@
 #include "parameters.h"
 #include <string>
 
+#ifdef MULTIPROCESS
 #include <omp.h>
+#endif
 
 using namespace std;
 
