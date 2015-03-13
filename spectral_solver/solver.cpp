@@ -24,6 +24,14 @@ solver::solver()
     gsl_matrix_set_zero(caltempFields);
     G=gsl_matrix_calloc(matrixH, Ntheta);
     gsl_matrix_set_zero(G);
+    
+    k1=gsl_matrix_alloc(matrixH, Ntheta);
+    k2=gsl_matrix_alloc(matrixH, Ntheta);
+    k3=gsl_matrix_alloc(matrixH, Ntheta);
+    k4=gsl_matrix_alloc(matrixH, Ntheta);
+    
+    odetempField=gsl_matrix_alloc(matrixH, Ntheta);
+    
     boundary=gsl_matrix_calloc(NumField, Ntheta);
     
     for (int iter=0; iter<NumField; ++iter)
@@ -33,12 +41,16 @@ solver::solver()
     }
     
     r=gsl_vector_calloc(Nrp);
+    r2=gsl_vector_calloc(Nrp);
+#pragma omp parallel for
     for (int iter=0; iter<Nrp; ++iter)
     {
         r->data[iter]=cos(iter*PI/logicNr);
+        r2->data[iter]=cos(iter*PI/logicNr)*cos(iter*PI/logicNr);
     }
     
     theta=gsl_vector_calloc(Ntheta);
+#pragma omp parallel for
     for (int iter=0; iter<Ntheta; ++iter)
     {
         theta->data[iter]=2*PI*iter/Ntheta;
@@ -52,7 +64,7 @@ solver::solver()
     }
     
     Hij.resize(NumField);
-    for (int iterh=0; iterh<NumField*NumField; ++iterh)
+    for (int iterh=0; iterh<NumField; ++iterh)
     {
         Hij[iterh]=gsl_matrix_calloc(matrixH, Ntheta);
         gsl_matrix_set_zero(Hij[iterh]);
@@ -80,8 +92,15 @@ solver::solver()
 
 solver::~solver()
 {
-    delete [] r;
-    delete [] theta;
+    fftw_destroy_plan(fftr2c);
+    fftw_destroy_plan(ifftc2r);
+    fftw_destroy_plan(tempfftr2c);
+    fftw_destroy_plan(tempifftc2r);
+    fftw_destroy_plan(dctr2r);
+    
+    gsl_vector_free(r);
+    gsl_vector_free(r2);
+    gsl_vector_free(theta);
     gsl_matrix_free(Fields);
     gsl_matrix_free(dFields);
     gsl_matrix_free(tempFields);
@@ -91,11 +110,12 @@ solver::~solver()
     gsl_matrix_complex_free(fftc);
     gsl_matrix_free(boundary);
     
-    fftw_destroy_plan(fftr2c);
-    fftw_destroy_plan(ifftc2r);
-    fftw_destroy_plan(tempfftr2c);
-    fftw_destroy_plan(tempifftc2r);
-    fftw_destroy_plan(dctr2r);
+    
+    gsl_matrix_free(k1);
+    gsl_matrix_free(k2);
+    gsl_matrix_free(k3);
+    gsl_matrix_free(k4);
+    gsl_matrix_free(odetempField);
     
     for (int iterh=0; iterh<3; ++iterh)
     {

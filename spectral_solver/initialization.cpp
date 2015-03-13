@@ -11,9 +11,10 @@
 
 void solver::initialization()
 {
-    for (int iterf=0; iterf<NumField; ++iterf)
+#pragma omp parallel for
+    for (int itert=0; itert<Ntheta; ++itert)
     {
-        for (int itert=0; itert<Ntheta; ++itert)
+        for (int iterf=0; iterf<NumField; ++iterf)
         {
             for (int iterr=0; iterr<Nrp; ++iterr)
             {

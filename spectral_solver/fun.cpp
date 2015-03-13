@@ -11,6 +11,7 @@
 void solver::HGFuns()
 {
     double f[NumField];
+#pragma omp parallel for
     for (int iter=0; iter<NumPoints; ++iter)
     {
         for (int iterf=0; iterf<NumField; ++iterf)
@@ -46,6 +47,9 @@ void solver::Fun(gsl_matrix *result)
     
     //derivative of r term
     dr(1);
+    
+#ifdef PUNISHTERM
+#pragma omp parallel for
     for (int iter=0; iter<NumField; ++iter)
     {
         gsl_vector_view tempboundary=gsl_matrix_row(dFields, iter*Nrp);
@@ -53,8 +57,10 @@ void solver::Fun(gsl_matrix *result)
         gsl_vector_memcpy(&destiny.vector, &tempboundary.vector);
     }
     gsl_matrix_scale(boundary, punish);
+#endif
     
     gsl_matrix_set_zero(tempFields);
+#pragma omp parallel for
     for (int iterdf=0; iterdf<NumField; ++iterdf)
     {
         gsl_matrix_memcpy(caltempFields, Hij[iterdf]);
@@ -64,9 +70,10 @@ void solver::Fun(gsl_matrix *result)
         }
         gsl_matrix_add(tempFields, caltempFields);
     }
-    for (int iterf=0; iterf<NumField; ++iterf)
+#pragma omp parallel for
+    for (int iter=0; iter<Ntheta; ++iter)
     {
-        for (int iter=0; iter<Ntheta; ++iter)
+        for (int iterf=0; iterf<NumField; ++iterf)
         {
             gsl_vector_view temp=gsl_matrix_subcolumn(tempFields, iter, iterf*Nrp, Nrp);
             gsl_vector_mul(&temp.vector, r);
@@ -75,9 +82,10 @@ void solver::Fun(gsl_matrix *result)
     
     dr(0);
     gsl_matrix_scale(dFields, 1.0/radius/radius);
-    for (int iterf=0; iterf<NumField; ++iterf)
+#pragma omp parallel for
+    for (int iter=0; iter<Ntheta; ++iter)
     {
-        for (int iter=0; iter<Ntheta; ++iter)
+        for (int iterf=0; iterf<NumField; ++iterf)
         {
             gsl_vector_view temp=gsl_matrix_subcolumn(dFields, iter, iterf*Nrp, Nrp);
             gsl_vector_div(&temp.vector, r);
@@ -88,6 +96,7 @@ void solver::Fun(gsl_matrix *result)
     //derivative of theta term
     dtheta(1);
     gsl_matrix_set_zero(tempFields);
+#pragma omp parallel for
     for (int iterdf=0; iterdf<NumField; ++iterdf)
     {
         gsl_matrix_memcpy(caltempFields, Hij[iterdf]);
@@ -99,22 +108,26 @@ void solver::Fun(gsl_matrix *result)
     }
     dtheta(0);
     gsl_matrix_scale(dFields, 1.0/radius/radius);
-    for (int iterf=0; iterf<NumField; ++iterf)
+#pragma omp parallel for
+    for (int iter=0; iter<Ntheta; ++iter)
     {
-        for (int iter=0; iter<Ntheta; ++iter)
+        for (int iterf=0; iterf<NumField; ++iterf)
         {
             gsl_vector_view temp=gsl_matrix_subcolumn(dFields, iter, iterf*Nrp, Nrp);
-            gsl_vector_div(&temp.vector, r);
-            gsl_vector_div(&temp.vector, r);
+            gsl_vector_div(&temp.vector, r2);
         }
     }
     gsl_matrix_add(G, dFields);
     
+#ifdef PUNISHTERM
+#pragma omp parallel for
     for (int iter=0; iter<NumField; ++iter)
     {
         gsl_vector_view tempboundary=gsl_matrix_row(G, iter*Nrp);
         gsl_vector_view destiny=gsl_matrix_row(boundary, iter);
         gsl_vector_sub(&tempboundary.vector, &destiny.vector);
     }
+#endif
+    
     gsl_matrix_memcpy(result, G);
 }

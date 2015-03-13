@@ -10,7 +10,7 @@
 		A27187A81AA98DAC0027CC49 /* main.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A27187A71AA98DAC0027CC49 /* main.cpp */; };
 		A27187B01AA990EC0027CC49 /* solver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A27187AF1AA990EC0027CC49 /* solver.cpp */; };
 		A27187B31AA9CA660027CC49 /* derivative.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A27187B21AA9CA660027CC49 /* derivative.cpp */; };
-		A2C8B97B1AAF0FFD0035B0E6 /* solve.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2C8B97A1AAF0FFD0035B0E6 /* solve.cpp */; };
+		A2C8B97B1AAF0FFD0035B0E6 /* iteration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2C8B97A1AAF0FFD0035B0E6 /* iteration.cpp */; };
 		A2C8B97D1AB0156C0035B0E6 /* initialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2C8B97C1AB0156C0035B0E6 /* initialization.cpp */; };
 		A2C8B97F1AB015BF0035B0E6 /* printstatus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2C8B97E1AB015BF0035B0E6 /* printstatus.cpp */; };
 		A2F33DDC1AAD74F80006A46C /* fun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2F33DDB1AAD74F80006A46C /* fun.cpp */; };
@@ -36,7 +36,7 @@
 		A27187AF1AA990EC0027CC49 /* solver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = solver.cpp; sourceTree = "<group>"; };
 		A27187B11AA9911B0027CC49 /* parameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = parameters.h; sourceTree = "<group>"; };
 		A27187B21AA9CA660027CC49 /* derivative.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = derivative.cpp; sourceTree = "<group>"; };
-		A2C8B97A1AAF0FFD0035B0E6 /* solve.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = solve.cpp; sourceTree = "<group>"; };
+		A2C8B97A1AAF0FFD0035B0E6 /* iteration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iteration.cpp; sourceTree = "<group>"; };
 		A2C8B97C1AB0156C0035B0E6 /* initialization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = initialization.cpp; sourceTree = "<group>"; };
 		A2C8B97E1AB015BF0035B0E6 /* printstatus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = printstatus.cpp; sourceTree = "<group>"; };
 		A2F33DDB1AAD74F80006A46C /* fun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fun.cpp; sourceTree = "<group>"; };
@@ -80,7 +80,7 @@
 				A27187B21AA9CA660027CC49 /* derivative.cpp */,
 				A2F33DDB1AAD74F80006A46C /* fun.cpp */,
 				A2F33DDD1AAD78950006A46C /* odesolver.cpp */,
-				A2C8B97A1AAF0FFD0035B0E6 /* solve.cpp */,
+				A2C8B97A1AAF0FFD0035B0E6 /* iteration.cpp */,
 				A2C8B97C1AB0156C0035B0E6 /* initialization.cpp */,
 				A2C8B97E1AB015BF0035B0E6 /* printstatus.cpp */,
 			);
@@ -146,7 +146,7 @@
 				A27187B31AA9CA660027CC49 /* derivative.cpp in Sources */,
 				A2F33DDC1AAD74F80006A46C /* fun.cpp in Sources */,
 				A2C8B97D1AB0156C0035B0E6 /* initialization.cpp in Sources */,
-				A2C8B97B1AAF0FFD0035B0E6 /* solve.cpp in Sources */,
+				A2C8B97B1AAF0FFD0035B0E6 /* iteration.cpp in Sources */,
 				A2F33DDE1AAD78950006A46C /* odesolver.cpp in Sources */,
 				A2C8B97F1AB015BF0035B0E6 /* printstatus.cpp in Sources */,
 				A27187B01AA990EC0027CC49 /* solver.cpp in Sources */,

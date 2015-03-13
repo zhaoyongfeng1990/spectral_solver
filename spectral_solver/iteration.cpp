@@ -11,14 +11,8 @@
 void solver::solve(int totaliter)
 {
     setBoundary();
-    printstatus();
+    //printstatus();
     //RK4
-    k1=gsl_matrix_alloc(matrixH, Ntheta);
-    k2=gsl_matrix_alloc(matrixH, Ntheta);
-    k3=gsl_matrix_alloc(matrixH, Ntheta);
-    k4=gsl_matrix_alloc(matrixH, Ntheta);
-    
-    odetempField=gsl_matrix_alloc(matrixH, Ntheta);
     
     for (int iter=0; iter<3; ++iter)
     {
@@ -26,13 +20,8 @@ void solver::solve(int totaliter)
         RK4Step();
         setBoundary();
         ++timeIdx;
-        printstatus();
+        //printstatus();
     }
-    
-    gsl_matrix_free(k1);
-    gsl_matrix_free(k2);
-    gsl_matrix_free(k3);
-    gsl_matrix_free(k4);
     
     //BDF4
     for (int iter=3; iter<totaliter; ++iter)
@@ -40,15 +29,16 @@ void solver::solve(int totaliter)
         BDF4Step();
         setBoundary();
         ++timeIdx;
-        printstatus();
+        //printstatus();
     }
+    printstatus();
     
-    gsl_matrix_free(odetempField);
 }
 
 void solver::setBoundary()
 {
     dr(1);
+#pragma omp parallel for
     for (int iter=0; iter<Ntheta; ++iter)
     {
         for (int iterField=0; iterField<NumField; ++iterField)
@@ -60,8 +50,4 @@ void solver::setBoundary()
             gsl_matrix_set(Fields, iterField*Nrp, iter, d0);
         }
     }
-    
-    //debug
-    dr(1);
-    printdebugM(dFields, "dr.txt");
 }

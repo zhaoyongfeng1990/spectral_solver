@@ -18,6 +18,8 @@
 #include "parameters.h"
 #include <string>
 
+#include <omp.h>
+
 using namespace std;
 
 class solver
@@ -59,6 +61,7 @@ public:
     vector <gsl_matrix*> Hij;
     gsl_matrix *G;
     gsl_vector *r;
+    gsl_vector *r2;
     gsl_vector *theta;
     
     fftw_plan fftr2c;

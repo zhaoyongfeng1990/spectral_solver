@@ -42,18 +42,29 @@ void solver::BDF4Step()
     gsl_matrix_memcpy(odetempField, Fields);
     while (error>tolerance)
     {
+        gsl_matrix_memcpy(k1, Fields);
         Fun(Fields);
         gsl_matrix_scale(Fields, StepT*0.48);
+        error=0;
+#pragma omp parallel for
         for (int iter=0; iter<matrixH*Ntheta; ++iter)
         {
             Fields->data[iter]+=odetempField->data[iter]*1.92-HistoryFields[2]->data[iter]*1.44+HistoryFields[1]->data[iter]*0.64-HistoryFields[0]->data[iter]*0.12;
-            tempFields->data[iter]=abs(Fields->data[iter]-odetempField->data[iter]);
+            k1->data[iter]=k1->data[iter]-Fields->data[iter];
+            if (k1->data[iter]<0)
+            {
+                k1->data[iter]=-k1->data[iter];
+            }
         }
-        error=gsl_matrix_max(tempFields);
+        error=gsl_matrix_max(k1);
     }
-    gsl_matrix_memcpy(HistoryFields[0], HistoryFields[1]);
-    gsl_matrix_memcpy(HistoryFields[1], HistoryFields[2]);
-    gsl_matrix_memcpy(HistoryFields[2], odetempField);
+    
+    gsl_matrix *temp=HistoryFields[0];
+    HistoryFields[0]=HistoryFields[1];
+    HistoryFields[1]=HistoryFields[2];
+    HistoryFields[2]=odetempField;
+    odetempField=temp;
+    
     
     time+=StepT;
 }

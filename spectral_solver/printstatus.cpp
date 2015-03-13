@@ -9,6 +9,8 @@
 #include "solver.h"
 #include <fstream>
 #include <sstream>
+#include <iomanip>
+
 using namespace std;
 
 void solver::printstatus()
@@ -21,7 +23,7 @@ void solver::printstatus()
     {
         for (int iterc=0; iterc<Ntheta; ++iterc)
         {
-            outfile << gsl_matrix_get(Fields, iter, iterc) << " ";
+            outfile << setprecision(20) << gsl_matrix_get(Fields, iter, iterc) << " ";
         }
         outfile << endl;
     }
