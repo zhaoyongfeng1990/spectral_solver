@@ -7,6 +7,8 @@
 //
 
 #include "solver.h"
+#include <cmath>
+using std::pow;
 
 void solver::HGFuns()
 {
@@ -22,22 +24,43 @@ void solver::HGFuns()
         }
         
         //Calculation for H functions. Use f[] to express.
-        //Field 1
-        Hij[0]->data[iter]=1;
-        //Hij[0]->data[iter+NumPoints]=0;
-        //Field 2
-        //Hij[1]->data[iter]=0;
-        //Hij[1]->data[iter+NumPoints]=0;
-        //Field 3
-        //....
+        //Term in front of dField 1
+        Hij[0]->data[iter]=(Drho+Drho0*pow(f[1]/Kh,M))/(1+pow(f[1]/Kh,M));
+        Hij[0]->data[iter+NumPoints]=0;
+        Hij[0]->data[iter+2*NumPoints]=0;
+        //Term in front of dField 2
+        Hij[1]->data[iter]=f[0]*(Drho0-Drho)*pow(f[1]/Kh,M-1)*M/Kh/(1+pow(f[1]/Kh,M))/(1+pow(f[1]/Kh,M));
+        Hij[1]->data[iter+NumPoints]=1;
+        Hij[1]->data[iter+2*NumPoints]=0;
+        //Term in front of dField 3
+        Hij[2]->data[iter]=0;
+        Hij[2]->data[iter+NumPoints]=0;
+        Hij[2]->data[iter+2*NumPoints]=1;
         
         //Ending
         //Calculation for G function.
-        G->data[iter]=0;
-        //G->data[iter+NumPoints]=0;
-        //G->data[iter+2*NumPoints]=0;
-        //G->data[iter+3*NumPoints]=0;
-        //....
+        G->data[iter]=Gamma*f[2]*f[2]*f[0]/(f[2]*f[2]+Kn2);
+        G->data[iter+NumPoints]=Alpha*f[0]-Beta*f[1];
+        G->data[iter+2*NumPoints]=-Gamma*f[2]*f[2]*f[0]/(f[2]*f[2]+Kn2);
+        
+//        Hij[0]->data[iter]=1;
+//        Hij[0]->data[iter+NumPoints]=0;
+//        Hij[0]->data[iter+2*NumPoints]=0;
+//        //Term in front of dField 2
+//        Hij[1]->data[iter]=0;
+//        Hij[1]->data[iter+NumPoints]=1;
+//        Hij[1]->data[iter+2*NumPoints]=0;
+//        //Term in front of dField 3
+//        Hij[2]->data[iter]=0;
+//        Hij[2]->data[iter+NumPoints]=0;
+//        Hij[2]->data[iter+2*NumPoints]=1;
+//        
+//        //Ending
+//        //Calculation for G function.
+//        G->data[iter]=0;
+//        G->data[iter+NumPoints]=0;
+//        G->data[iter+2*NumPoints]=0;
+//        //....
     }
 }
 

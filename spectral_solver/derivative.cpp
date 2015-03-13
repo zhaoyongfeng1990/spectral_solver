@@ -61,7 +61,7 @@ void solver::dr(bool ifFirst)
 #ifdef MULTIPROCESS
 #pragma omp parallel for
 #endif
-        for (int iter=0; iter<Ntheta; ++iter)
+        for (int iter=0; iter<matrixW; ++iter)
         {
             cRow.vector.data[iter]=nextLastRow.vector.data[iter]*2.0*(iterr+1)/logicNr+lastRow.vector.data[iter];
             nextLastRow.vector.data[iter]=0;
@@ -92,6 +92,7 @@ void solver::dr(bool ifFirst)
     //gsl_matrix_scale(&middle.matrix, 0.5);
     
     fftw_execute(dctr2r);
+    
     
 #ifdef MULTIPROCESS
 #pragma omp parallel for

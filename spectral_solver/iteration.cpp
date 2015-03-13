@@ -20,7 +20,7 @@ void solver::solve(int totaliter)
         RK4Step();
         setBoundary();
         ++timeIdx;
-        //printstatus();
+        printstatus();
     }
     
     //BDF4
@@ -29,7 +29,7 @@ void solver::solve(int totaliter)
         BDF4Step();
         setBoundary();
         ++timeIdx;
-        //printstatus();
+        printstatus();
     }
     printstatus();
     

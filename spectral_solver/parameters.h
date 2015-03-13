@@ -15,8 +15,17 @@
 const int Ntheta=64;
 const int Nr=82;
 const double StepT=1.0/16384/32;
-const int NumField=1;
-const double radius=1; //5;
+const int NumField=3;
+const double radius=5;
+
+const double Alpha=1.04;
+const double Beta=1.04;
+const double Gamma=0.7;
+const double Kn2=100;
+const double Drho=0.45*3.6;
+const double Drho0=0.01*3.6;
+const double Kh=4;
+const double M=20;
 
 #ifdef PUNISHTERM
 const double punish=50;
