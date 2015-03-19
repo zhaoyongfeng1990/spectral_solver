@@ -113,7 +113,7 @@ public:
     MPI_Datatype* TblockType;
     MPI_Datatype* BoundaryType;
     MPI_Status status;
-    
+    MPI_Request request;
 };
 
 #endif

@@ -21,6 +21,7 @@ void solver::solve(int totaliter)
         {
             gsl_matrix_memcpy(HistoryFields[iter],Fields);
         }
+        
         RK4Step();
         setBoundary();
         ++timeIdx;
@@ -35,7 +36,11 @@ void solver::solve(int totaliter)
         setBoundary();
         ++timeIdx;
         //printstatus();
-        //cout << timeIdx << endl;
+//        if (cRank==0)
+//        {
+//            cout << timeIdx << endl;
+//        }
+        
 //        if (timeIdx%262144==0)
 //        {
 //            timeIdx=timeIdx/262144;
