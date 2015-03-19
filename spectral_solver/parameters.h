@@ -9,13 +9,11 @@
 #ifndef spectral_solver_parameters_h
 #define spectral_solver_parameters_h
 
-//#define PUNISHTERM //Add punish term can sometimes speed up
-//#define MULTIPROCESS
 #include <cmath>
 
 const int Ntheta=64;
-const int Nr=81*5+1;
-const double StepT=1.0/16384/32;
+const int Nr=81+1;
+const double StepT=1.0/16384/16;
 const int NumField=3;
 const double radius=3;
 
@@ -29,10 +27,6 @@ const double Dh=0.004*3.6;
 const double Dn=0.008*3.6;
 const double Kh=4;
 const double M=20;
-
-#ifdef PUNISHTERM
-const double punish=50;
-#endif
 
 //for solver
 const double tolerance=1e-10;

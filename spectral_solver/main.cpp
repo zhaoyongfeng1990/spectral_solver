@@ -15,24 +15,22 @@ using namespace std;
 
 int main(int argc, const char  *argv[])
 {
-    
-#ifdef MULTIPROCESS
-    omp_set_num_threads(4);
-#endif
-    
+    MPI_Init(NULL, NULL);
     time_t ctime1, ctime2;
     time(&ctime1);
     solver test1;
     test1.initialization();
-    test1.printstatus();
+    //test1.printstatus();
     //test1.readFile("48.txt");
     //test1.timeIdx=16384*128*48;
-    test1.solve(2000);
-    test1.printstatus();
-    //test1.dr(1);
+    //test1.solve(10);
+    test1.Fun(test1.Fields);
     time(&ctime2);
-    cout << ctime2-ctime1 << endl;
+    if (test1.cRank==0)
+    {
+        test1.printstatus();
+        cout << ctime2-ctime1 << endl;
+    }
     
-
     return 0;
 }

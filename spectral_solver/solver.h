@@ -17,11 +17,7 @@
 #include <fftw3.h>
 #include "parameters.h"
 #include <string>
-
-
-#ifdef MULTIPROCESS
-#include <omp.h>
-#endif
+#include <mpi.h>
 
 using namespace std;
 
@@ -48,13 +44,6 @@ public:
     void readFile(const string filename);
     
     gsl_matrix *Fields;
-    gsl_matrix *dFields;
-    gsl_matrix *tempFields;
-    gsl_matrix *caltempFields;
-    gsl_matrix *boundary;
-    
-    gsl_matrix_view dFieldView[NumField];
-    gsl_matrix_view ctFieldView[NumField];
     
     gsl_matrix *k1;
     gsl_matrix *k2;
@@ -70,20 +59,60 @@ public:
     gsl_vector *r2;
     gsl_vector *theta;
     
+    gsl_matrix *FieldsLocal;
+    gsl_matrix *tempFieldsLocal;
+    gsl_matrix *GLocal;
+    vector <gsl_matrix*> HijLocal;
+    gsl_matrix *dFieldsLocal;
+    gsl_matrix_view dFieldLocalView[NumField];
+    gsl_matrix_view HijLocalView[NumField*NumField];
+    
     fftw_plan fftr2c;
     fftw_plan ifftc2r;
     fftw_plan tempfftr2c;
     fftw_plan tempifftc2r;
     fftw_plan dctr2r;
+    fftw_plan tempdctr2r;
     
     gsl_matrix_complex *fftc;
     gsl_matrix *dctr;
-    
-    gsl_vector* tempstore;
-    gsl_vector* tempstore2;
+    gsl_matrix *tempdctr;
     
     double time;
     int timeIdx;
+    
+    int workerR;
+    int workerT;
+    int workerTl;
+    int workerRl;
+    int bossR;
+    int bossT;
+    int bossTl;
+    int bossRl;
+    
+    int workerPointsR;
+    int workerPointsT;
+    int bossPointsR;
+    int bossPointsT;
+    
+    int jobR;
+    int jobT;
+    int jobTl;
+    int jobRl;
+    int jobPointsRl;
+    int jobPointsTl;
+    int jobPointsR;
+    int jobPointsT;
+    
+    int numOfProcess;
+    int numOfProcessT;
+    int numOfProcessR;
+    int cRank;
+    
+    MPI_Datatype* RblockType;
+    MPI_Datatype* TblockType;
+    MPI_Datatype* BoundaryType;
+    MPI_Status status;
     
 };
 

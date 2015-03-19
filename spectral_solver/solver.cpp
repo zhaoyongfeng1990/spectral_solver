@@ -8,136 +8,300 @@
 
 #include "solver.h"
 #include <cmath>
+#include <iostream>
+using namespace std;
 
 solver::solver()
 {
-    fftw_init_threads();
-    fftw_plan_with_nthreads(4);
+    MPI_Comm_rank(MPI_COMM_WORLD, &cRank);
+    MPI_Comm_size(MPI_COMM_WORLD, &numOfProcess);
+    
+    numOfProcessR=floor(numOfProcess/2.0);
+    numOfProcessT=numOfProcess-numOfProcessR;
+    
+    workerRl=ceil(Nrp/(double)numOfProcessR);
+    workerTl=ceil(Ntheta/(double)numOfProcessT);
+    workerT=workerTl*NumField;
+    workerR=workerRl*NumField;
+    workerPointsR=Ntheta*workerRl;
+    workerPointsT=workerTl*Nrp;
+    
+    bossRl=Nrp-workerRl*(numOfProcessR-1);
+    bossTl=Ntheta-workerTl*(numOfProcessT-1);
+    bossT=bossTl*NumField;
+    bossR=bossRl*NumField;
+    bossPointsR=Ntheta*bossRl;
+    bossPointsT=bossTl*Nrp;
+    
+    if (0==cRank || 1==cRank)
+    {
+        jobRl=bossRl;
+        jobTl=bossTl;
+        jobR=bossR;
+        jobT=bossT;
+        jobPointsRl=bossPointsR;
+        jobPointsTl=bossPointsT;
+    }
+    else
+    {
+        jobRl=workerRl;
+        jobTl=workerTl;
+        jobR=workerR;
+        jobT=workerT;
+        jobPointsRl=workerPointsR;
+        jobPointsTl=workerPointsT;
+    }
+    
+    jobPointsR=jobPointsRl*NumField;
+    jobPointsT=jobPointsTl*NumField;
     
     time=0;
     timeIdx=0;
     
-    Fields=gsl_matrix_calloc(matrixH, Ntheta);
-    gsl_matrix_set_zero(Fields);
-    dFields=gsl_matrix_calloc(matrixH, Ntheta);
-    gsl_matrix_set_zero(dFields);
-    tempFields=gsl_matrix_calloc(matrixH, Ntheta);
-    gsl_matrix_set_zero(tempFields);
-    caltempFields=gsl_matrix_calloc(matrixH, Ntheta);
-    gsl_matrix_set_zero(caltempFields);
-    G=gsl_matrix_calloc(matrixH, Ntheta);
-    gsl_matrix_set_zero(G);
-    
-    k1=gsl_matrix_alloc(matrixH, Ntheta);
-    k2=gsl_matrix_alloc(matrixH, Ntheta);
-    k3=gsl_matrix_alloc(matrixH, Ntheta);
-    k4=gsl_matrix_alloc(matrixH, Ntheta);
-    
-    odetempField=gsl_matrix_alloc(matrixH, Ntheta);
-    odetempField2=gsl_matrix_alloc(matrixH, Ntheta);
-    
-    boundary=gsl_matrix_calloc(NumField, Ntheta);
-    
-    for (int iter=0; iter<NumField; ++iter)
+    if (cRank==0)
     {
-        dFieldView[iter]=gsl_matrix_submatrix(dFields, iter*Nrp, 0, Nrp, Ntheta);
-        ctFieldView[iter]=gsl_matrix_submatrix(caltempFields, iter*Nrp, 0, Nrp, Ntheta);
+        Fields=gsl_matrix_alloc(matrixH, Ntheta);
+        gsl_matrix_set_zero(Fields);
+        G=gsl_matrix_alloc(matrixH, Ntheta);
+        gsl_matrix_set_zero(G);
+        
+        k1=gsl_matrix_alloc(matrixH, Ntheta);
+        k2=gsl_matrix_alloc(matrixH, Ntheta);
+        k3=gsl_matrix_alloc(matrixH, Ntheta);
+        k4=gsl_matrix_alloc(matrixH, Ntheta);
+        
+        odetempField=gsl_matrix_alloc(matrixH, Ntheta);
+        odetempField2=gsl_matrix_alloc(matrixH, Ntheta);
+        
+        HistoryFields.resize(3);
+        for (int iterh=0; iterh<3; ++iterh)
+        {
+            HistoryFields[iterh]=gsl_matrix_alloc(matrixH, Ntheta);
+            gsl_matrix_set_zero(HistoryFields[iterh]);
+        }
+        
+        Hij.resize(NumField);
+        for (int iterh=0; iterh<NumField; ++iterh)
+        {
+            Hij[iterh]=gsl_matrix_alloc(matrixH, Ntheta);
+            gsl_matrix_set_zero(Hij[iterh]);
+        }
     }
     
-    r=gsl_vector_calloc(Nrp);
-    r2=gsl_vector_calloc(Nrp);
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
+    //local variables
+    if (cRank%2==0)
+    {
+        FieldsLocal=gsl_matrix_alloc(jobR, Ntheta);
+        gsl_matrix_set_zero(FieldsLocal);
+        tempFieldsLocal=gsl_matrix_alloc(jobR, Ntheta);
+        dFieldsLocal=gsl_matrix_alloc(jobR, Ntheta);
+        
+        HijLocal.resize(NumField);
+        for (int iterh=0; iterh<NumField; ++iterh)
+        {
+            HijLocal[iterh]=gsl_matrix_alloc(jobR, Ntheta);
+            gsl_matrix_set_zero(HijLocal[iterh]);
+        }
+        
+        for (int iter=0; iter<NumField; ++iter)
+        {
+            dFieldLocalView[iter]=gsl_matrix_submatrix(dFieldsLocal, iter*jobRl, 0, jobRl, Ntheta);
+            for (int iterf=0; iterf<NumField; ++iterf)
+            {
+                HijLocalView[iterf*NumField+iter]=gsl_matrix_submatrix(HijLocal[iterf], iter*jobRl, 0, jobRl, Ntheta);
+            }
+        }
+        
+        GLocal=gsl_matrix_alloc(jobR, Ntheta);
+        gsl_matrix_set_zero(GLocal);
+        
+        int n2[]={Ntheta};
+        fftc=gsl_matrix_complex_alloc(jobR, Ntheta/2+1);
+        fftr2c=fftw_plan_many_dft_r2c(1, n2, jobR, FieldsLocal->data, n2, 1, Ntheta, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
+        
+        ifftc2r=fftw_plan_many_dft_c2r(1, n2, jobR, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, dFieldsLocal->data, n2, 1, Ntheta, FFTW_MEASURE);
+        
+        tempfftr2c=fftw_plan_many_dft_r2c(1, n2, jobR, tempFieldsLocal->data, n2, 1, Ntheta, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
+        
+        tempifftc2r=fftw_plan_many_dft_c2r(1, n2, jobR, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, dFieldsLocal->data, n2, 1, Ntheta, FFTW_MEASURE);
+    }
+    else
+    {
+        HijLocal.resize(NumField);
+        for (int iterh=0; iterh<NumField; ++iterh)
+        {
+            HijLocal[iterh]=gsl_matrix_alloc(Nrp, jobT);
+            gsl_matrix_set_zero(HijLocal[iterh]);
+        }
+        
+        tempFieldsLocal=gsl_matrix_alloc(Nrp, jobT);
+        dctr=gsl_matrix_alloc(Nr, jobT);
+        tempdctr=gsl_matrix_alloc(Nr, jobT);
+        
+        for (int iter=0; iter<NumField; ++iter)
+        {
+            dFieldLocalView[iter]=gsl_matrix_submatrix(dctr, 0, iter*jobTl, Nrp, jobTl);
+            for (int iterf=0; iterf<NumField; ++iterf)
+            {
+                HijLocalView[iterf*NumField+iter]=gsl_matrix_submatrix(HijLocal[iterf], 0, iter*jobTl, Nrp, jobTl);
+            }
+        }
+        
+        int n1[]={Nr};
+        fftw_r2r_kind kind[]={FFTW_REDFT00};
+        dctr2r=fftw_plan_many_r2r(1, n1, jobT, dctr->data, n1, jobT, 1, dctr->data, n1, jobT, 1, kind, FFTW_MEASURE);
+        tempdctr2r=fftw_plan_many_r2r(1, n1, jobT, tempdctr->data, n1, jobT, 1, dctr->data, n1, jobT, 1, kind, FFTW_MEASURE);
+    }
+    
+    r=gsl_vector_alloc(Nrp);
+    r2=gsl_vector_alloc(Nrp);
     for (int iter=0; iter<Nrp; ++iter)
     {
         r->data[iter]=cos(iter*PI/logicNr);
         r2->data[iter]=cos(iter*PI/logicNr)*cos(iter*PI/logicNr);
     }
     
-    theta=gsl_vector_calloc(Ntheta);
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
+    theta=gsl_vector_alloc(Ntheta);
     for (int iter=0; iter<Ntheta; ++iter)
     {
         theta->data[iter]=2*PI*iter/Ntheta;
     }
     
-    HistoryFields.resize(3);
-    for (int iterh=0; iterh<3; ++iterh)
+    //MPI Data Type
+    int blocklengthsR[NumField];
+    int blocklengthsT[matrixH];
+    int blockpossR[NumField];
+    int blockpossT[matrixH];
+    
+    RblockType=new MPI_Datatype[numOfProcessR];
+    TblockType=new MPI_Datatype[numOfProcessT];
+    BoundaryType=new MPI_Datatype[numOfProcessT];
+    
+    //process 0 - boss for theta calculation (split r)
+    for (int iter=0; iter<NumField; ++iter)
     {
-        HistoryFields[iterh]=gsl_matrix_calloc(matrixH, Ntheta);
-        gsl_matrix_set_zero(HistoryFields[iterh]);
+        blocklengthsR[iter]=bossPointsR;
+        blockpossR[iter]=iter*NumPoints;
+    }
+    MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_DOUBLE, &RblockType[0]);
+    MPI_Type_commit(&RblockType[0]);
+    
+    //process 1 - boss for r calculation (split theta)
+    int itertemp=0;
+    for (int iterr=0; iterr<Nrp; ++iterr)
+    {
+        for (int iterf=0; iterf<NumField; ++iterf)
+        {
+            blocklengthsT[itertemp]=bossTl;
+            blockpossT[itertemp]=iterr*Ntheta+iterf*NumPoints;
+            ++itertemp;
+        }
+    }
+    MPI_Type_indexed(matrixH, blocklengthsT, blockpossT, MPI_DOUBLE, &TblockType[0]);
+    MPI_Type_commit(&TblockType[0]);
+    MPI_Type_indexed(NumField, blocklengthsT, blockpossT, MPI_DOUBLE, &BoundaryType[0]);
+    MPI_Type_commit(&BoundaryType[0]);
+    
+    //process 2, 4, 6, ... - workers for theta calculation (split r)
+    for (int iterCPU=1; iterCPU<numOfProcessR; ++iterCPU)
+    {
+        for (int iter=0; iter<NumField; ++iter)
+        {
+            blocklengthsR[iter]=workerPointsR;
+            blockpossR[iter]=bossPointsR+(iterCPU-1)*workerPointsR+iter*NumPoints;
+        }
+        MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_DOUBLE, &RblockType[iterCPU]);
+        MPI_Type_commit(&RblockType[iterCPU]);
     }
     
-    Hij.resize(NumField);
-    for (int iterh=0; iterh<NumField; ++iterh)
+    //process 1, 3, 5, ... - workers for r calculation (split theta)
+    for (int iterCPU=1; iterCPU<numOfProcessT; ++iterCPU)
     {
-        Hij[iterh]=gsl_matrix_calloc(matrixH, Ntheta);
-        gsl_matrix_set_zero(Hij[iterh]);
+        itertemp=0;
+        for (int iterr=0; iterr<Nrp; ++iterr)
+        {
+            for (int iterf=0; iterf<NumField; ++iterf)
+            {
+                blocklengthsT[itertemp]=workerTl;
+                blockpossT[itertemp]=bossTl+(iterCPU-1)*workerTl+iterr*Ntheta+iterf*NumPoints;
+                ++itertemp;
+            }
+        }
+        MPI_Type_indexed(matrixH, blocklengthsT, blockpossT, MPI_DOUBLE, &TblockType[iterCPU]);
+        MPI_Type_commit(&TblockType[iterCPU]);
+        MPI_Type_indexed(NumField, blocklengthsT, blockpossT, MPI_DOUBLE, &BoundaryType[iterCPU]);
+        MPI_Type_commit(&BoundaryType[iterCPU]);
     }
-    
-    int n1[]={Nr};
-    int n2[]={Ntheta};
-    
-    dctr=gsl_matrix_calloc(Nr, Ntheta*NumField);
-    fftc=gsl_matrix_complex_calloc(matrixH, Ntheta/2+1);
-    
-    fftr2c=fftw_plan_many_dft_r2c(1, n2, matrixH, Fields->data, n2, 1, Ntheta, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
-    tempfftr2c=fftw_plan_many_dft_r2c(1, n2, matrixH, tempFields->data, n2, 1, Ntheta, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
-    
-    ifftc2r=fftw_plan_many_dft_c2r(1, n2, matrixH, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, dFields->data, n2, 1, Ntheta, FFTW_MEASURE);
-    tempifftc2r=fftw_plan_many_dft_c2r(1, n2, matrixH, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, dFields->data, n2, 1, Ntheta, FFTW_MEASURE);
-    
-    fftw_r2r_kind kind[]={FFTW_REDFT00};
-    
-    dctr2r=fftw_plan_many_r2r(1, n1, matrixW, dctr->data, n1, matrixW, 1, dctr->data, n1, matrixW, 1, kind, FFTW_MEASURE);
-    
-    tempstore=gsl_vector_alloc(matrixW);
-    tempstore2=gsl_vector_alloc(matrixW);
 }
 
 solver::~solver()
 {
-    fftw_cleanup_threads();
+    if (cRank==0)
+    {
+        gsl_matrix_free(Fields);
+        gsl_matrix_free(G);
+        
+        gsl_matrix_free(k1);
+        gsl_matrix_free(k2);
+        gsl_matrix_free(k3);
+        gsl_matrix_free(k4);
+        
+        gsl_matrix_free(odetempField);
+        gsl_matrix_free(odetempField2);
+        
+        for (int iterh=0; iterh<3; ++iterh)
+        {
+            gsl_matrix_free(HistoryFields[iterh]);
+        }
+        
+        for (int iterh=0; iterh<NumField; ++iterh)
+        {
+            gsl_matrix_free(Hij[iterh]);
+        }
+    }
     
-    fftw_destroy_plan(fftr2c);
-    fftw_destroy_plan(ifftc2r);
-    fftw_destroy_plan(tempfftr2c);
-    fftw_destroy_plan(tempifftc2r);
-    fftw_destroy_plan(dctr2r);
+    //local variables
+    if (cRank%2==0)
+    {
+        gsl_matrix_free(GLocal);
+        gsl_matrix_free(dFieldsLocal);
+        gsl_matrix_free(tempFieldsLocal);
+        gsl_matrix_complex_free(fftc);
+        fftw_destroy_plan(fftr2c);
+        fftw_destroy_plan(ifftc2r);
+        fftw_destroy_plan(tempfftr2c);
+        fftw_destroy_plan(tempifftc2r);
+    }
+    else
+    {
+        gsl_matrix_free(dctr);
+        gsl_matrix_free(tempdctr);
+        fftw_destroy_plan(dctr2r);
+        fftw_destroy_plan(tempdctr2r);
+    }
+    for (int iterh=0; iterh<NumField; ++iterh)
+    {
+        gsl_matrix_free(HijLocal[iterh]);
+    }
     
     gsl_vector_free(r);
     gsl_vector_free(r2);
     gsl_vector_free(theta);
-    gsl_matrix_free(Fields);
-    gsl_matrix_free(dFields);
-    gsl_matrix_free(tempFields);
-    gsl_matrix_free(caltempFields);
-    gsl_matrix_free(G);
-    gsl_matrix_free(dctr);
-    gsl_matrix_complex_free(fftc);
-    gsl_matrix_free(boundary);
     
+    gsl_matrix_free(FieldsLocal);
     
-    gsl_matrix_free(k1);
-    gsl_matrix_free(k2);
-    gsl_matrix_free(k3);
-    gsl_matrix_free(k4);
-    gsl_matrix_free(odetempField);
-    gsl_matrix_free(odetempField2);
-    
-    for (int iterh=0; iterh<3; ++iterh)
+    for (int iterCPU=0; iterCPU<numOfProcessR; ++iterCPU)
     {
-        gsl_matrix_free(HistoryFields[iterh]);
+        MPI_Type_free(&RblockType[iterCPU]);
     }
-    
-    for (int iterh=0; iterh<NumField; ++iterh)
+    for (int iterCPU=0; iterCPU<numOfProcessT; ++iterCPU)
     {
-        gsl_matrix_free(Hij[iterh]);
+        MPI_Type_free(&TblockType[iterCPU]);
+        MPI_Type_free(&BoundaryType[iterCPU]);
     }
+    delete [] RblockType;
+    delete [] TblockType;
+    delete [] BoundaryType;
     
-    gsl_vector_free(tempstore);
-    gsl_vector_free(tempstore2);
+    MPI_Finalize();
 }
