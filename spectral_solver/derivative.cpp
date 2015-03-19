@@ -35,6 +35,7 @@ void solver::dr(bool ifFirst)
         
         fftw_execute(tempdctr2r);
     }
+    
     //printdebugM(dctr, "dctr.txt");
     //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
     
