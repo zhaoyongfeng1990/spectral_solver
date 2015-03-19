@@ -168,11 +168,8 @@ void solver::Fun(gsl_matrix *result)
         
         for (int iter=0; iter<jobT; ++iter)
         {
-            for (int iterf=0; iterf<NumField; ++iterf)
-            {
-                gsl_vector_view temp=gsl_matrix_subcolumn(tempdctr, iter, 0, Nrp);
-                gsl_vector_mul(&temp.vector, r);
-            }
+            gsl_vector_view temp=gsl_matrix_subcolumn(tempdctr, iter, 0, Nrp);
+            gsl_vector_mul(&temp.vector, r);
         }
         
         dr(0);
@@ -199,10 +196,6 @@ void solver::Fun(gsl_matrix *result)
         for (int iterCPU=0; iterCPU<numOfProcessT; ++iterCPU)
         {
             MPI_Recv(result->data, 1, TblockType[iterCPU], iterCPU*2+1, 200+iterCPU*2+1, MPI_COMM_WORLD, &status);
-        }
-        if (cRank==0)
-        {
-            printdebugM(result, "result.txt");
         }
         gsl_matrix_add(result, G);
     }
