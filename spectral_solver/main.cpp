@@ -27,10 +27,10 @@ int main(int argc, const char  *argv[])
     //test1.printstatus();
     //test1.readFile("48.txt");
     //test1.timeIdx=16384*128*48;
-    //test1.solve(2000);
-    //test1.printstatus();
-    test1.Fun(test1.k1);
-    test1.printdebugM(test1.k1, "k1.txt");
+    test1.solve(2000);
+    test1.printstatus();
+    //test1.Fun(test1.k1);
+    //test1.printdebugM(test1.k1, "k1.txt");
     //test1.dr(1);
     time(&ctime2);
     cout << ctime2-ctime1 << endl;

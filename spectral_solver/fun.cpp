@@ -24,45 +24,45 @@ void solver::HGFuns()
         
         //Calculation for H functions. Use f[] to express.
         //Term in front of dField 1
-//        double powfm1=pow(f[1]/Kh,M-1);
-//        double powfm=powfm1*f[1]/Kh;
-//        double powfmp1=powfm+1;
-//        Hij[0]->data[iter]=(Drho+Drho0*powfm)/powfmp1;
-//        Hij[0]->data[iter+NumPoints]=0;
-//        Hij[0]->data[iter+2*NumPoints]=0;
-//        //Term in front of dField 2
-//        Hij[1]->data[iter]=f[0]*(Drho0-Drho)*powfm1*M/Kh/powfmp1/powfmp1;
-//        Hij[1]->data[iter+NumPoints]=Dh;
-//        Hij[1]->data[iter+2*NumPoints]=0;
-//        //Term in front of dField 3
-//        Hij[2]->data[iter]=0;
-//        Hij[2]->data[iter+NumPoints]=0;
-//        Hij[2]->data[iter+2*NumPoints]=Dn;
-//        
-//        double f2=f[2]*f[2];
-//        //Ending
-//        //Calculation for G function.
-//        G->data[iter]=Gamma*f2*f[0]/(f2+Kn2);
-//        G->data[iter+NumPoints]=Alpha*f[0]-Beta*f[1];
-//        G->data[iter+2*NumPoints]=-G->data[iter];
-        
-        Hij[0]->data[iter]=1;
+        double powfm1=pow(f[1]/Kh,M-1);
+        double powfm=powfm1*f[1]/Kh;
+        double powfmp1=powfm+1;
+        Hij[0]->data[iter]=(Drho+Drho0*powfm)/powfmp1;
         Hij[0]->data[iter+NumPoints]=0;
         Hij[0]->data[iter+2*NumPoints]=0;
         //Term in front of dField 2
-        Hij[1]->data[iter]=0;
-        Hij[1]->data[iter+NumPoints]=1;
+        Hij[1]->data[iter]=f[0]*(Drho0-Drho)*powfm1*M/Kh/powfmp1/powfmp1;
+        Hij[1]->data[iter+NumPoints]=Dh;
         Hij[1]->data[iter+2*NumPoints]=0;
         //Term in front of dField 3
         Hij[2]->data[iter]=0;
         Hij[2]->data[iter+NumPoints]=0;
-        Hij[2]->data[iter+2*NumPoints]=1;
+        Hij[2]->data[iter+2*NumPoints]=Dn;
         
+        double f2=f[2]*f[2];
         //Ending
         //Calculation for G function.
-        G->data[iter]=0;
-        G->data[iter+NumPoints]=0;
-        G->data[iter+2*NumPoints]=0;
+        G->data[iter]=Gamma*f2*f[0]/(f2+Kn2);
+        G->data[iter+NumPoints]=Alpha*f[0]-Beta*f[1];
+        G->data[iter+2*NumPoints]=-G->data[iter];
+        
+//        Hij[0]->data[iter]=1;
+//        Hij[0]->data[iter+NumPoints]=0;
+//        Hij[0]->data[iter+2*NumPoints]=0;
+//        //Term in front of dField 2
+//        Hij[1]->data[iter]=0;
+//        Hij[1]->data[iter+NumPoints]=1;
+//        Hij[1]->data[iter+2*NumPoints]=0;
+//        //Term in front of dField 3
+//        Hij[2]->data[iter]=0;
+//        Hij[2]->data[iter+NumPoints]=0;
+//        Hij[2]->data[iter+2*NumPoints]=1;
+//        
+//        //Ending
+//        //Calculation for G function.
+//        G->data[iter]=0;
+//        G->data[iter+NumPoints]=0;
+//        G->data[iter+2*NumPoints]=0;
         //....
     }
 }

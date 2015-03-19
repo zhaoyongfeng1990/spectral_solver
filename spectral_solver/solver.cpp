@@ -12,7 +12,7 @@
 solver::solver()
 {
     fftw_init_threads();
-    fftw_plan_with_nthreads(4);
+    fftw_plan_with_nthreads(8);
     
     time=0;
     timeIdx=0;
