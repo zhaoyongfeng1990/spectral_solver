@@ -137,7 +137,7 @@ void solver::Fun(gsl_matrix *result)
             }
         }
         gsl_matrix_add(GLocal, dFieldsLocal);
-        MPI_Send(GLocal, jobPointsR, MPI_DOUBLE, 0, 200+cRank, MPI_COMM_WORLD);
+        MPI_Send(GLocal->data, jobPointsR, MPI_DOUBLE, 0, 200+cRank, MPI_COMM_WORLD);
     }
     else
     {
@@ -187,8 +187,7 @@ void solver::Fun(gsl_matrix *result)
             gsl_vector_view temp=gsl_matrix_subcolumn(dctr, iter, 0, Nrp);
             gsl_vector_div(&temp.vector, r);
         }
-        
-        MPI_Send(dctr, jobPointsT, MPI_DOUBLE, 0, 200+cRank, MPI_COMM_WORLD);
+        MPI_Send(dctr->data, jobPointsT, MPI_DOUBLE, 0, 200+cRank, MPI_COMM_WORLD);
     }
     
     if (0==cRank)
@@ -200,6 +199,10 @@ void solver::Fun(gsl_matrix *result)
         for (int iterCPU=0; iterCPU<numOfProcessT; ++iterCPU)
         {
             MPI_Recv(result->data, 1, TblockType[iterCPU], iterCPU*2+1, 200+iterCPU*2+1, MPI_COMM_WORLD, &status);
+        }
+        if (cRank==0)
+        {
+            printdebugM(result, "result.txt");
         }
         gsl_matrix_add(result, G);
     }

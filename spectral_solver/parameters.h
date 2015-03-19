@@ -15,7 +15,7 @@ const int Ntheta=64;
 const int Nr=81+1;
 const double StepT=1.0/16384/16;
 const int NumField=3;
-const double radius=3;
+const double radius=1; //3;
 
 const double Alpha=2.08;
 const double Beta=2.08;
