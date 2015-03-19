@@ -246,7 +246,7 @@
 					"-lgsl",
 					"-lgslcblas",
 					"-lfftw3",
-					"-DHAVE_INLINE",
+					"-lfftw3_threads",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -268,7 +268,7 @@
 					"-lgsl",
 					"-lgslcblas",
 					"-lfftw3",
-					"-DHAVE_INLINE",
+					"-lfftw3_threads",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

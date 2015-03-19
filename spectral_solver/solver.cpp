@@ -11,6 +11,9 @@
 
 solver::solver()
 {
+    fftw_init_threads();
+    fftw_plan_with_nthreads(4);
+    
     time=0;
     timeIdx=0;
     
@@ -31,6 +34,7 @@ solver::solver()
     k4=gsl_matrix_alloc(matrixH, Ntheta);
     
     odetempField=gsl_matrix_alloc(matrixH, Ntheta);
+    odetempField2=gsl_matrix_alloc(matrixH, Ntheta);
     
     boundary=gsl_matrix_calloc(NumField, Ntheta);
     
@@ -42,9 +46,9 @@ solver::solver()
     
     r=gsl_vector_calloc(Nrp);
     r2=gsl_vector_calloc(Nrp);
-#ifdef MULTIPROCESS
-#pragma omp parallel for
-#endif
+//#ifdef MULTIPROCESS
+//#pragma omp parallel for
+//#endif
     for (int iter=0; iter<Nrp; ++iter)
     {
         r->data[iter]=cos(iter*PI/logicNr);
@@ -52,9 +56,9 @@ solver::solver()
     }
     
     theta=gsl_vector_calloc(Ntheta);
-#ifdef MULTIPROCESS
-#pragma omp parallel for
-#endif
+//#ifdef MULTIPROCESS
+//#pragma omp parallel for
+//#endif
     for (int iter=0; iter<Ntheta; ++iter)
     {
         theta->data[iter]=2*PI*iter/Ntheta;
@@ -96,6 +100,8 @@ solver::solver()
 
 solver::~solver()
 {
+    fftw_cleanup_threads();
+    
     fftw_destroy_plan(fftr2c);
     fftw_destroy_plan(ifftc2r);
     fftw_destroy_plan(tempfftr2c);
@@ -120,6 +126,7 @@ solver::~solver()
     gsl_matrix_free(k3);
     gsl_matrix_free(k4);
     gsl_matrix_free(odetempField);
+    gsl_matrix_free(odetempField2);
     
     for (int iterh=0; iterh<3; ++iterh)
     {

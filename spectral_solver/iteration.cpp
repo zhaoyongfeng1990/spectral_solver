@@ -7,6 +7,8 @@
 //
 
 #include "solver.h"
+#include <iostream>
+using namespace std;
 
 void solver::solve(int totaliter)
 {
@@ -20,7 +22,7 @@ void solver::solve(int totaliter)
         RK4Step();
         setBoundary();
         ++timeIdx;
-        printstatus();
+        //printstatus();
     }
     
     //BDF4
@@ -29,18 +31,24 @@ void solver::solve(int totaliter)
         BDF4Step();
         setBoundary();
         ++timeIdx;
-        printstatus();
+        //printstatus();
+        //cout << timeIdx << endl;
+//        if (timeIdx%262144==0)
+//        {
+//            timeIdx=timeIdx/262144;
+//            printstatus();
+//            timeIdx=timeIdx*262144;
+//        }
     }
-    printstatus();
     
 }
 
 void solver::setBoundary()
 {
     dr(1);
-#ifdef MULTIPROCESS
-#pragma omp parallel for
-#endif
+//#ifdef MULTIPROCESS
+//#pragma omp parallel for
+//#endif
     for (int iter=0; iter<Ntheta; ++iter)
     {
         for (int iterField=0; iterField<NumField; ++iterField)

@@ -18,6 +18,7 @@
 #include "parameters.h"
 #include <string>
 
+
 #ifdef MULTIPROCESS
 #include <omp.h>
 #endif
@@ -43,6 +44,8 @@ public:
     
     void printstatus();
     void printdebugM(gsl_matrix* m, const string filename);
+    void printdebugCM(gsl_matrix_complex* m, const string filename);
+    void readFile(const string filename);
     
     gsl_matrix *Fields;
     gsl_matrix *dFields;
@@ -58,6 +61,7 @@ public:
     gsl_matrix *k3;
     gsl_matrix *k4;
     gsl_matrix *odetempField;
+    gsl_matrix *odetempField2;
     
     vector <gsl_matrix*> HistoryFields;
     vector <gsl_matrix*> Hij;
@@ -74,7 +78,6 @@ public:
     
     gsl_matrix_complex *fftc;
     gsl_matrix *dctr;
-    //gsl_matrix *odctr;
     
     gsl_vector* tempstore;
     gsl_vector* tempstore2;
@@ -82,20 +85,6 @@ public:
     double time;
     int timeIdx;
     
-//    //For Broyden method
-//    gsl_matrix *A;
-//    gsl_matrix *Ainv;
-//    gsl_matrix *xk_0;
-//    gsl_matrix *xk_1;
-//    gsl_matrix *dx;
-//    gsl_matrix *fxk_0;
-//    gsl_matrix *fxk_1;
-//    gsl_matrix *Adxk;
-//    gsl_matrix *temp;
-//    gsl_matrix *C;
-//    gsl_matrix *temp1;
-//    gsl_matrix *temp2;
-//    gsl_matrix *temp3;
 };
 
 #endif

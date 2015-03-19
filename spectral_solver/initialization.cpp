@@ -7,13 +7,17 @@
 //
 
 #include "solver.h"
-#include <cmath>
 
 void solver::initialization()
 {
-#ifdef MULTIPROCESS
-#pragma omp parallel for
-#endif
+    
+//#ifdef MULTIPROCESS
+//    omp_set_num_threads(8);
+//#endif
+    
+//#ifdef MULTIPROCESS
+//#pragma omp parallel for
+//#endif
     for (int itert=0; itert<Ntheta; ++itert)
     {
             for (int iterr=0; iterr<Nrp; ++iterr)

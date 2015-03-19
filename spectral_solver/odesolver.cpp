@@ -7,6 +7,9 @@
 //
 
 #include "solver.h"
+#include <iostream>
+using namespace std;
+
 
 void solver::RK4Step()
 {
@@ -39,33 +42,41 @@ void solver::RK4Step()
 void solver::BDF4Step()
 {
     double error=1;
-    gsl_matrix_memcpy(odetempField, Fields);
+    gsl_matrix_memcpy(odetempField2, Fields);
     while (error>tolerance)
     {
         gsl_matrix_memcpy(k1, Fields);
         Fun(Fields);
         gsl_matrix_scale(Fields, StepT*0.48);
-        error=0;
-#ifdef MULTIPROCESS
-#pragma omp parallel for
-#endif
-        for (int iter=0; iter<matrixH*Ntheta; ++iter)
+        //error=0;
+//#ifdef MULTIPROCESS
+//#pragma omp parallel for
+//#endif
+        for (int iter=0; iter<totalPoints; ++iter)
         {
-            Fields->data[iter]+=odetempField->data[iter]*1.92-HistoryFields[2]->data[iter]*1.44+HistoryFields[1]->data[iter]*0.64-HistoryFields[0]->data[iter]*0.12;
+            Fields->data[iter]+=odetempField2->data[iter]*1.92-HistoryFields[2]->data[iter]*1.44+HistoryFields[1]->data[iter]*0.64-HistoryFields[0]->data[iter]*0.12;
             k1->data[iter]=k1->data[iter]-Fields->data[iter];
             if (k1->data[iter]<0)
             {
                 k1->data[iter]=-k1->data[iter];
             }
+//            if (k1->data[iter]>error)
+//            {
+//                error=k1->data[iter];
+//            }
         }
         error=gsl_matrix_max(k1);
+//        if (timeIdx==782)
+//        {
+//            cout << error << endl;
+//        }
     }
     
     gsl_matrix *temp=HistoryFields[0];
     HistoryFields[0]=HistoryFields[1];
     HistoryFields[1]=HistoryFields[2];
-    HistoryFields[2]=odetempField;
-    odetempField=temp;
+    HistoryFields[2]=odetempField2;
+    odetempField2=temp;
     
     
     time+=StepT;
