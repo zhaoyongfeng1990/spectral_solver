@@ -16,8 +16,8 @@ solver::solver()
     MPI_Comm_rank(MPI_COMM_WORLD, &cRank);
     MPI_Comm_size(MPI_COMM_WORLD, &numOfProcess);
     
-    numOfProcessR=floor(numOfProcess/2.0);
-    numOfProcessT=numOfProcess-numOfProcessR;
+    numOfProcessT=numOfProcess/2; //Num Of Processes should be even!
+    numOfProcessR=numOfProcess-numOfProcessT;
     
     workerRl=ceil(Nrp/(double)numOfProcessR);
     workerTl=ceil(Ntheta/(double)numOfProcessT);
@@ -33,7 +33,12 @@ solver::solver()
     bossPointsR=Ntheta*bossRl;
     bossPointsT=bossTl*Nrp;
     
-    if (0==cRank || 1==cRank)
+    workerBD4=floor(Nrp/(double)numOfProcess);
+    bossBD4=Nrp-workerBD4*(numOfProcess-1);
+    workerP=workerBD4*Ntheta;
+    bossP=bossBD4*Ntheta;
+    
+    if (0==cRank)
     {
         jobRl=bossRl;
         jobTl=bossTl;
@@ -41,6 +46,21 @@ solver::solver()
         jobT=bossT;
         jobPointsRl=bossPointsR;
         jobPointsTl=bossPointsT;
+        
+        jobBD4=bossBD4;
+        iterPoints=bossP*NumField;
+    }
+    else if (1==cRank)
+    {
+        jobRl=bossRl;
+        jobTl=bossTl;
+        jobR=bossR;
+        jobT=bossT;
+        jobPointsRl=bossPointsR;
+        jobPointsTl=bossPointsT;
+        
+        jobBD4=workerBD4;
+        iterPoints=workerP*NumField;
     }
     else
     {
@@ -50,6 +70,9 @@ solver::solver()
         jobT=workerT;
         jobPointsRl=workerPointsR;
         jobPointsTl=workerPointsT;
+        
+        jobBD4=workerBD4;
+        iterPoints=workerP*NumField;
     }
     
     jobPointsR=jobPointsRl*NumField;
@@ -57,6 +80,17 @@ solver::solver()
     
     time=0;
     timeIdx=0;
+    
+    odetempField2=gsl_matrix_alloc(jobBD4*NumField, Ntheta);
+    odetempField3=gsl_matrix_alloc(jobBD4*NumField, Ntheta);
+    iterFieldsLocal=gsl_matrix_alloc(jobBD4*NumField, Ntheta);
+    
+    HistoryFields.resize(3);
+    for (int iterh=0; iterh<3; ++iterh)
+    {
+        HistoryFields[iterh]=gsl_matrix_alloc(jobBD4*NumField, Ntheta);
+        gsl_matrix_set_zero(HistoryFields[iterh]);
+    }
     
     if (cRank==0)
     {
@@ -71,14 +105,8 @@ solver::solver()
         k4=gsl_matrix_alloc(matrixH, Ntheta);
         
         odetempField=gsl_matrix_alloc(matrixH, Ntheta);
-        odetempField2=gsl_matrix_alloc(matrixH, Ntheta);
         
-        HistoryFields.resize(3);
-        for (int iterh=0; iterh<3; ++iterh)
-        {
-            HistoryFields[iterh]=gsl_matrix_alloc(matrixH, Ntheta);
-            gsl_matrix_set_zero(HistoryFields[iterh]);
-        }
+        
         
         Hij.resize(NumField);
         for (int iterh=0; iterh<NumField; ++iterh)
@@ -232,10 +260,42 @@ solver::solver()
         MPI_Type_indexed(NumField, blocklengthsT, blockpossT, MPI_DOUBLE, &BoundaryType[iterCPU]);
         MPI_Type_commit(&BoundaryType[iterCPU]);
     }
+    
+    //Data distribution for BDF4
+    BD4Type=new MPI_Datatype[numOfProcess];
+    for (int iter=0; iter<NumField; ++iter)
+    {
+        blocklengthsR[iter]=bossP;
+        blockpossR[iter]=iter*NumPoints;
+    }
+    MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_DOUBLE, &BD4Type[0]);
+    MPI_Type_commit(&BD4Type[0]);
+    for (int iterCPU=1; iterCPU<numOfProcess; ++iterCPU)
+    {
+        int offset=bossP+(iterCPU-1)*workerP;
+        for (int iter=0; iter<NumField; ++iter)
+        {
+            blocklengthsR[iter]=workerP;
+            blockpossR[iter]=offset+iter*NumPoints;
+        }
+        MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_DOUBLE, &BD4Type[iterCPU]);
+        MPI_Type_commit(&BD4Type[iterCPU]);
+    }
+    
 }
 
 solver::~solver()
 {
+    
+    gsl_matrix_free(odetempField2);
+    gsl_matrix_free(odetempField3);
+    gsl_matrix_free(iterFieldsLocal);
+    
+    for (int iterh=0; iterh<3; ++iterh)
+    {
+        gsl_matrix_free(HistoryFields[iterh]);
+    }
+    
     if (cRank==0)
     {
         gsl_matrix_free(Fields);
@@ -247,12 +307,7 @@ solver::~solver()
         gsl_matrix_free(k4);
         
         gsl_matrix_free(odetempField);
-        gsl_matrix_free(odetempField2);
         
-        for (int iterh=0; iterh<3; ++iterh)
-        {
-            gsl_matrix_free(HistoryFields[iterh]);
-        }
         
         for (int iterh=0; iterh<NumField; ++iterh)
         {
@@ -299,9 +354,14 @@ solver::~solver()
         MPI_Type_free(&TblockType[iterCPU]);
         MPI_Type_free(&BoundaryType[iterCPU]);
     }
+    for (int iterCPU=0; iterCPU<numOfProcess; ++iterCPU)
+    {
+        MPI_Type_free(&BD4Type[iterCPU]);
+    }
     delete [] RblockType;
     delete [] TblockType;
     delete [] BoundaryType;
+    delete [] BD4Type;
     
     MPI_Finalize();
 }

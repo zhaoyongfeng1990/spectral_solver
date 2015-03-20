@@ -52,6 +52,7 @@ public:
     gsl_matrix *k4;
     gsl_matrix *odetempField;
     gsl_matrix *odetempField2;
+    gsl_matrix *odetempField3;
     
     vector <gsl_matrix*> HistoryFields;
     vector <gsl_matrix*> Hij;
@@ -67,6 +68,7 @@ public:
     gsl_matrix *dFieldsLocal;
     gsl_matrix_view dFieldLocalView[NumField];
     gsl_matrix_view HijLocalView[NumField*NumField];
+    gsl_matrix *iterFieldsLocal;
     
     fftw_plan fftr2c;
     fftw_plan ifftc2r;
@@ -110,9 +112,17 @@ public:
     int numOfProcessR;
     int cRank;
     
+    int bossBD4;
+    int workerBD4;
+    int bossP;
+    int workerP;
+    int jobBD4;
+    int iterPoints;
+    
     MPI_Datatype* RblockType;
     MPI_Datatype* TblockType;
     MPI_Datatype* BoundaryType;
+    MPI_Datatype* BD4Type;
     MPI_Status status;
     MPI_Request request;
 };

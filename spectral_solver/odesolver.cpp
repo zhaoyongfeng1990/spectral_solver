@@ -57,51 +57,84 @@ void solver::RK4Step()
 void solver::BDF4Step()
 {
     double error=1;
+    double err;
     if (cRank==0)
     {
-        gsl_matrix_memcpy(odetempField2, Fields);
-    }
-    while (error>tolerance)
-    {
-        if (cRank==0)
+        for (int iterCPU=1; iterCPU<numOfProcess; ++iterCPU)
         {
-            gsl_matrix_memcpy(k1, Fields);
+            MPI_Send(Fields->data, 1, BD4Type[iterCPU], iterCPU, iterCPU, MPI_COMM_WORLD);
         }
+        MPI_Isend(Fields->data, 1, BD4Type[0], 0, 0, MPI_COMM_WORLD, &request);
+        MPI_Irecv(odetempField2->data, iterPoints, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &request);
+        
+    }
+    else
+    {
+        MPI_Recv(odetempField2->data, iterPoints, MPI_DOUBLE, 0, cRank, MPI_COMM_WORLD, &status);
+    }
+    gsl_matrix_memcpy(odetempField3, odetempField2);
+    while (1)
+    {
         Fun(Fields);
         if (cRank==0)
         {
-            gsl_matrix_scale(Fields, StepT*0.48);
-            //error=0;
-            for (int iter=0; iter<totalPoints; ++iter)
+            for (int iterCPU=1; iterCPU<numOfProcess; ++iterCPU)
             {
-                Fields->data[iter]+=odetempField2->data[iter]*1.92-HistoryFields[2]->data[iter]*1.44+HistoryFields[1]->data[iter]*0.64-HistoryFields[0]->data[iter]*0.12;
-                k1->data[iter]=k1->data[iter]-Fields->data[iter];
-                if (k1->data[iter]<0)
-                {
-                    k1->data[iter]=-k1->data[iter];
-                }
-                //            if (k1->data[iter]>error)
-                //            {
-                //                error=k1->data[iter];
-                //            }
+                MPI_Send(Fields->data, 1, BD4Type[iterCPU], iterCPU, iterCPU, MPI_COMM_WORLD);
             }
-            error=gsl_matrix_max(k1);
+            MPI_Isend(Fields->data, 1, BD4Type[0], 0, 0, MPI_COMM_WORLD, &request);
+            MPI_Irecv(iterFieldsLocal->data, iterPoints, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &request);
+            
         }
-        MPI_Bcast(&error, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+        else
+        {
+            MPI_Recv(iterFieldsLocal->data, iterPoints, MPI_DOUBLE, 0, cRank, MPI_COMM_WORLD, &status);
+        }
+        gsl_matrix_scale(iterFieldsLocal, StepT*0.48);
+        //error=0;
+        for (int iter=0; iter<iterPoints; ++iter)
+        {
+            iterFieldsLocal->data[iter]+=odetempField2->data[iter]*1.92-HistoryFields[2]->data[iter]*1.44+HistoryFields[1]->data[iter]*0.64-HistoryFields[0]->data[iter]*0.12;
+            odetempField3->data[iter]=odetempField3->data[iter]-iterFieldsLocal->data[iter];
+            if (odetempField3->data[iter]<0)
+            {
+                odetempField3->data[iter]=-odetempField3->data[iter];
+            }
+            //            if (k1->data[iter]>error)
+            //            {
+            //                error=k1->data[iter];
+            //            }
+        }
+        error=gsl_matrix_max(odetempField3);
+        //MPI_Bcast(&error, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
+        MPI_Allreduce(&error, &err, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
+        //cout << err << endl;
+        if (err<tolerance)
+            break;
+        
+        gsl_matrix_memcpy(odetempField3, iterFieldsLocal);
+        if (cRank!=0)
+            MPI_Send(iterFieldsLocal->data, iterPoints, MPI_DOUBLE, 0, cRank, MPI_COMM_WORLD);
+        else
+        {
+            MPI_Isend(iterFieldsLocal->data, iterPoints, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &request);
+            MPI_Irecv(Fields->data, 1, BD4Type[0], 0, 0, MPI_COMM_WORLD, &request);
+            for (int iterCPU=1; iterCPU<numOfProcess; ++iterCPU)
+            {
+                MPI_Recv(Fields->data, 1, BD4Type[iterCPU], iterCPU, iterCPU, MPI_COMM_WORLD, &status);
+            }
+        }
         //        if (timeIdx==782)
         //        {
         //            cout << error << endl;
         //        }
     }
     
-    if (0==cRank)
-    {
-        gsl_matrix *temp=HistoryFields[0];
-        HistoryFields[0]=HistoryFields[1];
-        HistoryFields[1]=HistoryFields[2];
-        HistoryFields[2]=odetempField2;
-        odetempField2=temp;
-    }
+    gsl_matrix *temp=HistoryFields[0];
+    HistoryFields[0]=HistoryFields[1];
+    HistoryFields[1]=HistoryFields[2];
+    HistoryFields[2]=odetempField2;
+    odetempField2=temp;
     time+=StepT;
 }
 

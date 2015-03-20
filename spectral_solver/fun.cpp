@@ -24,6 +24,7 @@ void solver::HGFuns()
         }
         
         //Calculation for H functions. Use f[] to express.
+#ifdef FU_MODEL
         //Term in front of dField 1
         double powfm1=pow(f[1]/Kh,M-1);
         double powfm=powfm1*f[1]/Kh;
@@ -46,25 +47,27 @@ void solver::HGFuns()
         GLocal->data[idx[0]]=Gamma*f2*f[0]/(f2+Kn2);
         GLocal->data[idx[1]]=Alpha*f[0]-Beta*f[1];
         GLocal->data[idx[2]]=-GLocal->data[iter];
+#endif
+#ifdef LINEAR_TEST_MODEL
+        HijLocal[0]->data[idx[0]]=1;
+        HijLocal[0]->data[idx[1]]=0;
+        HijLocal[0]->data[idx[2]]=0;
+        //Term in front of dField 2
+        HijLocal[1]->data[idx[0]]=0;
+        HijLocal[1]->data[idx[1]]=1;
+        HijLocal[1]->data[idx[2]]=0;
+        //Term in front of dField 3
+        HijLocal[2]->data[idx[0]]=0;
+        HijLocal[2]->data[idx[1]]=0;
+        HijLocal[2]->data[idx[2]]=1;
         
-        //                HijLocal[0]->data[iter]=1;
-        //                HijLocal[0]->data[iter+jobPointsRl]=0;
-        //                HijLocal[0]->data[iter+2*jobPointsRl]=0;
-        //                //Term in front of dField 2
-        //                HijLocal[1]->data[iter]=0;
-        //                HijLocal[1]->data[iter+jobPointsRl]=1;
-        //                HijLocal[1]->data[iter+2*jobPointsRl]=0;
-        //                //Term in front of dField 3
-        //                HijLocal[2]->data[iter]=0;
-        //                HijLocal[2]->data[iter+jobPointsRl]=0;
-        //                HijLocal[2]->data[iter+2*jobPointsRl]=1;
-        //
-        //                //Ending
-        //                //Calculation for G function.
-        //                GLocal->data[iter]=0;
-        //                GLocal->data[iter+jobPointsRl]=0;
-        //                GLocal->data[iter+2*jobPointsRl]=0;
+        //Ending
+        //Calculation for G function.
+        GLocal->data[idx[0]]=0;
+        GLocal->data[idx[1]]=0;
+        GLocal->data[idx[2]]=0;
         //....
+#endif
     }
 }
 
@@ -82,6 +85,7 @@ void solver::HFunsForR()    //should keep as identical with HGFuns().
                 f[iterff]=dctr->data[idx[iterff]];
             }
             
+#ifdef FU_MODEL
             //Calculation for H functions. Use f[] to express.
             //Term in front of dField 1
             double powfm1=pow(f[1]/Kh,M-1);
@@ -98,21 +102,25 @@ void solver::HFunsForR()    //should keep as identical with HGFuns().
             HijLocal[2]->data[idx[0]]=0;
             HijLocal[2]->data[idx[1]]=0;
             HijLocal[2]->data[idx[2]]=Dn;
+#endif
+#ifdef LINEAR_TEST_MODEL
             
-            //                HijLocal[0]->data[iter]=1;
-            //                HijLocal[0]->data[iter+jobPointsRl]=0;
-            //                HijLocal[0]->data[iter+2*jobPointsRl]=0;
-            //                //Term in front of dField 2
-            //                HijLocal[1]->data[iter]=0;
-            //                HijLocal[1]->data[iter+jobPointsRl]=1;
-            //                HijLocal[1]->data[iter+2*jobPointsRl]=0;
-            //                //Term in front of dField 3
-            //                HijLocal[2]->data[iter]=0;
-            //                HijLocal[2]->data[iter+jobPointsRl]=0;
-            //                HijLocal[2]->data[iter+2*jobPointsRl]=1;
-            //
-            //                //Ending
+            HijLocal[0]->data[idx[0]]=1;
+            HijLocal[0]->data[idx[1]]=0;
+            HijLocal[0]->data[idx[2]]=0;
+            //Term in front of dField 2
+            HijLocal[1]->data[idx[0]]=0;
+            HijLocal[1]->data[idx[1]]=1;
+            HijLocal[1]->data[idx[2]]=0;
+            //Term in front of dField 3
+            HijLocal[2]->data[idx[0]]=0;
+            HijLocal[2]->data[idx[1]]=0;
+            HijLocal[2]->data[idx[2]]=1;
+            
+            //Ending
             //....
+#endif
+
         }
     }
 }

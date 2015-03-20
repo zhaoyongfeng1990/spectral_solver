@@ -17,14 +17,29 @@ void solver::solve(int totaliter)
     //RK4
     for (int iter=0; iter<3; ++iter)
     {
-        if (0==cRank)
+        if (cRank==0)
         {
-            gsl_matrix_memcpy(HistoryFields[iter],Fields);
+            for (int iterCPU=1; iterCPU<numOfProcess; ++iterCPU)
+            {
+                MPI_Send(Fields->data, 1, BD4Type[iterCPU], iterCPU, iterCPU, MPI_COMM_WORLD);
+            }
+            MPI_Isend(Fields->data, 1, BD4Type[0], 0, 0, MPI_COMM_WORLD, &request);
+            MPI_Irecv(HistoryFields[iter]->data, iterPoints, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &request);
+            
+        }
+        else
+        {
+            MPI_Recv(HistoryFields[iter]->data, iterPoints, MPI_DOUBLE, 0, cRank, MPI_COMM_WORLD, &status);
         }
         
         RK4Step();
         setBoundary();
         ++timeIdx;
+        if (cRank==0)
+        {
+            cout << timeIdx << endl;
+            printstatus();
+        }
 //        if(0==cRank)
 //            printstatus();
     }
@@ -35,11 +50,11 @@ void solver::solve(int totaliter)
         BDF4Step();
         setBoundary();
         ++timeIdx;
-        //printstatus();
-//        if (cRank==0)
-//        {
-//            cout << timeIdx << endl;
-//        }
+        if (cRank==0)
+        {
+            cout << timeIdx << endl;
+            printstatus();
+        }
         
 //        if (timeIdx%262144==0)
 //        {
