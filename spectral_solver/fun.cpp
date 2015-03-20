@@ -14,11 +14,13 @@ using std::pow;
 void solver::HGFuns()
 {
     double f[NumField];
+    int idx[NumField];
     for (int iter=0; iter<jobPointsRl; ++iter)
     {
         for (int iterf=0; iterf<NumField; ++iterf)
         {
-            f[iterf]=FieldsLocal->data[iterf*jobPointsRl+iter];
+            idx[iterf]=iterf*jobPointsRl+iter;
+            f[iterf]=FieldsLocal->data[idx[iterf]];
         }
         
         //Calculation for H functions. Use f[] to express.
@@ -26,43 +28,92 @@ void solver::HGFuns()
         double powfm1=pow(f[1]/Kh,M-1);
         double powfm=powfm1*f[1]/Kh;
         double powfmp1=powfm+1;
-        HijLocal[0]->data[iter]=(Drho+Drho0*powfm)/powfmp1;
-        HijLocal[0]->data[iter+jobPointsRl]=0;
-        HijLocal[0]->data[iter+2*jobPointsRl]=0;
+        HijLocal[0]->data[idx[0]]=(Drho+Drho0*powfm)/powfmp1;
+        HijLocal[0]->data[idx[1]]=0;
+        HijLocal[0]->data[idx[2]]=0;
         //Term in front of dField 2
-        HijLocal[1]->data[iter]=f[0]*(Drho0-Drho)*powfm1*M/Kh/powfmp1/powfmp1;
-        HijLocal[1]->data[iter+jobPointsRl]=Dh;
-        HijLocal[1]->data[iter+2*jobPointsRl]=0;
+        HijLocal[1]->data[idx[0]]=f[0]*(Drho0-Drho)*powfm1*M/Kh/powfmp1/powfmp1;
+        HijLocal[1]->data[idx[1]]=Dh;
+        HijLocal[1]->data[idx[2]]=0;
         //Term in front of dField 3
-        HijLocal[2]->data[iter]=0;
-        HijLocal[2]->data[iter+jobPointsRl]=0;
-        HijLocal[2]->data[iter+2*jobPointsRl]=Dn;
+        HijLocal[2]->data[idx[0]]=0;
+        HijLocal[2]->data[idx[1]]=0;
+        HijLocal[2]->data[idx[2]]=Dn;
         
         double f2=f[2]*f[2];
         //Ending
         //Calculation for G function.
-        GLocal->data[iter]=Gamma*f2*f[0]/(f2+Kn2);
-        GLocal->data[iter+jobPointsRl]=Alpha*f[0]-Beta*f[1];
-        GLocal->data[iter+2*jobPointsRl]=-GLocal->data[iter];
+        GLocal->data[idx[0]]=Gamma*f2*f[0]/(f2+Kn2);
+        GLocal->data[idx[1]]=Alpha*f[0]-Beta*f[1];
+        GLocal->data[idx[2]]=-GLocal->data[iter];
         
-//                HijLocal[0]->data[iter]=1;
-//                HijLocal[0]->data[iter+jobPointsRl]=0;
-//                HijLocal[0]->data[iter+2*jobPointsRl]=0;
-//                //Term in front of dField 2
-//                HijLocal[1]->data[iter]=0;
-//                HijLocal[1]->data[iter+jobPointsRl]=1;
-//                HijLocal[1]->data[iter+2*jobPointsRl]=0;
-//                //Term in front of dField 3
-//                HijLocal[2]->data[iter]=0;
-//                HijLocal[2]->data[iter+jobPointsRl]=0;
-//                HijLocal[2]->data[iter+2*jobPointsRl]=1;
-//        
-//                //Ending
-//                //Calculation for G function.
-//                GLocal->data[iter]=0;
-//                GLocal->data[iter+jobPointsRl]=0;
-//                GLocal->data[iter+2*jobPointsRl]=0;
+        //                HijLocal[0]->data[iter]=1;
+        //                HijLocal[0]->data[iter+jobPointsRl]=0;
+        //                HijLocal[0]->data[iter+2*jobPointsRl]=0;
+        //                //Term in front of dField 2
+        //                HijLocal[1]->data[iter]=0;
+        //                HijLocal[1]->data[iter+jobPointsRl]=1;
+        //                HijLocal[1]->data[iter+2*jobPointsRl]=0;
+        //                //Term in front of dField 3
+        //                HijLocal[2]->data[iter]=0;
+        //                HijLocal[2]->data[iter+jobPointsRl]=0;
+        //                HijLocal[2]->data[iter+2*jobPointsRl]=1;
+        //
+        //                //Ending
+        //                //Calculation for G function.
+        //                GLocal->data[iter]=0;
+        //                GLocal->data[iter+jobPointsRl]=0;
+        //                GLocal->data[iter+2*jobPointsRl]=0;
         //....
+    }
+}
+
+void solver::HFunsForR()    //should keep as identical with HGFuns().
+{
+    double f[NumField];
+    int idx[NumField];
+    for (int iter=0; iter<Nrp; ++iter)
+    {
+        for (int itert=0; itert<jobTl; ++itert)
+        {
+            for (int iterff=0; iterff<NumField; ++iterff)
+            {
+                idx[iterff]=iter*jobT+itert+iterff*jobTl;
+                f[iterff]=dctr->data[idx[iterff]];
+            }
+            
+            //Calculation for H functions. Use f[] to express.
+            //Term in front of dField 1
+            double powfm1=pow(f[1]/Kh,M-1);
+            double powfm=powfm1*f[1]/Kh;
+            double powfmp1=powfm+1;
+            HijLocal[0]->data[idx[0]]=(Drho+Drho0*powfm)/powfmp1;
+            HijLocal[0]->data[idx[1]]=0;
+            HijLocal[0]->data[idx[2]]=0;
+            //Term in front of dField 2
+            HijLocal[1]->data[idx[0]]=f[0]*(Drho0-Drho)*powfm1*M/Kh/powfmp1/powfmp1;
+            HijLocal[1]->data[idx[1]]=Dh;
+            HijLocal[1]->data[idx[2]]=0;
+            //Term in front of dField 3
+            HijLocal[2]->data[idx[0]]=0;
+            HijLocal[2]->data[idx[1]]=0;
+            HijLocal[2]->data[idx[2]]=Dn;
+            
+            //                HijLocal[0]->data[iter]=1;
+            //                HijLocal[0]->data[iter+jobPointsRl]=0;
+            //                HijLocal[0]->data[iter+2*jobPointsRl]=0;
+            //                //Term in front of dField 2
+            //                HijLocal[1]->data[iter]=0;
+            //                HijLocal[1]->data[iter+jobPointsRl]=1;
+            //                HijLocal[1]->data[iter+2*jobPointsRl]=0;
+            //                //Term in front of dField 3
+            //                HijLocal[2]->data[iter]=0;
+            //                HijLocal[2]->data[iter+jobPointsRl]=0;
+            //                HijLocal[2]->data[iter+2*jobPointsRl]=1;
+            //
+            //                //Ending
+            //....
+        }
     }
 }
 
@@ -81,12 +132,12 @@ void solver::Fun(gsl_matrix *result)
         }
         MPI_Send(Fields->data, 1, TblockType[0], 1, 1, MPI_COMM_WORLD);
         //MPI_Send(Fields->data, 1, RblockType[0], 0, 0, MPI_COMM_WORLD);
-//        for (int iterf=0; iterf<NumField; ++iterf)
-//        {
-//            for (int iter=0; iter<jobPointsRl; ++iter)
-//            {
-//                FieldsLocal->data[iter+iterf*jobPointsRl]=Fields->data[iter+iterf*NumPoints];
-//            }
+        //        for (int iterf=0; iterf<NumField; ++iterf)
+        //        {
+        //            for (int iter=0; iter<jobPointsRl; ++iter)
+        //            {
+        //                FieldsLocal->data[iter+iterf*jobPointsRl]=Fields->data[iter+iterf*NumPoints];
+        //            }
         //        }
         MPI_Isend(Fields->data, 1, RblockType[0], 0, 0, MPI_COMM_WORLD, &request);
     }
@@ -99,42 +150,42 @@ void solver::Fun(gsl_matrix *result)
             MPI_Irecv(FieldsLocal->data, jobPointsR, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &request);
         //H functions and G term
         HGFuns();
-        if (0!=cRank)
-        {
-            for (int iterf=0; iterf<NumField; ++iterf)
-            {
-                MPI_Send(HijLocal[iterf]->data, jobPointsR, MPI_DOUBLE, 0, 100+10*iterf+cRank, MPI_COMM_WORLD);
-            }
-        }
-        else
-        {
-            for (int iterf=0; iterf<NumField; ++iterf)
-            {
-                MPI_Isend(HijLocal[iterf]->data, jobPointsR, MPI_DOUBLE, 0, 100+10*iterf, MPI_COMM_WORLD, &request);
-            }
-        }
-        if (0==cRank)
-        {
-            for (int iterf=0; iterf<NumField; ++iterf)
-            {
-//                for (int iterff=0; iterff<NumField; ++iterff)
-//                {
-//                    for (int iter=0; iter<jobPointsRl; ++iter)
-//                    {
-//                        Hij[iterf]->data[iter+iterff*jobPointsRl]=HijLocal[iterf]->data[iter+iterff*NumPoints];
-//                    }
-//                }
-                MPI_Irecv(Hij[iterf]->data, 1, RblockType[0], 0, 100+10*iterf, MPI_COMM_WORLD, &request);
-                for (int iterCPU=1; iterCPU<numOfProcessR; ++iterCPU)
-                {
-                    MPI_Recv(Hij[iterf]->data, 1, RblockType[iterCPU], iterCPU*2, 100+10*iterf+iterCPU*2, MPI_COMM_WORLD, &status);
-                }
-                for (int iterCPU=0; iterCPU<numOfProcessT; ++iterCPU)
-                {
-                    MPI_Send(Hij[iterf]->data, 1, TblockType[iterCPU], iterCPU*2+1, 100+10*iterf+iterCPU*2+1, MPI_COMM_WORLD);
-                }
-            }
-        }
+        //        if (0!=cRank)
+        //        {
+        //            for (int iterf=0; iterf<NumField; ++iterf)
+        //            {
+        //                MPI_Send(HijLocal[iterf]->data, jobPointsR, MPI_DOUBLE, 0, 100+10*iterf+cRank, MPI_COMM_WORLD);
+        //            }
+        //        }
+        //        else
+        //        {
+        //            for (int iterf=0; iterf<NumField; ++iterf)
+        //            {
+        //                MPI_Isend(HijLocal[iterf]->data, jobPointsR, MPI_DOUBLE, 0, 100+10*iterf, MPI_COMM_WORLD, &request);
+        //            }
+        //        }
+        //        if (0==cRank)
+        //        {
+        //            for (int iterf=0; iterf<NumField; ++iterf)
+        //            {
+        ////                for (int iterff=0; iterff<NumField; ++iterff)
+        ////                {
+        ////                    for (int iter=0; iter<jobPointsRl; ++iter)
+        ////                    {
+        ////                        Hij[iterf]->data[iter+iterff*jobPointsRl]=HijLocal[iterf]->data[iter+iterff*NumPoints];
+        ////                    }
+        ////                }
+        //                MPI_Irecv(Hij[iterf]->data, 1, RblockType[0], 0, 100+10*iterf, MPI_COMM_WORLD, &request);
+        //                for (int iterCPU=1; iterCPU<numOfProcessR; ++iterCPU)
+        //                {
+        //                    MPI_Recv(Hij[iterf]->data, 1, RblockType[iterCPU], iterCPU*2, 100+10*iterf+iterCPU*2, MPI_COMM_WORLD, &status);
+        //                }
+        //                for (int iterCPU=0; iterCPU<numOfProcessT; ++iterCPU)
+        //                {
+        //                    MPI_Send(Hij[iterf]->data, 1, TblockType[iterCPU], iterCPU*2+1, 100+10*iterf+iterCPU*2+1, MPI_COMM_WORLD);
+        //                }
+        //            }
+        //        }
         
         //derivative of theta term
         dtheta(1);
@@ -172,13 +223,13 @@ void solver::Fun(gsl_matrix *result)
         }
         else
         {
-//            for (int iterff=0; iterff<NumField; ++iterff)
-//            {
-//                for (int iter=0; iter<jobPointsRl; ++iter)
-//                {
-//                    G->data[iter+iterff*jobPointsRl]=GLocal->data[iter+iterff*NumPoints];
-//                }
-//            }
+            //            for (int iterff=0; iterff<NumField; ++iterff)
+            //            {
+            //                for (int iter=0; iter<jobPointsRl; ++iter)
+            //                {
+            //                    G->data[iter+iterff*jobPointsRl]=GLocal->data[iter+iterff*NumPoints];
+            //                }
+            //            }
             MPI_Isend(GLocal->data, jobPointsR, MPI_DOUBLE, 0, 200, MPI_COMM_WORLD, &request);
         }
     }
@@ -188,10 +239,12 @@ void solver::Fun(gsl_matrix *result)
         //derivative of r term
         dr(1);
         
-        for (int iterf=0; iterf<NumField; ++iterf)
-        {
-            MPI_Recv(HijLocal[iterf]->data, jobPointsT, MPI_DOUBLE, 0, 100+10*iterf+cRank, MPI_COMM_WORLD, &status);
-        }
+        //        for (int iterf=0; iterf<NumField; ++iterf)
+        //        {
+        //            MPI_Recv(HijLocal[iterf]->data, jobPointsT, MPI_DOUBLE, 0, 100+10*iterf+cRank, MPI_COMM_WORLD, &status);
+        //        }
+        
+        HFunsForR();
         
         for (int iter=0; iter<jobPointsT; ++iter)
         {

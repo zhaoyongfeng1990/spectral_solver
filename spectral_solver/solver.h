@@ -29,6 +29,7 @@ public:
     
     void Fun(gsl_matrix *result);
     void HGFuns();
+    void HFunsForR();
     void dr(bool ifFirst);
     void dtheta(bool ifFirst);
     
