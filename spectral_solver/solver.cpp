@@ -46,9 +46,6 @@ solver::solver()
     
     r=gsl_vector_calloc(Nrp);
     r2=gsl_vector_calloc(Nrp);
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
     for (int iter=0; iter<Nrp; ++iter)
     {
         r->data[iter]=cos(iter*PI/logicNr);
@@ -56,9 +53,6 @@ solver::solver()
     }
     
     theta=gsl_vector_calloc(Ntheta);
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
     for (int iter=0; iter<Ntheta; ++iter)
     {
         theta->data[iter]=2*PI*iter/Ntheta;

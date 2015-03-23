@@ -12,9 +12,9 @@ using std::pow;
 void solver::HGFuns()
 {
     double f[NumField];
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
     for (int iter=0; iter<NumPoints; ++iter)
     {
         for (int iterf=0; iterf<NumField; ++iterf)
@@ -73,11 +73,6 @@ void solver::HGFuns()
 
 void solver::Fun(gsl_matrix *result)
 {
-    
-//#ifdef MULTIPROCESS
-//    omp_set_num_threads(8);
-//#endif
-    
     //H functions and G term
     HGFuns();
     
@@ -85,9 +80,9 @@ void solver::Fun(gsl_matrix *result)
     dr(1);
     
 #ifdef PUNISHTERM
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
     for (int iter=0; iter<NumField; ++iter)
     {
         gsl_vector_view tempboundary=gsl_matrix_row(dFields, iter*Nrp);
@@ -97,10 +92,15 @@ void solver::Fun(gsl_matrix *result)
     gsl_matrix_scale(boundary, punish);
 #endif
     
-    gsl_matrix_set_zero(tempFields);
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
+    for (int iter=0; iter<totalPoints; ++iter)
+    {
+        tempFields->data[iter]=0;
+    }
+    //gsl_matrix_set_zero(tempFields);
+    
     for (int iterdf=0; iterdf<NumField; ++iterdf)
     {
         gsl_matrix_memcpy(caltempFields, Hij[iterdf]);
@@ -110,9 +110,10 @@ void solver::Fun(gsl_matrix *result)
         }
         gsl_matrix_add(tempFields, caltempFields);
     }
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
+    
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
     for (int iter=0; iter<Ntheta; ++iter)
     {
         for (int iterf=0; iterf<NumField; ++iterf)
@@ -123,10 +124,19 @@ void solver::Fun(gsl_matrix *result)
     }
     
     dr(0);
-    gsl_matrix_scale(dFields, rp2); //rp2=1.0/r/r
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
+#ifdef MULTIPROCESS
+#pragma omp parallel
+    {
+#pragma omp for
+#endif
+    for (int iter=0; iter<totalPoints; ++iter)
+    {
+        dFields->data[iter]*=rp2;
+    }
+    //gsl_matrix_scale(dFields, rp2); //rp2=1.0/r/r
+#ifdef MULTIPROCESS
+#pragma omp for
+#endif
     for (int iter=0; iter<Ntheta; ++iter)
     {
         for (int iterf=0; iterf<NumField; ++iterf)
@@ -135,14 +145,29 @@ void solver::Fun(gsl_matrix *result)
             gsl_vector_div(&temp.vector, r);
         }
     }
-    gsl_matrix_add(G, dFields);
+#ifdef MULTIPROCESS
+#pragma omp for
+#endif
+    for (int iter=0; iter<totalPoints; ++iter)
+    {
+        G->data[iter]+=dFields->data[iter];
+    }
+#ifdef MULTIPROCESS
+}
+#endif
+    //gsl_matrix_add(G, dFields);
     
     //derivative of theta term
     dtheta(1);
-    gsl_matrix_set_zero(tempFields);
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
+    for (int iter=0; iter<totalPoints; ++iter)
+    {
+        tempFields->data[iter]=0;
+    }
+    //gsl_matrix_set_zero(tempFields);
+    
     for (int iterdf=0; iterdf<NumField; ++iterdf)
     {
         gsl_matrix_memcpy(caltempFields, Hij[iterdf]);
@@ -153,24 +178,44 @@ void solver::Fun(gsl_matrix *result)
         gsl_matrix_add(tempFields, caltempFields);
     }
     dtheta(0);
-    gsl_matrix_scale(dFields, rp2); //rp2=1.0/r/r
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
-    for (int iter=0; iter<Ntheta; ++iter)
+    //gsl_matrix_scale(dFields, rp2); //rp2=1.0/r/r
+#ifdef MULTIPROCESS
+#pragma omp parallel
     {
-        for (int iterf=0; iterf<NumField; ++iterf)
+#pragma omp for
+#endif
+        for (int iter=0; iter<totalPoints; ++iter)
         {
-            gsl_vector_view temp=gsl_matrix_subcolumn(dFields, iter, iterf*Nrp, Nrp);
-            gsl_vector_div(&temp.vector, r2);
+            dFields->data[iter]*=rp2;
         }
+#ifdef MULTIPROCESS
+#pragma omp for
+#endif
+        for (int iter=0; iter<Ntheta; ++iter)
+        {
+            for (int iterf=0; iterf<NumField; ++iterf)
+            {
+                gsl_vector_view temp=gsl_matrix_subcolumn(dFields, iter, iterf*Nrp, Nrp);
+                gsl_vector_div(&temp.vector, r2);
+            }
+        }
+#ifdef MULTIPROCESS
+#pragma omp for
+#endif
+        for (int iter=0; iter<totalPoints; ++iter)
+        {
+            G->data[iter]+=dFields->data[iter];
+        }
+#ifdef MULTIPROCESS
     }
-    gsl_matrix_add(G, dFields);
+#endif
+    
+    //gsl_matrix_add(G, dFields);
     
 #ifdef PUNISHTERM
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
+    //#ifdef MULTIPROCESS
+    //#pragma omp parallel for
+    //#endif
     for (int iter=0; iter<NumField; ++iter)
     {
         gsl_vector_view tempboundary=gsl_matrix_row(G, iter*Nrp);

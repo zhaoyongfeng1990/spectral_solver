@@ -46,9 +46,9 @@ void solver::solve(int totaliter)
 void solver::setBoundary()
 {
     dr(1);
-//#ifdef MULTIPROCESS
-//#pragma omp parallel for
-//#endif
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
     for (int iter=0; iter<Ntheta; ++iter)
     {
         for (int iterField=0; iterField<NumField; ++iterField)
