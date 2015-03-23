@@ -68,6 +68,65 @@ void solver::HGFuns()
         GLocal->data[idx[2]]=0;
         //....
 #endif
+#ifdef INTERACTION_MODIFIED_FU
+        //Term in front of dField 1
+        double h1kh1=f[2]/Kh1;
+        double h2kh2=f[3]/Kh2;
+        double powh1=pow(h1kh1,M-1);
+        double powh2=pow(h2kh2,M-1);
+        double powh1m=powh1*h1kh1;
+        double powh2m=powh2*h2kh2;
+        double powh1p1=powh1m+1;
+        double powh2p1=powh2m+1;
+        double h1KD2=f[2]/KD2;
+        double h2KC2=f[3]/KC2;
+        double h1KD2p1=h1KD2+1;
+        double h2KC2p1=h2KC2+1;
+        double t1=Drho1+KC1*h2KC2/h2KC2p1;
+        double t2=Drho2+KD1*h1KD2/h1KD2p1;
+        HijLocal[0]->data[idx[0]]=Drho+t1/powh1p1;
+        HijLocal[0]->data[idx[1]]=0;
+        HijLocal[0]->data[idx[2]]=0;
+        HijLocal[0]->data[idx[3]]=0;
+        HijLocal[0]->data[idx[4]]=0;
+        
+        //Term in front of dField 2
+        HijLocal[1]->data[idx[0]]=0;
+        HijLocal[1]->data[idx[1]]=Drho+t2/powh2p1;
+        HijLocal[1]->data[idx[2]]=0;
+        HijLocal[1]->data[idx[3]]=0;
+        HijLocal[1]->data[idx[4]]=0;
+        
+        //Term in front of dField 3
+        HijLocal[2]->data[idx[0]]=-t1*powh1*f[0]*M/Kh1/powh1p1/powh1p1;
+        HijLocal[2]->data[idx[1]]=KD1/KD2*f[1]/h1KD2p1/h1KD2p1/powh2p1;
+        HijLocal[2]->data[idx[2]]=Dh1;
+        HijLocal[2]->data[idx[3]]=0;
+        HijLocal[2]->data[idx[4]]=0;
+        
+        //Term in front of dField 4
+        HijLocal[3]->data[idx[0]]=KC1/KC2*f[0]/h2KC2p1/h2KC2p1/powh1p1;
+        HijLocal[3]->data[idx[1]]=-t2*powh2*f[1]*M/Kh2/powh2p1/powh2p1;
+        HijLocal[3]->data[idx[2]]=0;
+        HijLocal[3]->data[idx[3]]=Dh2;
+        HijLocal[3]->data[idx[4]]=0;
+        
+        //Term in front of dField 5
+        HijLocal[4]->data[idx[0]]=0;
+        HijLocal[4]->data[idx[1]]=0;
+        HijLocal[4]->data[idx[2]]=0;
+        HijLocal[4]->data[idx[3]]=0;
+        HijLocal[4]->data[idx[4]]=Dn;
+        
+        double f2=f[4]*f[4];
+        //Ending
+        //Calculation for G function.
+        GLocal->data[idx[0]]=Gamma1*f2*f[0]/(f2+Kn1);
+        GLocal->data[idx[1]]=Gamma2*f2*f[1]/(f2+Kn2);
+        GLocal->data[idx[2]]=Alpha1*f[0]-Beta1*f[2];
+        GLocal->data[idx[3]]=Alpha2*f[1]-Beta2*f[3];
+        GLocal->data[idx[4]]=-GLocal->data[idx[0]]-GLocal->data[idx[1]];
+#endif
     }
 }
 
@@ -119,6 +178,56 @@ void solver::HFunsForR()    //should keep as identical with HGFuns().
             
             //Ending
             //....
+#endif
+#ifdef INTERACTION_MODIFIED_FU
+            //Term in front of dField 1
+            double h1kh1=f[2]/Kh1;
+            double h2kh2=f[3]/Kh2;
+            double powh1=pow(h1kh1,M-1);
+            double powh2=pow(h2kh2,M-1);
+            double powh1m=powh1*h1kh1;
+            double powh2m=powh2*h2kh2;
+            double powh1p1=powh1m+1;
+            double powh2p1=powh2m+1;
+            double h1KD2=f[2]/KD2;
+            double h2KC2=f[3]/KC2;
+            double h1KD2p1=h1KD2+1;
+            double h2KC2p1=h2KC2+1;
+            double t1=Drho1+KC1*h2KC2/h2KC2p1;
+            double t2=Drho2+KD1*h1KD2/h1KD2p1;
+            HijLocal[0]->data[idx[0]]=Drho+t1/powh1p1;
+            HijLocal[0]->data[idx[1]]=0;
+            HijLocal[0]->data[idx[2]]=0;
+            HijLocal[0]->data[idx[3]]=0;
+            HijLocal[0]->data[idx[4]]=0;
+            
+            //Term in front of dField 2
+            HijLocal[1]->data[idx[0]]=0;
+            HijLocal[1]->data[idx[1]]=Drho+t2/powh2p1;
+            HijLocal[1]->data[idx[2]]=0;
+            HijLocal[1]->data[idx[3]]=0;
+            HijLocal[1]->data[idx[4]]=0;
+            
+            //Term in front of dField 3
+            HijLocal[2]->data[idx[0]]=-t1*powh1*f[0]*M/Kh1/powh1p1/powh1p1;
+            HijLocal[2]->data[idx[1]]=KD1/KD2*f[1]/h1KD2p1/h1KD2p1/powh2p1;
+            HijLocal[2]->data[idx[2]]=Dh1;
+            HijLocal[2]->data[idx[3]]=0;
+            HijLocal[2]->data[idx[4]]=0;
+            
+            //Term in front of dField 4
+            HijLocal[3]->data[idx[0]]=KC1/KC2*f[0]/h2KC2p1/h2KC2p1/powh1p1;
+            HijLocal[3]->data[idx[1]]=-t2*powh2*f[1]*M/Kh2/powh2p1/powh2p1;
+            HijLocal[3]->data[idx[2]]=0;
+            HijLocal[3]->data[idx[3]]=Dh2;
+            HijLocal[3]->data[idx[4]]=0;
+            
+            //Term in front of dField 5
+            HijLocal[4]->data[idx[0]]=0;
+            HijLocal[4]->data[idx[1]]=0;
+            HijLocal[4]->data[idx[2]]=0;
+            HijLocal[4]->data[idx[3]]=0;
+            HijLocal[4]->data[idx[4]]=Dn;
 #endif
 
         }

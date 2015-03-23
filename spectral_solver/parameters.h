@@ -9,8 +9,9 @@
 #ifndef spectral_solver_parameters_h
 #define spectral_solver_parameters_h
 
-#define LINEAR_TEST_MODEL
+//#define LINEAR_TEST_MODEL
 //#define FU_MODEL
+#define INTERACTION_MODIFIED_FU
 
 #include <cmath>
 
@@ -32,12 +33,43 @@ const double Dn=0.008*3.6;
 const double Kh=4;
 const double M=20;
 #endif
+
 #ifdef LINEAR_TEST_MODEL
 const int Ntheta=64;
 const int Nr=81+1;
 const double StepT=1.0/16384/16;
 const int NumField=3;
 const double radius=1;
+#endif
+
+#ifdef INTERACTION_MODIFIED_FU
+const int Ntheta=64;
+const int Nr=81*5+1;
+const double StepT=1.0/16384/32;
+const int NumField=5;
+const double radius=3;
+
+const double Dh1=0.004*3.6;
+const double Dh2=0.004*3.6;
+const double Dn=0.008*3.6;
+const double Drho=0.0001*3.6;
+const double Kh1=4;
+const double Kh2=4;
+const double M=20;
+const double Gamma1=0.9;
+const double Gamma2=0.7;
+const double Kn1=100;
+const double Kn2=100;
+const double Alpha1=2.08;
+const double Alpha2=2.08;
+const double Beta1=2.08;
+const double Beta2=2.08;
+const double Drho1=0;
+const double Drho2=0;
+const double KC1=0.0089*3.6*3;
+const double KC2=1.5;
+const double KD1=0.0089*3.6*3;
+const double KD2=1.5;
 #endif
 
 //for solver

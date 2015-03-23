@@ -14,11 +14,11 @@ using namespace std;
 void solver::solve(int totaliter)
 {
     setBoundary();
-//    if (cRank==0)
-//    {
-//        cout << timeIdx << endl;
-//        printstatus();
-//    }
+    if (cRank==0)
+    {
+        //cout << timeIdx << endl;
+        printstatus();
+    }
     
     //RK4
     for (int iter=0; iter<3; ++iter)
@@ -60,12 +60,12 @@ void solver::solve(int totaliter)
 //            printstatus();
 //        }
 //        
-//        if (timeIdx%262144==0)
-//        {
-//            timeIdx=timeIdx/262144;
-//            printstatus();
-//            timeIdx=timeIdx*262144;
-//        }
+        if (cRank==0 && timeIdx%262144==0)
+        {
+            timeIdx=timeIdx/262144;
+            printstatus();
+            timeIdx=timeIdx*262144;
+        }
     }
     
 }
