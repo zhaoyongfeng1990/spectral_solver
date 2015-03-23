@@ -17,7 +17,8 @@
 #include <fftw3.h>
 #include "parameters.h"
 #include <string>
-
+#include <fstream>
+using namespace std;
 
 #ifdef MULTIPROCESS
 #include <omp.h>
@@ -38,9 +39,11 @@ public:
     
     void RK4Step();
     void BDF4Step();
+    void BDF3Step();
     void setBoundary();
     void initialization();
-    void solve(int totaliter);
+    void solve(double totaltime);
+    void DoubleTimeStep();
     
     void printstatus();
     void printdebugM(gsl_matrix* m, const string filename);
@@ -64,6 +67,7 @@ public:
     gsl_matrix *odetempField2;
     
     vector <gsl_matrix*> HistoryFields;
+    vector <gsl_matrix*> DoubledHistoryFields;
     vector <gsl_matrix*> Hij;
     gsl_matrix *G;
     gsl_vector *r;
@@ -82,9 +86,10 @@ public:
     gsl_vector* tempstore;
     gsl_vector* tempstore2;
     
+    double StepT;
     double time;
     int timeIdx;
-    
+    ofstream timefile;
 };
 
 #endif

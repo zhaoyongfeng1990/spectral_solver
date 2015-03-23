@@ -37,7 +37,7 @@ const double M=20;
 #ifdef LINEAR_TEST_MODEL
 const int Ntheta=64;
 const int Nr=81+1;
-const double StepT=1.0/16384/16;
+const double iniStepT=1.0/16384/16;
 const int NumField=3;
 const double radius=1;
 #endif
@@ -62,5 +62,7 @@ const int aliasingr=2*floor(Nr/3);
 const int aliasingt=floor(Ntheta/3);
 
 const double rp2=1.0/radius/radius;
+
+const int IncreaseTimes=0;
 
 #endif

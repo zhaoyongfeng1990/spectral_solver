@@ -9,12 +9,13 @@
 #include "solver.h"
 #include <cmath>
 
-solver::solver()
+solver::solver() : timefile("time.txt")
 {
     fftw_init_threads();
     fftw_plan_with_nthreads(8);
     
     time=0;
+    StepT=iniStepT;
     timeIdx=0;
     
     Fields=gsl_matrix_calloc(matrixH, Ntheta);
@@ -63,6 +64,16 @@ solver::solver()
     {
         HistoryFields[iterh]=gsl_matrix_calloc(matrixH, Ntheta);
         gsl_matrix_set_zero(HistoryFields[iterh]);
+    }
+    
+    if (IncreaseTimes!=0)
+    {
+        DoubledHistoryFields.resize(3);
+        for (int iterh=0; iterh<3; ++iterh)
+        {
+            DoubledHistoryFields[iterh]=gsl_matrix_calloc(matrixH, Ntheta);
+            gsl_matrix_set_zero(DoubledHistoryFields[iterh]);
+        }
     }
     
     Hij.resize(NumField);
@@ -125,6 +136,13 @@ solver::~solver()
     for (int iterh=0; iterh<3; ++iterh)
     {
         gsl_matrix_free(HistoryFields[iterh]);
+    }
+    if (IncreaseTimes!=0)
+    {
+        for (int iterh=0; iterh<3; ++iterh)
+        {
+            gsl_matrix_free(DoubledHistoryFields[iterh]);
+        }
     }
     
     for (int iterh=0; iterh<NumField; ++iterh)

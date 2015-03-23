@@ -8,9 +8,8 @@
 
 #include "solver.h"
 #include <iostream>
-using namespace std;
 
-void solver::solve(int totaliter)
+void solver::solve(double totaltime)
 {
     setBoundary();
     //printstatus();
@@ -22,25 +21,30 @@ void solver::solve(int totaliter)
         RK4Step();
         setBoundary();
         ++timeIdx;
-        //printstatus();
+        printstatus();
+    }
+    
+    //Increase time step
+    for (int iter=0; iter<IncreaseTimes; ++iter)
+    {
+        DoubleTimeStep();
     }
     
     //BDF4
-    for (int iter=3; iter<totaliter; ++iter)
+    while (time<totaltime)
     {
         BDF4Step();
         setBoundary();
         ++timeIdx;
-        //printstatus();
+        printstatus();
         //cout << timeIdx << endl;
-//        if (timeIdx%262144==0)
-//        {
-//            timeIdx=timeIdx/262144;
-//            printstatus();
-//            timeIdx=timeIdx*262144;
-//        }
+        //        if (timeIdx%262144==0)
+        //        {
+        //            timeIdx=timeIdx/262144;
+        //            printstatus();
+        //            timeIdx=timeIdx*262144;
+        //        }
     }
-    
 }
 
 void solver::setBoundary()
@@ -59,5 +63,36 @@ void solver::setBoundary()
             d0+=gsl_matrix_get(Fields, iterField*Nrp, iter);
             gsl_matrix_set(Fields, iterField*Nrp, iter, d0);
         }
+    }
+}
+
+void solver::DoubleTimeStep()
+{
+    //stabilize
+    for (int iter=0; iter<100; ++iter)
+    {
+        BDF4Step();
+        setBoundary();
+        ++timeIdx;
+        printstatus();
+    }
+    for (int iterh=0; iterh<3; ++iterh)
+    {
+        gsl_matrix_memcpy(DoubledHistoryFields[iterh], Fields);
+        for (int iter=0; iter<2; ++iter)
+        {
+            BDF4Step();
+            setBoundary();
+            ++timeIdx;
+            printstatus();
+        }
+    }
+    StepT*=2;
+    gsl_matrix *swapTemp;
+    for (int iter=0; iter<3; ++iter)
+    {
+        swapTemp=DoubledHistoryFields[iter];
+        DoubledHistoryFields[iter]=HistoryFields[iter];
+        HistoryFields[iter]=swapTemp;
     }
 }

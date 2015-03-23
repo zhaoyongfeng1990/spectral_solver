@@ -6,9 +6,6 @@
 //  Copyright (c) 2015年 ZYF. All rights reserved.
 //
 
-#include <sstream>
-using namespace std;
-
 #include "solver.h"
 
 void solver::dr(bool ifFirst)

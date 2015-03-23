@@ -7,11 +7,8 @@
 //
 
 #include "solver.h"
-#include <fstream>
 #include <sstream>
 #include <iomanip>
-
-using namespace std;
 
 void solver::printstatus()
 {
@@ -28,6 +25,8 @@ void solver::printstatus()
         outfile << endl;
     }
     outfile.close();
+    
+    timefile << setprecision(20) << time << endl;
 }
 
 void solver::printdebugM(gsl_matrix* m, const string filename)

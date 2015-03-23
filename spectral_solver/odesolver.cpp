@@ -7,9 +7,6 @@
 //
 
 #include "solver.h"
-#include <iostream>
-using namespace std;
-
 
 void solver::RK4Step()
 {
@@ -82,6 +79,50 @@ void solver::BDF4Step()
     HistoryFields[2]=odetempField2;
     odetempField2=temp;
     
+    time+=StepT;
+}
+
+void solver::BDF3Step()
+{
+    double error=1;
+    gsl_matrix_memcpy(odetempField2, Fields);
+    while (error>tolerance)
+    {
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
+        for (int iter=0; iter<totalPoints; ++iter)
+        {
+            k1->data[iter]=Fields->data[iter];
+        }
+        //gsl_matrix_memcpy(k1, Fields);
+        Fun(Fields);
+        //gsl_matrix_scale(Fields, StepT*0.48);
+        error=0;
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
+        for (int iter=0; iter<totalPoints; ++iter)
+        {
+            Fields->data[iter]*=StepT*6.0/11.0;
+            Fields->data[iter]+=odetempField2->data[iter]*18.0/11.0-HistoryFields[1]->data[iter]*9.0/11.0+HistoryFields[0]->data[iter]*2.0/11.0;
+            k1->data[iter]=k1->data[iter]-Fields->data[iter];
+            if (k1->data[iter]<0)
+            {
+                k1->data[iter]=-k1->data[iter];
+            }
+            if (k1->data[iter]>error)
+            {
+                error=k1->data[iter];
+            }
+        }
+        //error=gsl_matrix_max(k1);
+    }
+    
+    gsl_matrix *temp=HistoryFields[0];
+    HistoryFields[0]=HistoryFields[1];
+    HistoryFields[1]=odetempField2;
+    odetempField2=temp;
     
     time+=StepT;
 }
