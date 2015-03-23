@@ -92,6 +92,15 @@ solver::solver()
         gsl_matrix_set_zero(HistoryFields[iterh]);
     }
     
+//    odetempField2=gsl_matrix_alloc(matrixH, Ntheta);
+//    
+//    HistoryFields.resize(3);
+//    for (int iterh=0; iterh<3; ++iterh)
+//    {
+//        HistoryFields[iterh]=gsl_matrix_alloc(matrixH, Ntheta);
+//        gsl_matrix_set_zero(HistoryFields[iterh]);
+//    }
+    
     if (cRank==0)
     {
         Fields=gsl_matrix_alloc(matrixH, Ntheta);

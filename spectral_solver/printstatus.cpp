@@ -37,7 +37,7 @@ void solver::printdebugM(gsl_matrix* m, const string filename)
     {
         for (int iterc=0; iterc<m->size2; ++iterc)
         {
-            outfile << gsl_matrix_get(m, iter, iterc) << " ";
+            outfile << setprecision(20) << gsl_matrix_get(m, iter, iterc) << " ";
         }
         outfile << endl;
     }
@@ -52,7 +52,7 @@ void solver::printdebugCM(gsl_matrix_complex* m, const string filename)
         for (int iterc=0; iterc<m->size2; ++iterc)
         {
             gsl_complex temp=gsl_matrix_complex_get(m, iter, iterc);
-            outfile << temp.dat[0] << " ";
+            outfile << setprecision(20) << temp.dat[0] << " ";
         }
         outfile << endl;
     }
@@ -61,7 +61,7 @@ void solver::printdebugCM(gsl_matrix_complex* m, const string filename)
         for (int iterc=0; iterc<m->size2; ++iterc)
         {
             gsl_complex temp=gsl_matrix_complex_get(m, iter, iterc);
-            outfile << temp.dat[1] << " ";
+            outfile << setprecision(20) << temp.dat[1] << " ";
         }
         outfile << endl;
     }

@@ -8,11 +8,17 @@
 
 #include "solver.h"
 #include <iostream>
+#include <iomanip>
 using namespace std;
 
 void solver::solve(int totaliter)
 {
     setBoundary();
+//    if (cRank==0)
+//    {
+//        cout << timeIdx << endl;
+//        printstatus();
+//    }
     
     //RK4
     for (int iter=0; iter<3; ++iter)
@@ -32,14 +38,19 @@ void solver::solve(int totaliter)
             MPI_Recv(HistoryFields[iter]->data, iterPoints, MPI_DOUBLE, 0, cRank, MPI_COMM_WORLD, &status);
         }
         
+//        if (0==cRank)
+//        {
+//            gsl_matrix_memcpy(HistoryFields[iter],Fields);
+//        }
+        
         RK4Step();
         setBoundary();
         ++timeIdx;
-        if (cRank==0)
-        {
-            cout << timeIdx << endl;
-            printstatus();
-        }
+//        if (cRank==0)
+//        {
+//            cout << timeIdx << endl;
+//            printstatus();
+//        }
 //        if(0==cRank)
 //            printstatus();
     }
@@ -50,12 +61,12 @@ void solver::solve(int totaliter)
         BDF4Step();
         setBoundary();
         ++timeIdx;
-        if (cRank==0)
-        {
-            cout << timeIdx << endl;
-            printstatus();
-        }
-        
+//        if (cRank==0)
+//        {
+//            cout << timeIdx << endl;
+//            printstatus();
+//        }
+//        
 //        if (timeIdx%262144==0)
 //        {
 //            timeIdx=timeIdx/262144;
@@ -78,11 +89,18 @@ void solver::setBoundary()
     if(cRank%2!=0)
     {
         MPI_Recv(dctr->data, jobPointsT, MPI_DOUBLE, 0, cRank, MPI_COMM_WORLD, &status);
-        
         for (int iter=0; iter<jobT; ++iter)
         {
             tempFieldsLocal->data[iter]=dctr->data[iter];
         }
+//        if (cRank==1)
+//        {
+//            printdebugM(tempFieldsLocal, "dctr1.txt");
+//        }
+//        if (cRank==1)
+//        {
+//            printdebugM(tempFieldsLocal, "dctr3.txt");
+//        }
         dr(1);
         for (int iter=0; iter<jobT; ++iter)
         {

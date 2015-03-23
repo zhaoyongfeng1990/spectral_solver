@@ -41,7 +41,7 @@ const double radius=1;
 #endif
 
 //for solver
-const double tolerance=1e-10;
+const double tolerance=1e-8;
 
 
 const int logicNr=Nr-1;

@@ -245,14 +245,13 @@ void solver::Fun(gsl_matrix *result)
     {
         MPI_Recv(dctr->data, jobPointsT, MPI_DOUBLE, 0, cRank, MPI_COMM_WORLD, &status);
         //derivative of r term
+        HFunsForR();
         dr(1);
         
         //        for (int iterf=0; iterf<NumField; ++iterf)
         //        {
         //            MPI_Recv(HijLocal[iterf]->data, jobPointsT, MPI_DOUBLE, 0, 100+10*iterf+cRank, MPI_COMM_WORLD, &status);
         //        }
-        
-        HFunsForR();
         
         for (int iter=0; iter<jobPointsT; ++iter)
         {

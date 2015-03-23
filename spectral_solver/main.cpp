@@ -23,8 +23,9 @@ int main(int argc, const char  *argv[])
     //test1.printstatus();
     //test1.readFile("48.txt");
     //test1.timeIdx=16384*128*48;
-    test1.solve(2000);
+    test1.solve(16384);
     //test1.Fun(test1.Fields);
+    //test1.setBoundary();
     time(&ctime2);
     if (test1.cRank==0)
     {
