@@ -33,6 +33,10 @@ solver::solver() : timefile("time.txt")
     k2=gsl_matrix_alloc(matrixH, Ntheta);
     k3=gsl_matrix_alloc(matrixH, Ntheta);
     k4=gsl_matrix_alloc(matrixH, Ntheta);
+    k5=gsl_matrix_alloc(matrixH, Ntheta);
+    k6=gsl_matrix_alloc(matrixH, Ntheta);
+    k7=gsl_matrix_alloc(matrixH, Ntheta);
+    k8=gsl_matrix_alloc(matrixH, Ntheta);
     
     odetempField=gsl_matrix_alloc(matrixH, Ntheta);
     odetempField2=gsl_matrix_alloc(matrixH, Ntheta);
@@ -59,8 +63,8 @@ solver::solver() : timefile("time.txt")
         theta->data[iter]=2*PI*iter/Ntheta;
     }
     
-    HistoryFields.resize(3);
-    for (int iterh=0; iterh<3; ++iterh)
+    HistoryFields.resize(5);
+    for (int iterh=0; iterh<5; ++iterh)
     {
         HistoryFields[iterh]=gsl_matrix_calloc(matrixH, Ntheta);
         gsl_matrix_set_zero(HistoryFields[iterh]);
@@ -125,15 +129,18 @@ solver::~solver()
     gsl_matrix_complex_free(fftc);
     gsl_matrix_free(boundary);
     
-    
     gsl_matrix_free(k1);
     gsl_matrix_free(k2);
     gsl_matrix_free(k3);
     gsl_matrix_free(k4);
+    gsl_matrix_free(k5);
+    gsl_matrix_free(k6);
+    gsl_matrix_free(k7);
+    gsl_matrix_free(k8);
     gsl_matrix_free(odetempField);
     gsl_matrix_free(odetempField2);
     
-    for (int iterh=0; iterh<3; ++iterh)
+    for (int iterh=0; iterh<5; ++iterh)
     {
         gsl_matrix_free(HistoryFields[iterh]);
     }

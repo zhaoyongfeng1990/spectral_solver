@@ -38,8 +38,11 @@ public:
     void dtheta(bool ifFirst);
     
     void RK4Step();
-    void BDF4Step();
+    void RK6Step();
     void BDF3Step();
+    void BDF4Step();
+    void BDF5Step();
+    void BDF6Step();
     void setBoundary();
     void initialization();
     void solve(double totaltime);
@@ -63,6 +66,10 @@ public:
     gsl_matrix *k2;
     gsl_matrix *k3;
     gsl_matrix *k4;
+    gsl_matrix *k5;
+    gsl_matrix *k6;
+    gsl_matrix *k7;
+    gsl_matrix *k8;
     gsl_matrix *odetempField;
     gsl_matrix *odetempField2;
     

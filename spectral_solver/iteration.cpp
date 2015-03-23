@@ -15,25 +15,26 @@ void solver::solve(double totaltime)
     //printstatus();
     //RK4
     
-    for (int iter=0; iter<3; ++iter)
-    {
-        gsl_matrix_memcpy(HistoryFields[iter],Fields);
-        RK4Step();
-        setBoundary();
-        ++timeIdx;
-        printstatus();
-    }
+//    for (int iter=0; iter<3; ++iter)
+//    {
+//        gsl_matrix_memcpy(HistoryFields[iter],Fields);
+//        RK4Step();
+//        setBoundary();
+//        ++timeIdx;
+//        //printstatus();
+//    }
     
     //Increase time step
-    for (int iter=0; iter<IncreaseTimes; ++iter)
-    {
-        DoubleTimeStep();
-    }
+    //for (int iter=0; iter<IncreaseTimes; ++iter)
+    //{
+    //    DoubleTimeStep();
+    //}
     
-    //BDF4
+    //BDF
     while (time<totaltime)
     {
-        BDF4Step();
+        //BDF4Step();
+        RK6Step();
         setBoundary();
         ++timeIdx;
         printstatus();
