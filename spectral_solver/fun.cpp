@@ -23,6 +23,7 @@ void solver::HGFuns()
         }
         
         //Calculation for H functions. Use f[] to express.
+#ifdef FU_MODEL
         //Term in front of dField 1
         double powfm1=pow(f[1]/Kh,M-1);
         double powfm=powfm1*f[1]/Kh;
@@ -45,24 +46,26 @@ void solver::HGFuns()
         G->data[iter]=Gamma*f2*f[0]/(f2+Kn2);
         G->data[iter+NumPoints]=Alpha*f[0]-Beta*f[1];
         G->data[iter+2*NumPoints]=-G->data[iter];
+#endif
+#ifdef LINEAR_TEST_MODEL
+        Hij[0]->data[iter]=1;
+        Hij[0]->data[iter+NumPoints]=0;
+        Hij[0]->data[iter+2*NumPoints]=0;
+        //Term in front of dField 2
+        Hij[1]->data[iter]=0;
+        Hij[1]->data[iter+NumPoints]=1;
+        Hij[1]->data[iter+2*NumPoints]=0;
+        //Term in front of dField 3
+        Hij[2]->data[iter]=0;
+        Hij[2]->data[iter+NumPoints]=0;
+        Hij[2]->data[iter+2*NumPoints]=1;
         
-//        Hij[0]->data[iter]=1;
-//        Hij[0]->data[iter+NumPoints]=0;
-//        Hij[0]->data[iter+2*NumPoints]=0;
-//        //Term in front of dField 2
-//        Hij[1]->data[iter]=0;
-//        Hij[1]->data[iter+NumPoints]=1;
-//        Hij[1]->data[iter+2*NumPoints]=0;
-//        //Term in front of dField 3
-//        Hij[2]->data[iter]=0;
-//        Hij[2]->data[iter+NumPoints]=0;
-//        Hij[2]->data[iter+2*NumPoints]=1;
-//        
-//        //Ending
-//        //Calculation for G function.
-//        G->data[iter]=0;
-//        G->data[iter+NumPoints]=0;
-//        G->data[iter+2*NumPoints]=0;
+        //Ending
+        //Calculation for G function.
+        G->data[iter]=0;
+        G->data[iter+NumPoints]=0;
+        G->data[iter+2*NumPoints]=0;
+#endif
         //....
     }
 }
