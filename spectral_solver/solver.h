@@ -35,6 +35,7 @@ public:
     void Fun(gsl_matrix *result);
     void HGFuns();
     void dr(bool ifFirst);
+    void drWOA();
     void dtheta(bool ifFirst);
     
     void RK4Step();
@@ -46,7 +47,8 @@ public:
     void setBoundary();
     void initialization();
     void solve(double totaltime);
-    void DoubleTimeStep();
+    void DoubleTimeStepBDF4();
+    void DoubleTimeStepBDF6();
     
     void printstatus();
     void printdebugM(gsl_matrix* m, const string filename);

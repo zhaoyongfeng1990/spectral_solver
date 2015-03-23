@@ -12,29 +12,29 @@
 void solver::solve(double totaltime)
 {
     setBoundary();
-    //printstatus();
+    printstatus();
     //RK4
     
-//    for (int iter=0; iter<3; ++iter)
-//    {
-//        gsl_matrix_memcpy(HistoryFields[iter],Fields);
-//        RK4Step();
-//        setBoundary();
-//        ++timeIdx;
-//        //printstatus();
-//    }
+    for (int iter=0; iter<3; ++iter)
+    {
+        gsl_matrix_memcpy(HistoryFields[iter],Fields);
+        RK4Step();
+        setBoundary();
+        ++timeIdx;
+        printstatus();
+    }
     
     //Increase time step
-    //for (int iter=0; iter<IncreaseTimes; ++iter)
-    //{
-    //    DoubleTimeStep();
-    //}
+    for (int iter=0; iter<IncreaseTimes; ++iter)
+    {
+        DoubleTimeStepBDF6();
+    }
     
     //BDF
     while (time<totaltime)
     {
-        //BDF4Step();
-        RK6Step();
+        BDF4Step();
+        //RK6Step();
         setBoundary();
         ++timeIdx;
         printstatus();
@@ -50,7 +50,7 @@ void solver::solve(double totaltime)
 
 void solver::setBoundary()
 {
-    dr(1);
+    drWOA();
 #ifdef MULTIPROCESS
 #pragma omp parallel for
 #endif
@@ -67,7 +67,7 @@ void solver::setBoundary()
     }
 }
 
-void solver::DoubleTimeStep()
+void solver::DoubleTimeStepBDF4()
 {
     //stabilize
     for (int iter=0; iter<100; ++iter)
@@ -91,6 +91,37 @@ void solver::DoubleTimeStep()
     StepT*=2;
     gsl_matrix *swapTemp;
     for (int iter=0; iter<3; ++iter)
+    {
+        swapTemp=DoubledHistoryFields[iter];
+        DoubledHistoryFields[iter]=HistoryFields[iter];
+        HistoryFields[iter]=swapTemp;
+    }
+}
+
+void solver::DoubleTimeStepBDF6()
+{
+    //stabilize
+    for (int iter=0; iter<100; ++iter)
+    {
+        BDF6Step();
+        setBoundary();
+        ++timeIdx;
+        printstatus();
+    }
+    for (int iterh=0; iterh<5; ++iterh)
+    {
+        gsl_matrix_memcpy(DoubledHistoryFields[iterh], Fields);
+        for (int iter=0; iter<2; ++iter)
+        {
+            BDF6Step();
+            setBoundary();
+            ++timeIdx;
+            printstatus();
+        }
+    }
+    StepT*=2;
+    gsl_matrix *swapTemp;
+    for (int iter=0; iter<5; ++iter)
     {
         swapTemp=DoubledHistoryFields[iter];
         DoubledHistoryFields[iter]=HistoryFields[iter];

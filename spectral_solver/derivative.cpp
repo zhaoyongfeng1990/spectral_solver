@@ -152,3 +152,83 @@ void solver::dtheta(bool ifFirst)
         fftw_execute(tempifftc2r);
     }
 }
+
+void solver::drWOA()
+{
+    for (int iterf=0; iterf<NumField; ++iterf)
+    {
+        gsl_matrix_view datablock=gsl_matrix_submatrix(Fields, iterf*Nrp, 0, Nrp, Ntheta);
+        gsl_matrix_view destiny=gsl_matrix_submatrix(dctr, 0, iterf*Ntheta, Nrp, Ntheta);
+        gsl_matrix_memcpy(&destiny.matrix, &datablock.matrix);
+    }
+    
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
+    for (int iterr=0; iterr<Nrp; ++iterr)
+    {
+        gsl_vector_view datablock=gsl_matrix_row(dctr, iterr);
+        gsl_vector_view destiny=gsl_matrix_row(dctr, Nr-iterr-1);
+        gsl_vector_memcpy(&destiny.vector, &datablock.vector);
+    }
+    
+    //#ifdef MULTIPROCESS
+    //#pragma omp parallel for
+    //#endif
+    //    for (int iter=0; iter<totalPoints; ++iter)
+    //    {
+    //        int iterx=iter%Ntheta;
+    //        int itery=(iter-iterx)/Ntheta;
+    //        int iteryp=itery%Nrp;
+    //        int iterf=(itery-iteryp)/Nrp;
+    //        iterx=iterx+iterf*Ntheta;
+    //        iteryp=iteryp*matrixW;
+    //        dctr->data[iterx+iteryp]=cFields->data[iter];
+    //        dctr->data[iterx+logicNr*matrixW-iteryp]=cFields->data[iter];
+    //    }
+    
+    fftw_execute(dctr2r);
+    //printdebugM(dctr, "dctr.txt");
+    //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
+    
+    gsl_vector_view lastRow=gsl_matrix_row(dctr, Nr-1);
+    gsl_vector_set_zero(&lastRow.vector);
+    
+    for (int iterr=Nr-3; iterr>0; iterr-=2)
+    {
+        gsl_vector_view nextLastRow=gsl_matrix_row(dctr, iterr+1);
+        lastRow=gsl_matrix_row(dctr,iterr+2);
+        gsl_vector_view cRow=gsl_matrix_row(dctr, iterr);
+        
+        for (int iter=0; iter<matrixW; ++iter)
+        {
+            cRow.vector.data[iter]=nextLastRow.vector.data[iter]*2.0*(iterr+1)/logicNr+lastRow.vector.data[iter];
+            nextLastRow.vector.data[iter]=0;
+        }
+    }
+    lastRow=gsl_matrix_row(dctr, 0);
+    gsl_vector_set_zero(&lastRow.vector);
+    
+    
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
+    for (int iter=1; iter<Nr-2; iter+=2)
+    {
+        gsl_vector_view temp=gsl_matrix_row(dctr, iter);
+        gsl_vector_scale(&temp.vector, 0.5);
+    }
+    
+    fftw_execute(dctr2r);
+    
+    
+#ifdef MULTIPROCESS
+#pragma omp parallel for
+#endif
+    for (int iterf=0; iterf<NumField; ++iterf)
+    {
+        gsl_matrix_view datablock=gsl_matrix_submatrix(dFields, iterf*Nrp, 0, Nrp, Ntheta);
+        gsl_matrix_view destiny=gsl_matrix_submatrix(dctr, 0, iterf*Ntheta, Nrp, Ntheta);
+        gsl_matrix_memcpy(&datablock.matrix, &destiny.matrix);
+    }
+}
