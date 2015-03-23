@@ -38,11 +38,6 @@ void solver::solve(int totaliter)
             MPI_Recv(HistoryFields[iter]->data, iterPoints, MPI_DOUBLE, 0, cRank, MPI_COMM_WORLD, &status);
         }
         
-//        if (0==cRank)
-//        {
-//            gsl_matrix_memcpy(HistoryFields[iter],Fields);
-//        }
-        
         RK4Step();
         setBoundary();
         ++timeIdx;
@@ -51,8 +46,6 @@ void solver::solve(int totaliter)
 //            cout << timeIdx << endl;
 //            printstatus();
 //        }
-//        if(0==cRank)
-//            printstatus();
     }
     
     //BDF4
@@ -93,14 +86,6 @@ void solver::setBoundary()
         {
             tempFieldsLocal->data[iter]=dctr->data[iter];
         }
-//        if (cRank==1)
-//        {
-//            printdebugM(tempFieldsLocal, "dctr1.txt");
-//        }
-//        if (cRank==1)
-//        {
-//            printdebugM(tempFieldsLocal, "dctr3.txt");
-//        }
         dr(1);
         for (int iter=0; iter<jobT; ++iter)
         {

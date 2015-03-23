@@ -6,11 +6,6 @@
 //  Copyright (c) 2015年 ZYF. All rights reserved.
 //
 
-#include <sstream>
-#include <iostream>
-#include <iomanip>
-using namespace std;
-
 #include "solver.h"
 
 void solver::dr(bool ifFirst)
@@ -37,7 +32,6 @@ void solver::dr(bool ifFirst)
         
         fftw_execute(tempdctr2r);
     }
-    //printdebugM(dctr, "dctr.txt");
     //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
     
     // aliasing

@@ -7,9 +7,6 @@
 //
 
 #include "solver.h"
-#include <iostream>
-using namespace std;
-
 
 void solver::RK4Step()
 {
@@ -21,36 +18,39 @@ void solver::RK4Step()
     time+=StepT/2;
     if (cRank==0)
     {
-        gsl_matrix_scale(k1, StepT/2);
-        gsl_matrix_add(Fields, k1);
+        for (int iter=0; iter<totalPoints; ++iter)
+        {
+            k1->data[iter]*=0.5*StepT;
+            Fields->data[iter]=odetempField->data[iter]+k1->data[iter];
+        }
     }
     Fun(k2);
     if (cRank==0)
     {
-        gsl_matrix_scale(k2, StepT/2);
-        gsl_matrix_memcpy(Fields, odetempField);
-        gsl_matrix_add(Fields, k2);
+        for (int iter=0; iter<totalPoints; ++iter)
+        {
+            k2->data[iter]*=0.5*StepT;
+            Fields->data[iter]=odetempField->data[iter]+k2->data[iter];
+        }
     }
     Fun(k3);
     time+=StepT/2;
     if (cRank==0)
     {
-        gsl_matrix_scale(k3, StepT);
-        gsl_matrix_memcpy(Fields, odetempField);
-        gsl_matrix_add(Fields, k3);
+        for (int iter=0; iter<totalPoints; ++iter)
+        {
+            k3->data[iter]*=StepT;
+            Fields->data[iter]=odetempField->data[iter]+k3->data[iter];
+        }
     }
     Fun(k4);
     if (cRank==0)
     {
-        gsl_matrix_scale(k4, StepT/2);
-        gsl_matrix_scale(k2, 2);
-        
-        gsl_matrix_add(k1, k2);
-        gsl_matrix_add(k1, k3);
-        gsl_matrix_add(k1, k4);
-        gsl_matrix_scale(k1, 1.0/3);
-        gsl_matrix_memcpy(Fields, odetempField);
-        gsl_matrix_add(Fields, k1);
+        for (int iter=0; iter<totalPoints; ++iter)
+        {
+            k4->data[iter]*=0.5*StepT;
+            Fields->data[iter]=odetempField->data[iter]+(k1->data[iter]+k2->data[iter]*2+k3->data[iter]+k4->data[iter])/3.0;
+        }
     }
 }
 
@@ -100,13 +100,8 @@ void solver::BDF4Step()
             {
                 odetempField3->data[iter]=-odetempField3->data[iter];
             }
-            //            if (k1->data[iter]>error)
-            //            {
-            //                error=k1->data[iter];
-            //            }
         }
         error=gsl_matrix_max(odetempField3);
-        //MPI_Bcast(&error, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
         MPI_Allreduce(&error, &err, 1, MPI_DOUBLE, MPI_MAX, MPI_COMM_WORLD);
         if (cRank!=0)
             MPI_Send(iterFieldsLocal->data, iterPoints, MPI_DOUBLE, 0, 200+cRank, MPI_COMM_WORLD);
@@ -119,15 +114,10 @@ void solver::BDF4Step()
                 MPI_Recv(Fields->data, 1, BD4Type[iterCPU], iterCPU, 200+iterCPU, MPI_COMM_WORLD, &status);
             }
         }
-        //cout << err << endl;
         if (err<tolerance)
             break;
         
         gsl_matrix_memcpy(odetempField3, iterFieldsLocal);
-        //        if (timeIdx==782)
-        //        {
-        //            cout << error << endl;
-        //        }
     }
     
     gsl_matrix *temp=HistoryFields[0];
@@ -137,56 +127,3 @@ void solver::BDF4Step()
     odetempField2=temp;
     time+=StepT;
 }
-
-//void solver::BDF4Step()
-//{
-//    double error=1;
-//    if (cRank==0)
-//    {
-//        gsl_matrix_memcpy(odetempField2, Fields);
-//    }
-//    while (error>tolerance)
-//    {
-//        if (cRank==0)
-//        {
-//            gsl_matrix_memcpy(k1, Fields);
-//        }
-//        Fun(Fields);
-//        if (cRank==0)
-//        {
-//            gsl_matrix_scale(Fields, StepT*0.48);
-//            //error=0;
-//            for (int iter=0; iter<totalPoints; ++iter)
-//            {
-//                Fields->data[iter]+=odetempField2->data[iter]*1.92-HistoryFields[2]->data[iter]*1.44+HistoryFields[1]->data[iter]*0.64-HistoryFields[0]->data[iter]*0.12;
-//                k1->data[iter]=k1->data[iter]-Fields->data[iter];
-//                if (k1->data[iter]<0)
-//                {
-//                    k1->data[iter]=-k1->data[iter];
-//                }
-//                //            if (k1->data[iter]>error)
-//                //            {
-//                //                error=k1->data[iter];
-//                //            }
-//            }
-//            error=gsl_matrix_max(k1);
-//        }
-//        MPI_Bcast(&error, 1, MPI_DOUBLE, 0, MPI_COMM_WORLD);
-//        //        if (timeIdx==782)
-//        //        {
-//        //            cout << error << endl;
-//        //        }
-//    }
-//    
-//    if (0==cRank)
-//    {
-//        gsl_matrix *temp=HistoryFields[0];
-//        HistoryFields[0]=HistoryFields[1];
-//        HistoryFields[1]=HistoryFields[2];
-//        HistoryFields[2]=odetempField2;
-//        odetempField2=temp;
-//    }
-//    time+=StepT;
-//}
-
-

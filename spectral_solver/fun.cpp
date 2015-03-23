@@ -139,14 +139,6 @@ void solver::Fun(gsl_matrix *result)
             MPI_Send(Fields->data, 1, TblockType[iterCPU], 2*iterCPU+1, 2*iterCPU+1, MPI_COMM_WORLD);
         }
         MPI_Send(Fields->data, 1, TblockType[0], 1, 1, MPI_COMM_WORLD);
-        //MPI_Send(Fields->data, 1, RblockType[0], 0, 0, MPI_COMM_WORLD);
-        //        for (int iterf=0; iterf<NumField; ++iterf)
-        //        {
-        //            for (int iter=0; iter<jobPointsRl; ++iter)
-        //            {
-        //                FieldsLocal->data[iter+iterf*jobPointsRl]=Fields->data[iter+iterf*NumPoints];
-        //            }
-        //        }
         MPI_Isend(Fields->data, 1, RblockType[0], 0, 0, MPI_COMM_WORLD, &request);
     }
     
@@ -158,42 +150,6 @@ void solver::Fun(gsl_matrix *result)
             MPI_Irecv(FieldsLocal->data, jobPointsR, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &request);
         //H functions and G term
         HGFuns();
-        //        if (0!=cRank)
-        //        {
-        //            for (int iterf=0; iterf<NumField; ++iterf)
-        //            {
-        //                MPI_Send(HijLocal[iterf]->data, jobPointsR, MPI_DOUBLE, 0, 100+10*iterf+cRank, MPI_COMM_WORLD);
-        //            }
-        //        }
-        //        else
-        //        {
-        //            for (int iterf=0; iterf<NumField; ++iterf)
-        //            {
-        //                MPI_Isend(HijLocal[iterf]->data, jobPointsR, MPI_DOUBLE, 0, 100+10*iterf, MPI_COMM_WORLD, &request);
-        //            }
-        //        }
-        //        if (0==cRank)
-        //        {
-        //            for (int iterf=0; iterf<NumField; ++iterf)
-        //            {
-        ////                for (int iterff=0; iterff<NumField; ++iterff)
-        ////                {
-        ////                    for (int iter=0; iter<jobPointsRl; ++iter)
-        ////                    {
-        ////                        Hij[iterf]->data[iter+iterff*jobPointsRl]=HijLocal[iterf]->data[iter+iterff*NumPoints];
-        ////                    }
-        ////                }
-        //                MPI_Irecv(Hij[iterf]->data, 1, RblockType[0], 0, 100+10*iterf, MPI_COMM_WORLD, &request);
-        //                for (int iterCPU=1; iterCPU<numOfProcessR; ++iterCPU)
-        //                {
-        //                    MPI_Recv(Hij[iterf]->data, 1, RblockType[iterCPU], iterCPU*2, 100+10*iterf+iterCPU*2, MPI_COMM_WORLD, &status);
-        //                }
-        //                for (int iterCPU=0; iterCPU<numOfProcessT; ++iterCPU)
-        //                {
-        //                    MPI_Send(Hij[iterf]->data, 1, TblockType[iterCPU], iterCPU*2+1, 100+10*iterf+iterCPU*2+1, MPI_COMM_WORLD);
-        //                }
-        //            }
-        //        }
         
         //derivative of theta term
         dtheta(1);
@@ -231,13 +187,6 @@ void solver::Fun(gsl_matrix *result)
         }
         else
         {
-            //            for (int iterff=0; iterff<NumField; ++iterff)
-            //            {
-            //                for (int iter=0; iter<jobPointsRl; ++iter)
-            //                {
-            //                    G->data[iter+iterff*jobPointsRl]=GLocal->data[iter+iterff*NumPoints];
-            //                }
-            //            }
             MPI_Isend(GLocal->data, jobPointsR, MPI_DOUBLE, 0, 200, MPI_COMM_WORLD, &request);
         }
     }
@@ -247,11 +196,6 @@ void solver::Fun(gsl_matrix *result)
         //derivative of r term
         HFunsForR();
         dr(1);
-        
-        //        for (int iterf=0; iterf<NumField; ++iterf)
-        //        {
-        //            MPI_Recv(HijLocal[iterf]->data, jobPointsT, MPI_DOUBLE, 0, 100+10*iterf+cRank, MPI_COMM_WORLD, &status);
-        //        }
         
         for (int iter=0; iter<jobPointsT; ++iter)
         {
