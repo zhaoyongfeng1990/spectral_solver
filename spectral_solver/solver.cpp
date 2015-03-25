@@ -103,6 +103,10 @@ solver::solver()
         k2=gsl_matrix_alloc(matrixH, Ntheta);
         k3=gsl_matrix_alloc(matrixH, Ntheta);
         k4=gsl_matrix_alloc(matrixH, Ntheta);
+        //k5=gsl_matrix_alloc(matrixH, Ntheta);
+        //k6=gsl_matrix_alloc(matrixH, Ntheta);
+        //k7=gsl_matrix_alloc(matrixH, Ntheta);
+        //k8=gsl_matrix_alloc(matrixH, Ntheta);
         
         odetempField=gsl_matrix_alloc(matrixH, Ntheta);
         
@@ -165,6 +169,7 @@ solver::solver()
         tempFieldsLocal=gsl_matrix_alloc(Nrp, jobT);
         dctr=gsl_matrix_alloc(Nr, jobT);
         tempdctr=gsl_matrix_alloc(Nr, jobT);
+        boundary=gsl_vector_alloc(jobT);
         
         for (int iter=0; iter<NumField; ++iter)
         {
@@ -305,6 +310,10 @@ solver::~solver()
         gsl_matrix_free(k2);
         gsl_matrix_free(k3);
         gsl_matrix_free(k4);
+        //gsl_matrix_free(k5);
+        //gsl_matrix_free(k6);
+        //gsl_matrix_free(k7);
+        //gsl_matrix_free(k8);
         
         gsl_matrix_free(odetempField);
         
@@ -329,6 +338,7 @@ solver::~solver()
     else
     {
         gsl_matrix_free(dctr);
+        gsl_vector_free(boundary);
         gsl_matrix_free(tempdctr);
         fftw_destroy_plan(dctr2r);
         fftw_destroy_plan(tempdctr2r);

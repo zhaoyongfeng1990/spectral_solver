@@ -20,10 +20,16 @@ int main(int argc, const char  *argv[])
     time(&ctime1);
     solver test1;
     test1.initialization();
-    //test1.printstatus();
+    //if (test1.cRank==0)
+    //{
+        //test1.readFile("2.txt");
+        //test1.timeIdx=2*131072;
+        //test1.printstatus();
+    //}
     //test1.readFile("48.txt");
     //test1.timeIdx=16384*128*48;
-    test1.solve(2000);
+    test1.solve(10000);
+    
     //test1.Fun(test1.Fields);
     //test1.setBoundary();
     time(&ctime2);

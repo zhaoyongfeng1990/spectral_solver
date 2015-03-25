@@ -9,16 +9,17 @@
 #ifndef spectral_solver_parameters_h
 #define spectral_solver_parameters_h
 
-//#define LINEAR_TEST_MODEL
+#define LINEAR_TEST_MODEL
 //#define FU_MODEL
-#define INTERACTION_MODIFIED_FU
+//#define INTERACTION_MODIFIED_FU
 
 #include <cmath>
 
 #ifdef FU_MODEL
-const int Ntheta=64;
+//#define PUNISHTERM
+const int Ntheta=16;
 const int Nr=81*5+1;
-const double StepT=1.0/16384/32;
+const double StepT=1.0/16384/16;
 const int NumField=3;
 const double radius=3;
 
@@ -32,20 +33,32 @@ const double Dh=0.004*3.6;
 const double Dn=0.008*3.6;
 const double Kh=4;
 const double M=20;
+
+#ifdef PUNISHTERM
+const double punish=100;
+#endif
+
 #endif
 
 #ifdef LINEAR_TEST_MODEL
+
+#define PUNISHTERM
 const int Ntheta=64;
 const int Nr=81+1;
-const double StepT=1.0/16384/16;
+const double StepT=1.0/16384/4;
 const int NumField=3;
 const double radius=1;
+
+#ifdef PUNISHTERM
+const double punish=100;
+#endif
+
 #endif
 
 #ifdef INTERACTION_MODIFIED_FU
 const int Ntheta=64;
 const int Nr=81*5+1;
-const double StepT=1.0/16384/32;
+const double StepT=1.0/16384/16;
 const int NumField=5;
 const double radius=3;
 

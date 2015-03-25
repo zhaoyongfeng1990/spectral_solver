@@ -14,11 +14,11 @@ using namespace std;
 void solver::solve(int totaliter)
 {
     setBoundary();
-    if (cRank==0)
-    {
-        //cout << timeIdx << endl;
-        printstatus();
-    }
+//    if (cRank==0)
+//    {
+//        //cout << timeIdx << endl;
+//        printstatus();
+//    }
     
     //RK4
     for (int iter=0; iter<3; ++iter)
@@ -27,10 +27,16 @@ void solver::solve(int totaliter)
         {
             for (int iterCPU=1; iterCPU<numOfProcess; ++iterCPU)
             {
-                MPI_Send(Fields->data, 1, BD4Type[iterCPU], iterCPU, iterCPU, MPI_COMM_WORLD);
+                MPI_Ssend(Fields->data, 1, BD4Type[iterCPU], iterCPU, iterCPU, MPI_COMM_WORLD);
             }
-            MPI_Isend(Fields->data, 1, BD4Type[0], 0, 0, MPI_COMM_WORLD, &request);
-            MPI_Irecv(HistoryFields[iter]->data, iterPoints, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &request);
+            //MPI_Sendrecv(Fields->data, 1, BD4Type[0], 0, 0, HistoryFields[iter]->data, iterPoints, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &status);
+            for (int iterf=0; iterf<NumField; ++iterf)
+            {
+                for (int iterp=0; iterp<bossP; ++iterp)
+                {
+                    HistoryFields[iter]->data[iterp+iterf*bossP]=Fields->data[iterp+iterf*NumPoints];
+                }
+            }
             
         }
         else
@@ -44,7 +50,7 @@ void solver::solve(int totaliter)
 //        if (cRank==0)
 //        {
 //            cout << timeIdx << endl;
-//            printstatus();
+////            printstatus();
 //        }
     }
     
@@ -57,14 +63,14 @@ void solver::solve(int totaliter)
 //        if (cRank==0)
 //        {
 //            cout << timeIdx << endl;
-//            printstatus();
+////            printstatus();
 //        }
-//        
-        if (cRank==0 && timeIdx%262144==0)
+
+        if (cRank==0 && timeIdx%131072==0)
         {
-            timeIdx=timeIdx/262144;
+            timeIdx=timeIdx/131072;
             printstatus();
-            timeIdx=timeIdx*262144;
+            timeIdx=timeIdx*131072;
         }
     }
     
@@ -76,7 +82,7 @@ void solver::setBoundary()
     {
         for (int iterCPU=0; iterCPU<numOfProcessT; ++iterCPU)
         {
-            MPI_Send(Fields->data, 1, TblockType[iterCPU], iterCPU*2+1, iterCPU*2+1, MPI_COMM_WORLD);
+            MPI_Ssend(Fields->data, 1, TblockType[iterCPU], iterCPU*2+1, iterCPU*2+1, MPI_COMM_WORLD);
         }
     }
     if(cRank%2!=0)
@@ -86,7 +92,7 @@ void solver::setBoundary()
         {
             tempFieldsLocal->data[iter]=dctr->data[iter];
         }
-        dr(1);
+        drWOA();
         for (int iter=0; iter<jobT; ++iter)
         {
             double d0=gsl_matrix_get(dctr, 0, iter);
@@ -94,7 +100,7 @@ void solver::setBoundary()
             d0*=3;
             tempFieldsLocal->data[iter]+=d0;
         }
-        MPI_Send(tempFieldsLocal->data, jobT, MPI_DOUBLE, 0, 100+cRank, MPI_COMM_WORLD);
+        MPI_Ssend(tempFieldsLocal->data, jobT, MPI_DOUBLE, 0, 100+cRank, MPI_COMM_WORLD);
     }
     if (0==cRank)
     {

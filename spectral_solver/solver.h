@@ -32,8 +32,10 @@ public:
     void HFunsForR();
     void dr(bool ifFirst);
     void dtheta(bool ifFirst);
+    void drWOA();
     
     void RK4Step();
+    void RK6Step();
     void BDF4Step();
     void setBoundary();
     void initialization();
@@ -50,6 +52,10 @@ public:
     gsl_matrix *k2;
     gsl_matrix *k3;
     gsl_matrix *k4;
+    gsl_matrix *k5;
+    gsl_matrix *k6;
+    gsl_matrix *k7;
+    gsl_matrix *k8;
     gsl_matrix *odetempField;
     gsl_matrix *odetempField2;
     gsl_matrix *odetempField3;
@@ -60,6 +66,7 @@ public:
     gsl_vector *r;
     gsl_vector *r2;
     gsl_vector *theta;
+    gsl_vector *boundary;
     
     gsl_matrix *FieldsLocal;
     gsl_matrix *tempFieldsLocal;
@@ -124,7 +131,8 @@ public:
     MPI_Datatype* BoundaryType;
     MPI_Datatype* BD4Type;
     MPI_Status status;
-    MPI_Request request;
+    //MPI_Request request1;
+    //MPI_Request request2;
 };
 
 #endif

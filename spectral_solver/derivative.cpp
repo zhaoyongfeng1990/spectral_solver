@@ -70,6 +70,45 @@ void solver::dr(bool ifFirst)
     fftw_execute(dctr2r);
 }
 
+void solver::drWOA()
+{
+    for (int iterr=0; iterr<Nrp; ++iterr)
+    {
+        gsl_vector_view datablock=gsl_matrix_row(dctr, iterr);
+        gsl_vector_view destiny=gsl_matrix_row(dctr, Nr-iterr-1);
+        gsl_vector_memcpy(&destiny.vector, &datablock.vector);
+    }
+    
+    fftw_execute(dctr2r);
+    //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
+    
+    gsl_vector_view lastRow=gsl_matrix_row(dctr, Nr-1);
+    gsl_vector_set_zero(&lastRow.vector);
+    
+    for (int iterr=Nr-3; iterr>0; iterr-=2)
+    {
+        gsl_vector_view nextLastRow=gsl_matrix_row(dctr, iterr+1);
+        lastRow=gsl_matrix_row(dctr,iterr+2);
+        gsl_vector_view cRow=gsl_matrix_row(dctr, iterr);
+        
+        for (int iter=0; iter<jobT; ++iter)
+        {
+            cRow.vector.data[iter]=nextLastRow.vector.data[iter]*2.0*(iterr+1)/logicNr+lastRow.vector.data[iter];
+            nextLastRow.vector.data[iter]=0;
+        }
+    }
+    lastRow=gsl_matrix_row(dctr, 0);
+    gsl_vector_set_zero(&lastRow.vector);
+    
+    for (int iter=1; iter<Nr-2; iter+=2)
+    {
+        gsl_vector_view temp=gsl_matrix_row(dctr, iter);
+        gsl_vector_scale(&temp.vector, 0.5);
+    }
+    
+    fftw_execute(dctr2r);
+}
+
 void solver::dtheta(bool ifFirst)
 {
     
