@@ -78,18 +78,18 @@ public:
     gsl_matrix_view HijLocalView[NumField*NumField];
     gsl_matrix *iterFieldsLocal;
     
-    fftw_plan fftr2c;
-    fftw_plan ifftc2r;
-    fftw_plan tempfftr2c;
-    fftw_plan tempifftc2r;
-    fftw_plan dctr2r;
-    fftw_plan tempdctr2r;
+    fftwl_plan fftr2c;
+    fftwl_plan ifftc2r;
+    fftwl_plan tempfftr2c;
+    fftwl_plan tempifftc2r;
+    fftwl_plan dctr2r;
+    fftwl_plan tempdctr2r;
     
     gsl_matrix_complex *fftc;
     gsl_matrix *dctr;
     gsl_matrix *tempdctr;
     
-    double time;
+    long double time;
     int timeIdx;
     
     int workerR;

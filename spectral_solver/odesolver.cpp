@@ -61,7 +61,7 @@ void solver::RK6Step()
         gsl_matrix_memcpy(odetempField, Fields);
     }
     Fun(k1);
-    double ctime=time;
+    long double ctime=time;
     time=ctime+StepT*9.0/50.0;
     
     if (cRank==0)
@@ -142,8 +142,8 @@ void solver::RK6Step()
 
 void solver::BDF4Step()
 {
-    double error=1;
-    double err;
+    long double error=1;
+    long double err;
     if (cRank==0)
     {
         for (int iterCPU=1; iterCPU<numOfProcess; ++iterCPU)
@@ -235,8 +235,8 @@ void solver::BDF4Step()
 
 void solver::BDF6Step()
 {
-    double error=1;
-    double err;
+    long double error=1;
+    long double err;
     if (cRank==0)
     {
         for (int iterCPU=1; iterCPU<numOfProcess; ++iterCPU)

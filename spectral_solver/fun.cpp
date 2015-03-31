@@ -13,7 +13,7 @@ using std::pow;
 
 void solver::HGFuns()
 {
-    double f[NumField];
+    long double f[NumField];
     int idx[NumField];
     for (int iter=0; iter<jobPointsRl; ++iter)
     {
@@ -26,9 +26,9 @@ void solver::HGFuns()
         //Calculation for H functions. Use f[] to express.
 #ifdef FU_MODEL
         //Term in front of dField 1
-        double powfm1=pow(f[1]/Kh,M-1);
-        double powfm=powfm1*f[1]/Kh;
-        double powfmp1=powfm+1;
+        long double powfm1=pow(f[1]/Kh,M-1);
+        long double powfm=powfm1*f[1]/Kh;
+        long double powfmp1=powfm+1;
         HijLocal[0]->data[idx[0]]=(Drho+Drho0*powfm)/powfmp1;
         HijLocal[0]->data[idx[1]]=0;
         HijLocal[0]->data[idx[2]]=0;
@@ -41,7 +41,7 @@ void solver::HGFuns()
         HijLocal[2]->data[idx[1]]=0;
         HijLocal[2]->data[idx[2]]=Dn;
         
-        double f2=f[2]*f[2];
+        long double f2=f[2]*f[2];
         //Ending
         //Calculation for G function.
         GLocal->data[idx[0]]=Gamma*f2*f[0]/(f2+Kn2);
@@ -70,20 +70,20 @@ void solver::HGFuns()
 #endif
 #ifdef INTERACTION_MODIFIED_FU
         //Term in front of dField 1
-        double h1kh1=f[2]/Kh1;
-        double h2kh2=f[3]/Kh2;
-        double powh1=pow(h1kh1,M-1);
-        double powh2=pow(h2kh2,M-1);
-        double powh1m=powh1*h1kh1;
-        double powh2m=powh2*h2kh2;
-        double powh1p1=powh1m+1;
-        double powh2p1=powh2m+1;
-        double h1KD2=f[2]/KD2;
-        double h2KC2=f[3]/KC2;
-        double h1KD2p1=h1KD2+1;
-        double h2KC2p1=h2KC2+1;
-        double t1=Drho1+KC1*h2KC2/h2KC2p1;
-        double t2=Drho2+KD1*h1KD2/h1KD2p1;
+        long double h1kh1=f[2]/Kh1;
+        long double h2kh2=f[3]/Kh2;
+        long double powh1=pow(h1kh1,M-1);
+        long double powh2=pow(h2kh2,M-1);
+        long double powh1m=powh1*h1kh1;
+        long double powh2m=powh2*h2kh2;
+        long double powh1p1=powh1m+1;
+        long double powh2p1=powh2m+1;
+        long double h1KD2=f[2]/KD2;
+        long double h2KC2=f[3]/KC2;
+        long double h1KD2p1=h1KD2+1;
+        long double h2KC2p1=h2KC2+1;
+        long double t1=Drho1+KC1*h2KC2/h2KC2p1;
+        long double t2=Drho2+KD1*h1KD2/h1KD2p1;
         HijLocal[0]->data[idx[0]]=Drho+t1/powh1p1;
         HijLocal[0]->data[idx[1]]=0;
         HijLocal[0]->data[idx[2]]=0;
@@ -118,7 +118,7 @@ void solver::HGFuns()
         HijLocal[4]->data[idx[3]]=0;
         HijLocal[4]->data[idx[4]]=Dn;
         
-        double f2=f[4]*f[4];
+        long double f2=f[4]*f[4];
         //Ending
         //Calculation for G function.
         GLocal->data[idx[0]]=Gamma1*f2*f[0]/(f2+Kn1);
@@ -132,7 +132,7 @@ void solver::HGFuns()
 
 void solver::HFunsForR()    //should keep as identical with HGFuns().
 {
-    double f[NumField];
+    long double f[NumField];
     int idx[NumField];
     for (int iter=0; iter<Nrp; ++iter)
     {
@@ -147,9 +147,9 @@ void solver::HFunsForR()    //should keep as identical with HGFuns().
 #ifdef FU_MODEL
             //Calculation for H functions. Use f[] to express.
             //Term in front of dField 1
-            double powfm1=pow(f[1]/Kh,M-1);
-            double powfm=powfm1*f[1]/Kh;
-            double powfmp1=powfm+1;
+            long double powfm1=pow(f[1]/Kh,M-1);
+            long double powfm=powfm1*f[1]/Kh;
+            long double powfmp1=powfm+1;
             HijLocal[0]->data[idx[0]]=(Drho+Drho0*powfm)/powfmp1;
             HijLocal[0]->data[idx[1]]=0;
             HijLocal[0]->data[idx[2]]=0;
@@ -181,20 +181,20 @@ void solver::HFunsForR()    //should keep as identical with HGFuns().
 #endif
 #ifdef INTERACTION_MODIFIED_FU
             //Term in front of dField 1
-            double h1kh1=f[2]/Kh1;
-            double h2kh2=f[3]/Kh2;
-            double powh1=pow(h1kh1,M-1);
-            double powh2=pow(h2kh2,M-1);
-            double powh1m=powh1*h1kh1;
-            double powh2m=powh2*h2kh2;
-            double powh1p1=powh1m+1;
-            double powh2p1=powh2m+1;
-            double h1KD2=f[2]/KD2;
-            double h2KC2=f[3]/KC2;
-            double h1KD2p1=h1KD2+1;
-            double h2KC2p1=h2KC2+1;
-            double t1=Drho1+KC1*h2KC2/h2KC2p1;
-            double t2=Drho2+KD1*h1KD2/h1KD2p1;
+            long double h1kh1=f[2]/Kh1;
+            long double h2kh2=f[3]/Kh2;
+            long double powh1=pow(h1kh1,M-1);
+            long double powh2=pow(h2kh2,M-1);
+            long double powh1m=powh1*h1kh1;
+            long double powh2m=powh2*h2kh2;
+            long double powh1p1=powh1m+1;
+            long double powh2p1=powh2m+1;
+            long double h1KD2=f[2]/KD2;
+            long double h2KC2=f[3]/KC2;
+            long double h1KD2p1=h1KD2+1;
+            long double h2KC2p1=h2KC2+1;
+            long double t1=Drho1+KC1*h2KC2/h2KC2p1;
+            long double t2=Drho2+KD1*h1KD2/h1KD2p1;
             HijLocal[0]->data[idx[0]]=Drho+t1/powh1p1;
             HijLocal[0]->data[idx[1]]=0;
             HijLocal[0]->data[idx[2]]=0;

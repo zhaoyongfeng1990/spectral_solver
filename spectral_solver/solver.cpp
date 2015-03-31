@@ -19,8 +19,8 @@ solver::solver()
     numOfProcessT=numOfProcess/2; //Num Of Processes should be even!
     numOfProcessR=numOfProcess-numOfProcessT;
     
-    workerRl=ceil(Nrp/(double)numOfProcessR);
-    workerTl=ceil(Ntheta/(double)numOfProcessT);
+    workerRl=ceil(Nrp/(long double)numOfProcessR);
+    workerTl=ceil(Ntheta/(long double)numOfProcessT);
     workerT=workerTl*NumField;
     workerR=workerRl*NumField;
     workerPointsR=Ntheta*workerRl;
@@ -33,7 +33,7 @@ solver::solver()
     bossPointsR=Ntheta*bossRl;
     bossPointsT=bossTl*Nrp;
     
-    workerBD4=floor(Nrp/(double)numOfProcess);
+    workerBD4=floor(Nrp/(long double)numOfProcess);
     bossBD4=Nrp-workerBD4*(numOfProcess-1);
     workerP=workerBD4*Ntheta;
     bossP=bossBD4*Ntheta;
@@ -149,13 +149,13 @@ solver::solver()
         
         int n2[]={Ntheta};
         fftc=gsl_matrix_complex_alloc(jobR, Ntheta/2+1);
-        fftr2c=fftw_plan_many_dft_r2c(1, n2, jobR, FieldsLocal->data, n2, 1, Ntheta, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
+        fftr2c=fftwl_plan_many_dft_r2c(1, n2, jobR, FieldsLocal->data, n2, 1, Ntheta, (fftwl_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
         
-        ifftc2r=fftw_plan_many_dft_c2r(1, n2, jobR, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, dFieldsLocal->data, n2, 1, Ntheta, FFTW_MEASURE);
+        ifftc2r=fftwl_plan_many_dft_c2r(1, n2, jobR, (fftwl_complex *)fftc->data, n2, 1, Ntheta/2+1, dFieldsLocal->data, n2, 1, Ntheta, FFTW_MEASURE);
         
-        tempfftr2c=fftw_plan_many_dft_r2c(1, n2, jobR, tempFieldsLocal->data, n2, 1, Ntheta, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
+        tempfftr2c=fftwl_plan_many_dft_r2c(1, n2, jobR, tempFieldsLocal->data, n2, 1, Ntheta, (fftwl_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
         
-        tempifftc2r=fftw_plan_many_dft_c2r(1, n2, jobR, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, dFieldsLocal->data, n2, 1, Ntheta, FFTW_MEASURE);
+        tempifftc2r=fftwl_plan_many_dft_c2r(1, n2, jobR, (fftwl_complex *)fftc->data, n2, 1, Ntheta/2+1, dFieldsLocal->data, n2, 1, Ntheta, FFTW_MEASURE);
     }
     else
     {
@@ -181,9 +181,9 @@ solver::solver()
         }
         
         int n1[]={Nr};
-        fftw_r2r_kind kind[]={FFTW_REDFT00};
-        dctr2r=fftw_plan_many_r2r(1, n1, jobT, dctr->data, n1, jobT, 1, dctr->data, n1, jobT, 1, kind, FFTW_MEASURE);
-        tempdctr2r=fftw_plan_many_r2r(1, n1, jobT, tempdctr->data, n1, jobT, 1, dctr->data, n1, jobT, 1, kind, FFTW_MEASURE);
+        fftwl_r2r_kind kind[]={FFTW_REDFT00};
+        dctr2r=fftwl_plan_many_r2r(1, n1, jobT, dctr->data, n1, jobT, 1, dctr->data, n1, jobT, 1, kind, FFTW_MEASURE);
+        tempdctr2r=fftwl_plan_many_r2r(1, n1, jobT, tempdctr->data, n1, jobT, 1, dctr->data, n1, jobT, 1, kind, FFTW_MEASURE);
     }
     
     r=gsl_vector_alloc(Nrp);
@@ -330,18 +330,18 @@ solver::~solver()
         gsl_matrix_free(dFieldsLocal);
         gsl_matrix_free(tempFieldsLocal);
         gsl_matrix_complex_free(fftc);
-        fftw_destroy_plan(fftr2c);
-        fftw_destroy_plan(ifftc2r);
-        fftw_destroy_plan(tempfftr2c);
-        fftw_destroy_plan(tempifftc2r);
+        fftwl_destroy_plan(fftr2c);
+        fftwl_destroy_plan(ifftc2r);
+        fftwl_destroy_plan(tempfftr2c);
+        fftwl_destroy_plan(tempifftc2r);
     }
     else
     {
         gsl_matrix_free(dctr);
         gsl_vector_free(boundary);
         gsl_matrix_free(tempdctr);
-        fftw_destroy_plan(dctr2r);
-        fftw_destroy_plan(tempdctr2r);
+        fftwl_destroy_plan(dctr2r);
+        fftwl_destroy_plan(tempdctr2r);
     }
     for (int iterh=0; iterh<NumField; ++iterh)
     {

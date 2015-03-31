@@ -96,7 +96,7 @@ void solver::setBoundary()
         //dr(1);
         for (int iter=0; iter<jobT; ++iter)
         {
-            double d0=gsl_matrix_get(dctr, 0, iter);
+            long double d0=gsl_matrix_get(dctr, 0, iter);
             d0/=-Nr*(Nr-2);
             d0*=3;
             tempFieldsLocal->data[iter]+=d0;

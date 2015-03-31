@@ -19,7 +19,7 @@ void solver::dr(bool ifFirst)
             gsl_vector_memcpy(&destiny.vector, &datablock.vector);
         }
         
-        fftw_execute(dctr2r);
+        fftwl_execute(dctr2r);
     }
     else
     {
@@ -30,7 +30,7 @@ void solver::dr(bool ifFirst)
             gsl_vector_memcpy(&destiny.vector, &datablock.vector);
         }
         
-        fftw_execute(tempdctr2r);
+        fftwl_execute(tempdctr2r);
     }
     //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
     
@@ -68,7 +68,7 @@ void solver::dr(bool ifFirst)
         gsl_vector_scale(&temp.vector, 0.5);
     }
     
-    fftw_execute(dctr2r);
+    fftwl_execute(dctr2r);
 }
 
 void solver::drWOA()
@@ -80,7 +80,7 @@ void solver::drWOA()
         gsl_vector_memcpy(&destiny.vector, &datablock.vector);
     }
     
-    fftw_execute(dctr2r);
+    fftwl_execute(dctr2r);
     //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
     
     gsl_vector_view lastRow=gsl_matrix_row(dctr, Nr-1);
@@ -107,7 +107,7 @@ void solver::drWOA()
         gsl_vector_scale(&temp.vector, 0.5);
     }
     
-    fftw_execute(dctr2r);
+    fftwl_execute(dctr2r);
 }
 
 void solver::dtheta(bool ifFirst)
@@ -115,11 +115,11 @@ void solver::dtheta(bool ifFirst)
     
     if (ifFirst)
     {
-        fftw_execute(fftr2c);
+        fftwl_execute(fftr2c);
     }
     else
     {
-        fftw_execute(tempfftr2c);
+        fftwl_execute(tempfftr2c);
     }
     
     for (int iterr=0; iterr<jobR; ++iterr)
@@ -129,7 +129,7 @@ void solver::dtheta(bool ifFirst)
         {
             gsl_complex temp=gsl_matrix_complex_get(fftc, iterr, itertheta);
             //a'=a*ik
-            double swap=temp.dat[0];
+            long double swap=temp.dat[0];
             temp.dat[0]=-temp.dat[1]*itertheta/Ntheta;
             temp.dat[1]=swap*itertheta/Ntheta;
             gsl_matrix_complex_set(fftc, iterr, itertheta, temp);
@@ -143,10 +143,10 @@ void solver::dtheta(bool ifFirst)
     
     if (ifFirst)
     {
-        fftw_execute(ifftc2r);
+        fftwl_execute(ifftc2r);
     }
     else
     {
-        fftw_execute(tempifftc2r);
+        fftwl_execute(tempifftc2r);
     }
 }
