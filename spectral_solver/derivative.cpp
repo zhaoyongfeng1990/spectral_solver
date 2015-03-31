@@ -35,16 +35,17 @@ void solver::dr(bool ifFirst)
     //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
     
     // aliasing
+    printdebugM(dctr, "dctr.txt");
     for (int itert=0; itert<jobT; ++itert)
     {
-        for (int iterr=aliasingr; iterr<Nr; ++iterr)
+        for (int iterr=aliasingr-1; iterr<Nr; ++iterr)
         {
             gsl_matrix_set(dctr, iterr, itert, 0);
         }
     }
     
-    gsl_vector_view lastRow=gsl_matrix_row(dctr, aliasingr-1);
-    gsl_vector_set_zero(&lastRow.vector);
+    gsl_vector_view lastRow; //=gsl_matrix_row(dctr, aliasingr-1);
+    //gsl_vector_set_zero(&lastRow.vector);
     
     for (int iterr=aliasingr-3; iterr>0; iterr-=2)
     {

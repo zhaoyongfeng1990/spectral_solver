@@ -9,8 +9,8 @@
 #ifndef spectral_solver_parameters_h
 #define spectral_solver_parameters_h
 
-#define LINEAR_TEST_MODEL
-//#define FU_MODEL
+//#define LINEAR_TEST_MODEL
+#define FU_MODEL
 //#define INTERACTION_MODIFIED_FU
 
 #include <cmath>
@@ -18,9 +18,9 @@
 #ifdef FU_MODEL
 //#define PUNISHTERM
 const int Ntheta=16;
-const int Nr=81*5+1;
+const int Nr=81*9+1;
 const double StepT=1.0/16384/16;
-const int NumField=3;
+const int NumField=1; //3;
 const double radius=3;
 
 const double Alpha=2.08;
@@ -35,17 +35,17 @@ const double Kh=4;
 const double M=20;
 
 #ifdef PUNISHTERM
-const double punish=100;
+const double punish=30;
 #endif
 
 #endif
 
 #ifdef LINEAR_TEST_MODEL
 
-#define PUNISHTERM
+//#define PUNISHTERM
 const int Ntheta=64;
 const int Nr=81+1;
-const double StepT=1.0/16384/4;
+const double StepT=1.0/16384/8;
 const int NumField=3;
 const double radius=1;
 
@@ -97,7 +97,7 @@ const int matrixW=Ntheta*NumField;
 const int NumPoints=Nrp*Ntheta;
 const int totalPoints=matrixH*Ntheta;
 
-const int aliasingr=2*floor(Nr/3);
+const int aliasingr=Nr-4; //2*floor(Nr/3);
 const int aliasingt=floor(Ntheta/3);
 
 const double rp2=1.0/radius/radius;

@@ -66,11 +66,11 @@ void solver::solve(int totaliter)
 ////            printstatus();
 //        }
 
-        if (cRank==0 && timeIdx%131072==0)
+        if (cRank==0 && timeIdx%(262144/2)==0)
         {
-            timeIdx=timeIdx/131072;
+            timeIdx=timeIdx/(262144/2);
             printstatus();
-            timeIdx=timeIdx*131072;
+            timeIdx=timeIdx*(262144/2);
         }
     }
     
@@ -93,6 +93,7 @@ void solver::setBoundary()
             tempFieldsLocal->data[iter]=dctr->data[iter];
         }
         drWOA();
+        //dr(1);
         for (int iter=0; iter<jobT; ++iter)
         {
             double d0=gsl_matrix_get(dctr, 0, iter);
@@ -106,7 +107,7 @@ void solver::setBoundary()
     {
         for (int iterCPU=0; iterCPU<numOfProcessT; ++iterCPU)
         {
-            MPI_Recv(Fields->data, 1, BoundaryType[iterCPU], iterCPU*2+1, 100+iterCPU*2+1, MPI_COMM_WORLD, &status);
+            MPI_Recv(Fields->data, 1, BoundaryType[iterCPU], iterCPU*2+1, iterCPU*2+101, MPI_COMM_WORLD, &status);
         }
     }
 }

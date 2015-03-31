@@ -37,6 +37,7 @@ public:
     void RK4Step();
     void RK6Step();
     void BDF4Step();
+    void BDF6Step();
     void setBoundary();
     void initialization();
     void solve(int totaliter);
