@@ -9,7 +9,7 @@
 #include "solver.h"
 #include <iostream>
 
-void solver::solve(double totaltime)
+void solver::solve(int totaliter)
 {
     setBoundary();
     printstatus();
@@ -25,13 +25,13 @@ void solver::solve(double totaltime)
     }
     
     //Increase time step
-    for (int iter=0; iter<IncreaseTimes; ++iter)
-    {
-        DoubleTimeStepBDF6();
-    }
+    //for (int iter=0; iter<IncreaseTimes; ++iter)
+    //{
+    //    DoubleTimeStepBDF6();
+    //}
     
     //BDF
-    while (time<totaltime)
+    for (int iter=3; iter<totaliter; ++iter)
     {
         BDF4Step();
         //RK6Step();
@@ -39,12 +39,12 @@ void solver::solve(double totaltime)
         ++timeIdx;
         printstatus();
         //cout << timeIdx << endl;
-        //        if (timeIdx%262144==0)
-        //        {
-        //            timeIdx=timeIdx/262144;
-        //            printstatus();
-        //            timeIdx=timeIdx*262144;
-        //        }
+        if (timeIdx%262144==0)
+        {
+            timeIdx=timeIdx/262144;
+            printstatus();
+            timeIdx=timeIdx*262144;
+        }
     }
 }
 

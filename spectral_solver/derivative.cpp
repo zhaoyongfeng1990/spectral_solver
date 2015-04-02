@@ -62,14 +62,14 @@ void solver::dr(bool ifFirst)
 #endif
     for (int itert=0; itert<matrixW; ++itert)
     {
-        for (int iterr=aliasingr; iterr<Nr; ++iterr)
+        for (int iterr=aliasingr-1; iterr<Nr; ++iterr)
         {
             gsl_matrix_set(dctr, iterr, itert, 0);
         }
     }
     
-    gsl_vector_view lastRow=gsl_matrix_row(dctr, aliasingr-1);
-    gsl_vector_set_zero(&lastRow.vector);
+    gsl_vector_view lastRow; //=gsl_matrix_row(dctr, aliasingr-1);
+    //gsl_vector_set_zero(&lastRow.vector);
     
     for (int iterr=aliasingr-3; iterr>0; iterr-=2)
     {

@@ -14,7 +14,7 @@ int main(int argc, const char  *argv[])
 {
     
 #ifdef MULTIPROCESS
-    omp_set_num_threads(8);
+    omp_set_num_threads(2);
 #endif
     
     time_t ctime1, ctime2;
@@ -29,7 +29,7 @@ int main(int argc, const char  *argv[])
     //test1.printdebugM(test1.dFields, "df1.txt");
     //test1.printstatus();
     //test1.timeIdx=16384*128*48;
-    test1.solve(1.0/16384/8*1000);
+    test1.solve(2000);
     test1.printstatus();
     //test1.Fun(test1.k1);
     //test1.printdebugM(test1.k1, "k1.txt");

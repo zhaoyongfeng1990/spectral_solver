@@ -46,7 +46,7 @@ public:
     void BDF6Step();
     void setBoundary();
     void initialization();
-    void solve(double totaltime);
+    void solve(int totaliter);
     void DoubleTimeStepBDF4();
     void DoubleTimeStepBDF6();
     

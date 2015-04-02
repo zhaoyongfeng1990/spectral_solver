@@ -9,14 +9,15 @@
 #ifndef spectral_solver_parameters_h
 #define spectral_solver_parameters_h
 
-#define PUNISHTERM //Add punish term can sometimes speed up
+ //Add punish term can sometimes speed up
 //#define MULTIPROCESS
-#define LINEAR_TEST_MODEL
-//#define FU_MODEL
+//#define LINEAR_TEST_MODEL
+#define FU_MODEL
 #include <cmath>
 
 
 #ifdef FU_MODEL
+//#define PUNISHTERM
 const int Ntheta=64;
 const int Nr=81*5+1;
 const double iniStepT=1.0/16384/32;
@@ -33,6 +34,9 @@ const double Dh=0.004*3.6;
 const double Dn=0.008*3.6;
 const double Kh=4;
 const double M=20;
+#ifdef PUNISHTERM
+const double punish=150;
+#endif
 #endif
 #ifdef LINEAR_TEST_MODEL
 const int Ntheta=64;
@@ -42,9 +46,7 @@ const int NumField=3;
 const double radius=1;
 #endif
 
-#ifdef PUNISHTERM
-const double punish=150;
-#endif
+
 
 //for solver
 const double tolerance=1e-10;
