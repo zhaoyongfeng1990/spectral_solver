@@ -18,9 +18,9 @@
 #ifdef FU_MODEL
 //#define PUNISHTERM
 const int Ntheta=16;
-const int Nr=81*9+1;
-const double StepT=1.0/16384/16;
-const int NumField=1; //3;
+const int Nr=81*5+1;
+const double StepT=1.0/16384/32;
+const int NumField=3;
 const double radius=3;
 
 const double Alpha=2.08;

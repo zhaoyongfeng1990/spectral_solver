@@ -66,11 +66,11 @@ void solver::solve(int totaliter)
 ////            printstatus();
 //        }
 
-        if (cRank==0 && timeIdx%(262144/2)==0)
+        if (cRank==0 && timeIdx%(262144)==0)
         {
-            timeIdx=timeIdx/(262144/2);
+            timeIdx=timeIdx/(262144);
             printstatus();
-            timeIdx=timeIdx*(262144/2);
+            timeIdx=timeIdx*(262144);
         }
     }
     

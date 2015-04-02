@@ -18,7 +18,7 @@ void solver::initialization()
             {
 #ifdef FU_MODEL
                 gsl_matrix_set(Fields, iterr, itert, 2*exp(-r->data[iterr]*r->data[iterr]/(0.04/radius/radius)));
-                //gsl_matrix_set(Fields, 2*Nrp+iterr, itert, 15);
+                gsl_matrix_set(Fields, 2*Nrp+iterr, itert, 15);
 #endif
 #ifdef LINEAR_TEST_MODEL
                 gsl_matrix_set(Fields, iterr, itert, exp(-10*r->data[iterr]*r->data[iterr]));

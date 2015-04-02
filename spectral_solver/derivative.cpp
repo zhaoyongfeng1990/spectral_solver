@@ -34,8 +34,8 @@ void solver::dr(bool ifFirst)
     }
     //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
     
-    // aliasing
-    printdebugM(dctr, "dctr.txt");
+    // dealiasing
+    //printdebugM(dctr, "dctr.txt");
     for (int itert=0; itert<jobT; ++itert)
     {
         for (int iterr=aliasingr-1; iterr<Nr; ++iterr)
@@ -124,7 +124,7 @@ void solver::dtheta(bool ifFirst)
     
     for (int iterr=0; iterr<jobR; ++iterr)
     {
-        // aliasing
+        // dealiasing
         for (int itertheta=0; itertheta<aliasingt; ++itertheta)
         {
             gsl_complex temp=gsl_matrix_complex_get(fftc, iterr, itertheta);
