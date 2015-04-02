@@ -92,8 +92,8 @@ void solver::setBoundary()
         {
             tempFieldsLocal->data[iter]=dctr->data[iter];
         }
-        drWOA();
-        //dr(1);
+        //drWOA();
+		dr(1);
         for (int iter=0; iter<jobT; ++iter)
         {
             double d0=gsl_matrix_get(dctr, 0, iter);

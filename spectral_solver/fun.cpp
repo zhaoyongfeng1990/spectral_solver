@@ -331,8 +331,8 @@ void solver::Fun(gsl_matrix *result)
         
         for (int iter=0; iter<jobT; ++iter)
         {
-            gsl_vector_view temp=gsl_matrix_subcolumn(tempdctr, iter, 0, Nrp);
-            gsl_vector_mul(&temp.vector, r);
+			for (int iterr = 0; iterr < Nrp; ++iterr)
+				tempdctr->data[iter + iterr*jobT] *= r->data[iterr];
         }
         
         dr(0);
@@ -343,9 +343,9 @@ void solver::Fun(gsl_matrix *result)
         }
         
         for (int iter=0; iter<jobT; ++iter)
-        {
-            gsl_vector_view temp=gsl_matrix_subcolumn(dctr, iter, 0, Nrp);
-            gsl_vector_div(&temp.vector, r);
+		{
+			for (int iterr = 0; iterr < Nrp; ++iterr)
+				dctr->data[iter + iterr*jobT] /= r->data[iterr];
         }
         
 #ifdef PUNISHTERM

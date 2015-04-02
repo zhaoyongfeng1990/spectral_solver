@@ -52,17 +52,18 @@ int main(int argc, const char  *argv[])
             MPI_Recv(test1.Fields->data, 1, test1.TblockType[iterCPU], iterCPU*2+1, iterCPU*2+101, MPI_COMM_WORLD, &test1.status);
         }
     }
+    
     if (test1.cRank==0)
     {
-    //    test1.readFile("0.txt");
+        //test1.readFile("2.txt");
+        //test1.timeIdx=2*131072;
         test1.printstatus();
+		//cout << aliasingr << endl;
     }
-    //test1.setBoundary();
-    
     //test1.readFile("48.txt");
     //test1.timeIdx=16384*128*48;
-    //test1.solve(16384*16);
-    test1.solve(4000);
+    test1.solve(2000);
+    //test1.solve(2000);
     
     //test1.Fun(test1.Fields);
     //test1.setBoundary();
@@ -72,5 +73,6 @@ int main(int argc, const char  *argv[])
         test1.printstatus();
         cout << ctime2-ctime1 << endl;
     }
+    
     return 0;
 }

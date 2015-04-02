@@ -19,8 +19,8 @@ solver::solver()
     numOfProcessT=numOfProcess/2; //Num Of Processes should be even!
     numOfProcessR=numOfProcess-numOfProcessT;
     
-    workerRl=ceil(Nrp/(double)numOfProcessR);
-    workerTl=ceil(Ntheta/(double)numOfProcessT);
+    workerRl=(int)ceil(Nrp/(double)numOfProcessR);
+	workerTl = (int)ceil(Ntheta / (double)numOfProcessT);
     workerT=workerTl*NumField;
     workerR=workerRl*NumField;
     workerPointsR=Ntheta*workerRl;
@@ -33,7 +33,7 @@ solver::solver()
     bossPointsR=Ntheta*bossRl;
     bossPointsT=bossTl*Nrp;
     
-    workerBD4=floor(Nrp/(double)numOfProcess);
+    workerBD4=(int)floor(Nrp/(double)numOfProcess);
     bossBD4=Nrp-workerBD4*(numOfProcess-1);
     workerP=workerBD4*Ntheta;
     bossP=bossBD4*Ntheta;

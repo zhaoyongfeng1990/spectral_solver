@@ -35,17 +35,17 @@ const double Kh=4;
 const double M=20;
 
 #ifdef PUNISHTERM
-const double punish=30;
+const double punish=50;
 #endif
 
 #endif
 
 #ifdef LINEAR_TEST_MODEL
 
-//#define PUNISHTERM
+#define PUNISHTERM
 const int Ntheta=64;
 const int Nr=81+1;
-const double StepT=1.0/16384/8;
+const double StepT=1.0/16384/4;
 const int NumField=3;
 const double radius=1;
 
@@ -97,8 +97,8 @@ const int matrixW=Ntheta*NumField;
 const int NumPoints=Nrp*Ntheta;
 const int totalPoints=matrixH*Ntheta;
 
-const int aliasingr=Nr-4; //2*floor(Nr/3);
-const int aliasingt=floor(Ntheta/3);
+const int aliasingr=2*(int)floor(Nr/3);
+const int aliasingt = (int)floor(Ntheta / 3);
 
 const double rp2=1.0/radius/radius;
 #endif

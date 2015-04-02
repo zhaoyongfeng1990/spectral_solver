@@ -9,6 +9,15 @@
 #ifndef spectral_solver_solver_h
 #define spectral_solver_solver_h
 
+#define WINDOWS
+
+#ifdef WINDOWS
+#pragma comment(lib,"libgsl.lib")
+#pragma comment(lib, "libgslcblas.lib")
+#pragma comment(lib, "libfftw3-3.lib")
+#pragma comment(lib,"msmpi.lib")
+#endif
+
 #define HAVE_INLINE
 
 #include <gsl/gsl_matrix.h>

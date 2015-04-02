@@ -35,7 +35,6 @@ void solver::dr(bool ifFirst)
     //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
     
     // dealiasing
-    //printdebugM(dctr, "dctr.txt");
     for (int itert=0; itert<jobT; ++itert)
     {
         for (int iterr=aliasingr-1; iterr<Nr; ++iterr)
