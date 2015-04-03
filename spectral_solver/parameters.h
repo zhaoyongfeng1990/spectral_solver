@@ -17,8 +17,8 @@
 
 
 #ifdef FU_MODEL
-//#define PUNISHTERM
-const int Ntheta=64;
+#define PUNISHTERM
+const int Ntheta=16;
 const int Nr=81*5+1;
 const double iniStepT=1.0/16384/32;
 const int NumField=3;
@@ -35,7 +35,7 @@ const double Dn=0.008*3.6;
 const double Kh=4;
 const double M=20;
 #ifdef PUNISHTERM
-const double punish=150;
+const double punish=50;
 #endif
 #endif
 #ifdef LINEAR_TEST_MODEL
@@ -49,7 +49,7 @@ const double radius=1;
 
 
 //for solver
-const double tolerance=1e-10;
+const double tolerance=1e-8;
 
 
 const int logicNr=Nr-1;

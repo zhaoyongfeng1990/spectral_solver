@@ -17,7 +17,7 @@ printstatus.o: printstatus.cpp solver.h parameters.h
 main.o: main.cpp solver.h parameters.h
 	g++-4.9 -O3 -c main.cpp -std=gnu++11
 test:
-	make mpi
+	make solver
 	./solver
 clean:
 	rm ./*.o

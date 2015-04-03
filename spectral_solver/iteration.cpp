@@ -21,7 +21,7 @@ void solver::solve(int totaliter)
         RK4Step();
         setBoundary();
         ++timeIdx;
-        printstatus();
+//        printstatus();
     }
     
     //Increase time step
@@ -37,7 +37,7 @@ void solver::solve(int totaliter)
         //RK6Step();
         setBoundary();
         ++timeIdx;
-        printstatus();
+//        printstatus();
         //cout << timeIdx << endl;
         if (timeIdx%262144==0)
         {
@@ -50,7 +50,8 @@ void solver::solve(int totaliter)
 
 void solver::setBoundary()
 {
-    drWOA();
+    //drWOA();
+    dr(1);
 #ifdef MULTIPROCESS
 #pragma omp parallel for
 #endif
