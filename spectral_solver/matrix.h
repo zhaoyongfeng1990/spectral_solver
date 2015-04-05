@@ -28,7 +28,8 @@ public:
     
     void eleMultiply(const matrix<DType>& matrix);
     void eleDivide(const matrix<DType>& matrix);
-    DType& ele(const int x, const int y);
+    DType& ele(const int y, const int x);
+    
     
     DType* data;
     int sizex;
