@@ -9,15 +9,12 @@
 #ifndef spectral_solver_solver_h
 #define spectral_solver_solver_h
 
-#define HAVE_INLINE
-
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_vector.h>
 #include <vector>
 #include <fftw3.h>
 #include "parameters.h"
 #include <string>
 #include <mpi.h>
+#include "matrix.h"
 
 using namespace std;
 
@@ -27,7 +24,7 @@ public:
     solver();
     ~solver();
     
-    void Fun(gsl_matrix *result);
+    void Fun(matrix<long double> &result);
     void HGFuns();
     void HFunsForR();
     void dr(bool ifFirst);
@@ -43,40 +40,40 @@ public:
     void solve(int totaliter);
     
     void printstatus();
-    void printdebugM(gsl_matrix* m, const string filename);
-    void printdebugCM(gsl_matrix_complex* m, const string filename);
+    void printdebugM(matrix<long double> *m, const string filename);
+    void printdebugCM(matrix_complex<long double> *m, const string filename);
     void readFile(const string filename);
     
-    gsl_matrix *Fields;
+    matrix<long double> Fields;
     
-    gsl_matrix *k1;
-    gsl_matrix *k2;
-    gsl_matrix *k3;
-    gsl_matrix *k4;
-    gsl_matrix *k5;
-    gsl_matrix *k6;
-    gsl_matrix *k7;
-    gsl_matrix *k8;
-    gsl_matrix *odetempField;
-    gsl_matrix *odetempField2;
-    gsl_matrix *odetempField3;
+    matrix<long double> k1;
+    matrix<long double> k2;
+    matrix<long double> k3;
+    matrix<long double> k4;
+    matrix<long double> k5;
+    matrix<long double> k6;
+    matrix<long double> k7;
+    matrix<long double> k8;
+    matrix<long double> odetempField;
+    matrix<long double> odetempField2;
+    matrix<long double> odetempField3;
     
-    vector <gsl_matrix*> HistoryFields;
-    vector <gsl_matrix*> Hij;
-    gsl_matrix *G;
-    gsl_vector *r;
-    gsl_vector *r2;
-    gsl_vector *theta;
-    gsl_vector *boundary;
+    vector <matrix<long double>*> HistoryFields;
+    vector <matrix<long double>*> Hij;
+    matrix<long double> G;
+    math_vector<long double> r;
+    math_vector<long double> r2;
+    math_vector<long double> theta;
+    math_vector<long double> boundary;
     
-    gsl_matrix *FieldsLocal;
-    gsl_matrix *tempFieldsLocal;
-    gsl_matrix *GLocal;
-    vector <gsl_matrix*> HijLocal;
-    gsl_matrix *dFieldsLocal;
-    gsl_matrix_view dFieldLocalView[NumField];
-    gsl_matrix_view HijLocalView[NumField*NumField];
-    gsl_matrix *iterFieldsLocal;
+    matrix<long double>FieldsLocal;
+    matrix<long double>tempFieldsLocal;
+    matrix<long double>GLocal;
+    vector <matrix<long double>*> HijLocal;
+    matrix<long double>dFieldsLocal;
+    //gsl_matrix_view dFieldLocalView[NumField];
+    //gsl_matrix_view HijLocalView[NumField*NumField];
+    matrix<long double>iterFieldsLocal;
     
     fftwl_plan fftr2c;
     fftwl_plan ifftc2r;
@@ -85,9 +82,9 @@ public:
     fftwl_plan dctr2r;
     fftwl_plan tempdctr2r;
     
-    gsl_matrix_complex *fftc;
-    gsl_matrix *dctr;
-    gsl_matrix *tempdctr;
+    matrix_complex<long double> fftc;
+    matrix<long double>dctr;
+    matrix<long double>tempdctr;
     
     long double time;
     int timeIdx;

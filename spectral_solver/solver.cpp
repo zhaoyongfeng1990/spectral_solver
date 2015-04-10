@@ -13,8 +13,8 @@ using namespace std;
 
 solver::solver()
 {
-    MPI_Comm_rank(MPI_COMM_WORLD, &cRank);
-    MPI_Comm_size(MPI_COMM_WORLD, &numOfProcess);
+    MPI_Comm_rank(MPI_COMM_WORLD,& cRank);
+    MPI_Comm_size(MPI_COMM_WORLD,& numOfProcess);
     
     numOfProcessT=numOfProcess/2; //Num Of Processes should be even!
     numOfProcessR=numOfProcess-numOfProcessT;
@@ -81,123 +81,118 @@ solver::solver()
     time=0;
     timeIdx=0;
     
-    odetempField2=gsl_matrix_alloc(jobBD4*NumField, Ntheta);
-    odetempField3=gsl_matrix_alloc(jobBD4*NumField, Ntheta);
-    iterFieldsLocal=gsl_matrix_alloc(jobBD4*NumField, Ntheta);
+    odetempField2.alloc(jobBD4*NumField, Ntheta);
+    odetempField3.alloc(jobBD4*NumField, Ntheta);
+    iterFieldsLocal.alloc(jobBD4*NumField, Ntheta);
     
     HistoryFields.resize(3);
     for (int iterh=0; iterh<3; ++iterh)
     {
-        HistoryFields[iterh]=gsl_matrix_alloc(jobBD4*NumField, Ntheta);
-        gsl_matrix_set_zero(HistoryFields[iterh]);
+        HistoryFields[iterh]=new matrix<long double>(jobBD4*NumField, Ntheta);
     }
     
     if (cRank==0)
     {
-        Fields=gsl_matrix_alloc(matrixH, Ntheta);
-        gsl_matrix_set_zero(Fields);
-        G=gsl_matrix_alloc(matrixH, Ntheta);
-        gsl_matrix_set_zero(G);
+        Fields.alloc(matrixH, Ntheta);
+        G.alloc(matrixH, Ntheta);
         
-        k1=gsl_matrix_alloc(matrixH, Ntheta);
-        k2=gsl_matrix_alloc(matrixH, Ntheta);
-        k3=gsl_matrix_alloc(matrixH, Ntheta);
-        k4=gsl_matrix_alloc(matrixH, Ntheta);
+        k1.alloc(matrixH, Ntheta);
+        k2.alloc(matrixH, Ntheta);
+        k3.alloc(matrixH, Ntheta);
+        k4.alloc(matrixH, Ntheta);
         //k5=gsl_matrix_alloc(matrixH, Ntheta);
         //k6=gsl_matrix_alloc(matrixH, Ntheta);
         //k7=gsl_matrix_alloc(matrixH, Ntheta);
         //k8=gsl_matrix_alloc(matrixH, Ntheta);
         
-        odetempField=gsl_matrix_alloc(matrixH, Ntheta);
+        odetempField.alloc(matrixH, Ntheta);
         
         
         
         Hij.resize(NumField);
         for (int iterh=0; iterh<NumField; ++iterh)
         {
-            Hij[iterh]=gsl_matrix_alloc(matrixH, Ntheta);
-            gsl_matrix_set_zero(Hij[iterh]);
+            Hij[iterh]=new matrix<long double>(matrixH, Ntheta);
         }
     }
     
     //local variables
     if (cRank%2==0)
     {
-        FieldsLocal=gsl_matrix_alloc(jobR, Ntheta);
-        gsl_matrix_set_zero(FieldsLocal);
-        tempFieldsLocal=gsl_matrix_alloc(jobR, Ntheta);
-        dFieldsLocal=gsl_matrix_alloc(jobR, Ntheta);
+        FieldsLocal.alloc(jobR, Ntheta);
+        tempFieldsLocal.alloc(jobR, Ntheta);
+        dFieldsLocal.alloc(jobR, Ntheta);
         
         HijLocal.resize(NumField);
         for (int iterh=0; iterh<NumField; ++iterh)
         {
-            HijLocal[iterh]=gsl_matrix_alloc(jobR, Ntheta);
-            gsl_matrix_set_zero(HijLocal[iterh]);
+            HijLocal[iterh]=new matrix<long double>(jobR, Ntheta);
         }
         
-        for (int iter=0; iter<NumField; ++iter)
-        {
-            dFieldLocalView[iter]=gsl_matrix_submatrix(dFieldsLocal, iter*jobRl, 0, jobRl, Ntheta);
-            for (int iterf=0; iterf<NumField; ++iterf)
-            {
-                HijLocalView[iterf*NumField+iter]=gsl_matrix_submatrix(HijLocal[iterf], iter*jobRl, 0, jobRl, Ntheta);
-            }
-        }
+//        for (int iter=0; iter<NumField; ++iter)
+//        {
+//            dFieldLocalView[iter]=gsl_matrix_submatrix(dFieldsLocal, iter*jobRl, 0, jobRl, Ntheta);
+//            for (int iterf=0; iterf<NumField; ++iterf)
+//            {
+//                HijLocalView[iterf*NumField+iter]=gsl_matrix_submatrix(HijLocal[iterf], iter*jobRl, 0, jobRl, Ntheta);
+//            }
+//        }
         
-        GLocal=gsl_matrix_alloc(jobR, Ntheta);
-        gsl_matrix_set_zero(GLocal);
+        GLocal.alloc(jobR, Ntheta);
         
         int n2[]={Ntheta};
-        fftc=gsl_matrix_complex_alloc(jobR, Ntheta/2+1);
-        fftr2c=fftwl_plan_many_dft_r2c(1, n2, jobR, FieldsLocal->data, n2, 1, Ntheta, (fftwl_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
+        fftc.alloc(jobR, Ntheta/2+1);
         
-        ifftc2r=fftwl_plan_many_dft_c2r(1, n2, jobR, (fftwl_complex *)fftc->data, n2, 1, Ntheta/2+1, dFieldsLocal->data, n2, 1, Ntheta, FFTW_MEASURE);
+        fftr2c=fftwl_plan_many_dft_r2c(1, n2, jobR, FieldsLocal.data, n2, 1, Ntheta, (fftwl_complex *)fftc.data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
+        ifftc2r=fftwl_plan_many_dft_c2r(1, n2, jobR, (fftwl_complex *)fftc.data, n2, 1, Ntheta/2+1, dFieldsLocal.data, n2, 1, Ntheta, FFTW_MEASURE);
         
-        tempfftr2c=fftwl_plan_many_dft_r2c(1, n2, jobR, tempFieldsLocal->data, n2, 1, Ntheta, (fftwl_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
+        //cout << "test" << endl;
+
+        tempfftr2c=fftwl_plan_many_dft_r2c(1, n2, jobR, tempFieldsLocal.data, n2, 1, Ntheta, (fftwl_complex *)fftc.data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
         
-        tempifftc2r=fftwl_plan_many_dft_c2r(1, n2, jobR, (fftwl_complex *)fftc->data, n2, 1, Ntheta/2+1, dFieldsLocal->data, n2, 1, Ntheta, FFTW_MEASURE);
+        tempifftc2r=fftwl_plan_many_dft_c2r(1, n2, jobR, (fftwl_complex *)fftc.data, n2, 1, Ntheta/2+1, dFieldsLocal.data, n2, 1, Ntheta, FFTW_MEASURE);
+        
     }
     else
     {
         HijLocal.resize(NumField);
         for (int iterh=0; iterh<NumField; ++iterh)
         {
-            HijLocal[iterh]=gsl_matrix_alloc(Nrp, jobT);
-            gsl_matrix_set_zero(HijLocal[iterh]);
+            HijLocal[iterh]=new matrix<long double>(Nrp, jobT);
         }
         
-        tempFieldsLocal=gsl_matrix_alloc(Nrp, jobT);
-        dctr=gsl_matrix_alloc(Nr, jobT);
-        tempdctr=gsl_matrix_alloc(Nr, jobT);
-        boundary=gsl_vector_alloc(jobT);
+        tempFieldsLocal.alloc(Nrp, jobT);
+        dctr.alloc(Nr, jobT);
+        tempdctr.alloc(Nr, jobT);
+        boundary.alloc(jobT);
         
-        for (int iter=0; iter<NumField; ++iter)
-        {
-            dFieldLocalView[iter]=gsl_matrix_submatrix(dctr, 0, iter*jobTl, Nrp, jobTl);
-            for (int iterf=0; iterf<NumField; ++iterf)
-            {
-                HijLocalView[iterf*NumField+iter]=gsl_matrix_submatrix(HijLocal[iterf], 0, iter*jobTl, Nrp, jobTl);
-            }
-        }
+//        for (int iter=0; iter<NumField; ++iter)
+//        {
+//            dFieldLocalView[iter]=gsl_matrix_submatrix(dctr, 0, iter*jobTl, Nrp, jobTl);
+//            for (int iterf=0; iterf<NumField; ++iterf)
+//            {
+//                HijLocalView[iterf*NumField+iter]=gsl_matrix_submatrix(HijLocal[iterf], 0, iter*jobTl, Nrp, jobTl);
+//            }
+//        }
         
         int n1[]={Nr};
         fftwl_r2r_kind kind[]={FFTW_REDFT00};
-        dctr2r=fftwl_plan_many_r2r(1, n1, jobT, dctr->data, n1, jobT, 1, dctr->data, n1, jobT, 1, kind, FFTW_MEASURE);
-        tempdctr2r=fftwl_plan_many_r2r(1, n1, jobT, tempdctr->data, n1, jobT, 1, dctr->data, n1, jobT, 1, kind, FFTW_MEASURE);
+        dctr2r=fftwl_plan_many_r2r(1, n1, jobT, dctr.data, n1, jobT, 1, dctr.data, n1, jobT, 1, kind, FFTW_MEASURE);
+        tempdctr2r=fftwl_plan_many_r2r(1, n1, jobT, tempdctr.data, n1, jobT, 1, dctr.data, n1, jobT, 1, kind, FFTW_MEASURE);
     }
     
-    r=gsl_vector_alloc(Nrp);
-    r2=gsl_vector_alloc(Nrp);
+    r.alloc(Nrp);
+    r2.alloc(Nrp);
     for (int iter=0; iter<Nrp; ++iter)
     {
-        r->data[iter]=cos(iter*PI/logicNr);
-        r2->data[iter]=cos(iter*PI/logicNr)*cos(iter*PI/logicNr);
+        r[iter]=cos(iter*PI/logicNr);
+        r2[iter]=cos(iter*PI/logicNr)*cos(iter*PI/logicNr);
     }
     
-    theta=gsl_vector_alloc(Ntheta);
+    theta.alloc(Ntheta);
     for (int iter=0; iter<Ntheta; ++iter)
     {
-        theta->data[iter]=2*PI*iter/Ntheta;
+        theta[iter]=2*PI*iter/Ntheta;
     }
     
     //MPI Data Type
@@ -216,7 +211,7 @@ solver::solver()
         blocklengthsR[iter]=bossPointsR;
         blockpossR[iter]=iter*NumPoints;
     }
-    MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_DOUBLE, &RblockType[0]);
+    MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_LONG_DOUBLE,& RblockType[0]);
     MPI_Type_commit(&RblockType[0]);
     
     //process 1 - boss for r calculation (split theta)
@@ -230,9 +225,9 @@ solver::solver()
             ++itertemp;
         }
     }
-    MPI_Type_indexed(matrixH, blocklengthsT, blockpossT, MPI_DOUBLE, &TblockType[0]);
+    MPI_Type_indexed(matrixH, blocklengthsT, blockpossT, MPI_LONG_DOUBLE,& TblockType[0]);
     MPI_Type_commit(&TblockType[0]);
-    MPI_Type_indexed(NumField, blocklengthsT, blockpossT, MPI_DOUBLE, &BoundaryType[0]);
+    MPI_Type_indexed(NumField, blocklengthsT, blockpossT, MPI_LONG_DOUBLE,& BoundaryType[0]);
     MPI_Type_commit(&BoundaryType[0]);
     
     //process 2, 4, 6, ... - workers for theta calculation (split r)
@@ -243,7 +238,7 @@ solver::solver()
             blocklengthsR[iter]=workerPointsR;
             blockpossR[iter]=bossPointsR+(iterCPU-1)*workerPointsR+iter*NumPoints;
         }
-        MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_DOUBLE, &RblockType[iterCPU]);
+        MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_LONG_DOUBLE,& RblockType[iterCPU]);
         MPI_Type_commit(&RblockType[iterCPU]);
     }
     
@@ -260,9 +255,9 @@ solver::solver()
                 ++itertemp;
             }
         }
-        MPI_Type_indexed(matrixH, blocklengthsT, blockpossT, MPI_DOUBLE, &TblockType[iterCPU]);
+        MPI_Type_indexed(matrixH, blocklengthsT, blockpossT, MPI_LONG_DOUBLE,& TblockType[iterCPU]);
         MPI_Type_commit(&TblockType[iterCPU]);
-        MPI_Type_indexed(NumField, blocklengthsT, blockpossT, MPI_DOUBLE, &BoundaryType[iterCPU]);
+        MPI_Type_indexed(NumField, blocklengthsT, blockpossT, MPI_LONG_DOUBLE,& BoundaryType[iterCPU]);
         MPI_Type_commit(&BoundaryType[iterCPU]);
     }
     
@@ -273,7 +268,7 @@ solver::solver()
         blocklengthsR[iter]=bossP;
         blockpossR[iter]=iter*NumPoints;
     }
-    MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_DOUBLE, &BD4Type[0]);
+    MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_LONG_DOUBLE,& BD4Type[0]);
     MPI_Type_commit(&BD4Type[0]);
     for (int iterCPU=1; iterCPU<numOfProcess; ++iterCPU)
     {
@@ -283,7 +278,7 @@ solver::solver()
             blocklengthsR[iter]=workerP;
             blockpossR[iter]=offset+iter*NumPoints;
         }
-        MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_DOUBLE, &BD4Type[iterCPU]);
+        MPI_Type_indexed(NumField, blocklengthsR, blockpossR, MPI_LONG_DOUBLE,& BD4Type[iterCPU]);
         MPI_Type_commit(&BD4Type[iterCPU]);
     }
     
@@ -292,44 +287,22 @@ solver::solver()
 solver::~solver()
 {
     
-    gsl_matrix_free(odetempField2);
-    gsl_matrix_free(odetempField3);
-    gsl_matrix_free(iterFieldsLocal);
-    
     for (int iterh=0; iterh<3; ++iterh)
     {
-        gsl_matrix_free(HistoryFields[iterh]);
+        delete HistoryFields[iterh];
     }
     
     if (cRank==0)
     {
-        gsl_matrix_free(Fields);
-        gsl_matrix_free(G);
-        
-        gsl_matrix_free(k1);
-        gsl_matrix_free(k2);
-        gsl_matrix_free(k3);
-        gsl_matrix_free(k4);
-        //gsl_matrix_free(k5);
-        //gsl_matrix_free(k6);
-        //gsl_matrix_free(k7);
-        //gsl_matrix_free(k8);
-        
-        gsl_matrix_free(odetempField);
-        
         for (int iterh=0; iterh<NumField; ++iterh)
         {
-            gsl_matrix_free(Hij[iterh]);
+            delete Hij[iterh];
         }
     }
     
     //local variables
     if (cRank%2==0)
     {
-        gsl_matrix_free(GLocal);
-        gsl_matrix_free(dFieldsLocal);
-        gsl_matrix_free(tempFieldsLocal);
-        gsl_matrix_complex_free(fftc);
         fftwl_destroy_plan(fftr2c);
         fftwl_destroy_plan(ifftc2r);
         fftwl_destroy_plan(tempfftr2c);
@@ -337,22 +310,13 @@ solver::~solver()
     }
     else
     {
-        gsl_matrix_free(dctr);
-        gsl_vector_free(boundary);
-        gsl_matrix_free(tempdctr);
         fftwl_destroy_plan(dctr2r);
         fftwl_destroy_plan(tempdctr2r);
     }
     for (int iterh=0; iterh<NumField; ++iterh)
     {
-        gsl_matrix_free(HijLocal[iterh]);
+        delete HijLocal[iterh];
     }
-    
-    gsl_vector_free(r);
-    gsl_vector_free(r2);
-    gsl_vector_free(theta);
-    
-    gsl_matrix_free(FieldsLocal);
     
     for (int iterCPU=0; iterCPU<numOfProcessR; ++iterCPU)
     {
@@ -371,6 +335,4 @@ solver::~solver()
     delete [] TblockType;
     delete [] BoundaryType;
     delete [] BD4Type;
-    
-    MPI_Finalize();
 }

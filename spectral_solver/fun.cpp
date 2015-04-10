@@ -9,7 +9,7 @@
 #include "solver.h"
 #include <iostream>
 using namespace std;
-using std::pow;
+//using std::pow;
 
 void solver::HGFuns()
 {
@@ -20,7 +20,7 @@ void solver::HGFuns()
         for (int iterf=0; iterf<NumField; ++iterf)
         {
             idx[iterf]=iterf*jobPointsRl+iter;
-            f[iterf]=FieldsLocal->data[idx[iterf]];
+            f[iterf]=FieldsLocal.data[idx[iterf]];
         }
         
         //Calculation for H functions. Use f[] to express.
@@ -44,9 +44,9 @@ void solver::HGFuns()
         long double f2=f[2]*f[2];
         //Ending
         //Calculation for G function.
-        GLocal->data[idx[0]]=Gamma*f2*f[0]/(f2+Kn2);
-        GLocal->data[idx[1]]=Alpha*f[0]-Beta*f[1];
-        GLocal->data[idx[2]]=-GLocal->data[iter];
+        GLocal.data[idx[0]]=Gamma*f2*f[0]/(f2+Kn2);
+        GLocal.data[idx[1]]=Alpha*f[0]-Beta*f[1];
+        GLocal.data[idx[2]]=-GLocal.data[iter];
 #endif
 #ifdef LINEAR_TEST_MODEL
         HijLocal[0]->data[idx[0]]=1;
@@ -63,9 +63,9 @@ void solver::HGFuns()
         
         //Ending
         //Calculation for G function.
-        GLocal->data[idx[0]]=0;
-        GLocal->data[idx[1]]=0;
-        GLocal->data[idx[2]]=0;
+        GLocal.data[idx[0]]=0;
+        GLocal.data[idx[1]]=0;
+        GLocal.data[idx[2]]=0;
         //....
 #endif
 #ifdef INTERACTION_MODIFIED_FU
@@ -141,7 +141,7 @@ void solver::HFunsForR()    //should keep as identical with HGFuns().
             for (int iterff=0; iterff<NumField; ++iterff)
             {
                 idx[iterff]=iter*jobT+itert+iterff*jobTl;
-                f[iterff]=dctr->data[idx[iterff]];
+                f[iterff]=dctr.data[idx[iterff]];
             }
             
 #ifdef FU_MODEL
@@ -229,31 +229,31 @@ void solver::HFunsForR()    //should keep as identical with HGFuns().
             HijLocal[4]->data[idx[3]]=0;
             HijLocal[4]->data[idx[4]]=Dn;
 #endif
-
+            
         }
     }
 }
 
 
-void solver::Fun(gsl_matrix *result)
+void solver::Fun(matrix<long double> &result)
 {
     if (0==cRank)
     {
         for (int iterCPU=1; iterCPU<numOfProcessT; ++iterCPU)
         {
-            MPI_Ssend(Fields->data, 1, TblockType[iterCPU], 2*iterCPU+1, 2*iterCPU+1, MPI_COMM_WORLD);
+            MPI_Ssend(Fields.data, 1, TblockType[iterCPU], 2*iterCPU+1, 2*iterCPU+1, MPI_COMM_WORLD);
         }
-        MPI_Ssend(Fields->data, 1, TblockType[0], 1, 1, MPI_COMM_WORLD);
+        MPI_Ssend(Fields.data, 1, TblockType[0], 1, 1, MPI_COMM_WORLD);
         for (int iterCPU=1; iterCPU<numOfProcessR; ++iterCPU)
         {
-            MPI_Ssend(Fields->data, 1, RblockType[iterCPU], 2*iterCPU, 2*iterCPU, MPI_COMM_WORLD);
+            MPI_Ssend(Fields.data, 1, RblockType[iterCPU], 2*iterCPU, 2*iterCPU, MPI_COMM_WORLD);
         }
-        //MPI_Sendrecv(Fields->data, 1, RblockType[0], 0, 0, FieldsLocal->data, jobPointsR, MPI_DOUBLE, 0, 0, MPI_COMM_WORLD, &status);
+        //MPI_Sendrecv(Fields->data, 1, RblockType[0], 0, 0, FieldsLocal->data, jobPointsR, MPI_LONG_DOUBLE, 0, 0, MPI_COMM_WORLD,& status);
         for (int iterf=0; iterf<NumField; ++iterf)
         {
             for (int iter=0; iter<jobPointsRl; ++iter)
             {
-                FieldsLocal->data[iter+iterf*jobPointsRl]=Fields->data[iter+iterf*NumPoints];
+                FieldsLocal.data[iter+iterf*jobPointsRl]=Fields.data[iter+iterf*NumPoints];
             }
         }
     }
@@ -261,120 +261,152 @@ void solver::Fun(gsl_matrix *result)
     if (cRank%2==0)
     {
         if (cRank!=0)
-            MPI_Recv(FieldsLocal->data, jobPointsR, MPI_DOUBLE, 0, cRank, MPI_COMM_WORLD, &status);
+            MPI_Recv(FieldsLocal.data, jobPointsR, MPI_LONG_DOUBLE, 0, cRank, MPI_COMM_WORLD,& status);
         //H functions and G term
         HGFuns();
         
         //derivative of theta term
         dtheta(1);
-        gsl_matrix_set_zero(tempFieldsLocal);
-        
+        //gsl_matrix_set_zero(tempFieldsLocal);
+        tempFieldsLocal.allSet(0);
         for (int iterdf=0; iterdf<NumField; ++iterdf)
         {
-            for (int iter=0; iter<NumField; ++iter)
+            
+            for (int iterp=0; iterp<jobPointsRl; ++iterp)
             {
-                gsl_matrix_mul_elements(&HijLocalView[iterdf*NumField+iter].matrix, &dFieldLocalView[iterdf].matrix);
+                for (int iter=0; iter<NumField; ++iter)
+                {
+                    //gsl_matrix_mul_elements(&HijLocalView[iterdf*NumField+iter].matrix,& dFieldLocalView[iterdf].matrix);
+                    HijLocal[iterdf]->data[iter*jobPointsRl+iterp]*=dFieldsLocal[iterp+iterdf*jobPointsRl];
+                }
             }
-            gsl_matrix_add(tempFieldsLocal, HijLocal[iterdf]);
+            tempFieldsLocal+=*HijLocal[iterdf];
         }
         dtheta(0);
-        gsl_matrix_scale(dFieldsLocal, rp2); //rp2=1.0/R/R
+        dFieldsLocal*=rp2; //rp2=1.0/R/R
         for (int iterf=0; iterf<NumField; ++iterf)
         {
             for (int iter=0; iter<jobRl; ++iter)
             {
-                gsl_vector_view temp=gsl_matrix_row(dFieldsLocal, iterf*jobRl+iter);
+                //gsl_vector_view temp=gsl_matrix_row(dFieldsLocal, iterf*jobRl+iter);
                 if (0==cRank)
                 {
-                    gsl_vector_scale(&temp.vector, r2->data[iter]);
+                    dFieldsLocal.scaleRow(iterf*jobRl+iter, r2[iter]);
+                    //gsl_vector_scale(&temp.vector, r2[iter]);
                 }
                 else
                 {
-                    gsl_vector_scale(&temp.vector, r2->data[iter+bossRl+(cRank/2-1)*workerRl]);
+                    dFieldsLocal.scaleRow(iterf*jobRl+iter, r2[iter+bossRl+(cRank/2-1)*workerRl]);
+                    //gsl_vector_scale(&temp.vector, r2[iter+bossRl+(cRank/2-1)*workerRl]);
                 }
             }
         }
-        gsl_matrix_add(GLocal, dFieldsLocal);
+        GLocal+=dFieldsLocal;
         if (cRank!=0)
         {
-            MPI_Ssend(GLocal->data, jobPointsR, MPI_DOUBLE, 0, 100+cRank, MPI_COMM_WORLD);
+            MPI_Ssend(GLocal.data, jobPointsR, MPI_LONG_DOUBLE, 0, 100+cRank, MPI_COMM_WORLD);
         }
     }
     else
     {
-        MPI_Recv(dctr->data, jobPointsT, MPI_DOUBLE, 0, cRank, MPI_COMM_WORLD, &status);
+        MPI_Recv(dctr.data, jobPointsT, MPI_LONG_DOUBLE, 0, cRank, MPI_COMM_WORLD,& status);
         //derivative of r term
         HFunsForR();
         dr(1);
         
 #ifdef PUNISHTERM
-        gsl_vector_view tempboundary=gsl_matrix_row(dctr, 0);
-        gsl_vector_memcpy(boundary, &tempboundary.vector);
-        gsl_vector_scale(boundary, punish);
+        //gsl_vector_view tempboundary=gsl_matrix_row(dctr, 0);
+        //gsl_vector_memcpy(boundary,& tempboundary.vector);
+        //gsl_vector_scale(boundary, punish);
+        for (int iter=0; iter<jobT; ++iter)
+        {
+            boundary[iter]=dctr[iter]*punish;
+        }
 #endif
         
         for (int iter=0; iter<jobPointsT; ++iter)
         {
-            tempdctr->data[iter]=0;
+            tempdctr.data[iter]=0;
         }
         for (int iterdf=0; iterdf<NumField; ++iterdf)
         {
-            for (int iter=0; iter<NumField; ++iter)
+            for (int iterr=0; iterr<Nrp; ++iterr)
             {
-                gsl_matrix_mul_elements(&HijLocalView[iterdf*NumField+iter].matrix, &dFieldLocalView[iterdf].matrix);
+                for (int itert=0; itert<jobTl; ++itert)
+                {
+                    for (int iter=0; iter<NumField; ++iter)
+                    {
+                        //gsl_matrix_mul_elements(&HijLocalView[iterdf*NumField+iter].matrix,& dFieldLocalView[iterdf].matrix);
+                        HijLocal[iterdf]->data[iterr*jobT+itert+iter*jobTl]*=dctr[iterr*jobT+itert+iterdf*jobTl];
+                    }
+                }
             }
             for (int iter=0; iter<jobPointsT; ++iter)
             {
-                tempdctr->data[iter]+=HijLocal[iterdf]->data[iter];
+                tempdctr.data[iter]+=HijLocal[iterdf]->data[iter];
             }
         }
         
-        for (int iter=0; iter<jobT; ++iter)
-        {
-            gsl_vector_view temp=gsl_matrix_subcolumn(tempdctr, iter, 0, Nrp);
-            gsl_vector_mul(&temp.vector, r);
-        }
+        //for (int iter=0; iter<jobT; ++iter)
+        //{
+            //gsl_vector_view temp=gsl_matrix_subcolumn(tempdctr, iter, 0, Nrp);
+            for (int iterr=0; iterr<Nrp; ++iterr)
+            {
+                //tempdctr.ele(iterr, iter)*=r[iterr];
+                tempdctr.scaleRow(iterr, r[iterr]);
+            }
+            //gsl_vector_mul(&temp.vector, r);
+        //}
         
         dr(0);
         
         for (int iter=0; iter<jobPointsT; ++iter)
         {
-            dctr->data[iter]*=rp2; //rp2=1.0/R/R
+            dctr.data[iter]*=rp2; //rp2=1.0/R/R
         }
         
-        for (int iter=0; iter<jobT; ++iter)
-        {
-            gsl_vector_view temp=gsl_matrix_subcolumn(dctr, iter, 0, Nrp);
-            gsl_vector_div(&temp.vector, r);
-        }
+        //for (int iter=0; iter<jobT; ++iter)
+        //{
+            //gsl_vector_view temp=gsl_matrix_subcolumn(dctr, iter, 0, Nrp);
+            //gsl_vector_div(&temp.vector, r);
+            for (int iterr=0; iterr<Nrp; ++iterr)
+            {
+                //tempdctr.ele(iterr, iter)/=r[iterr];
+                tempdctr.scaleRow(iterr, 1.0/r[iterr]);
+            }
+        //}
         
 #ifdef PUNISHTERM
         //tempboundary=gsl_matrix_row(dctr, 0);
-        gsl_vector_sub(&tempboundary.vector, boundary);
+        //gsl_vector_sub(&tempboundary.vector, boundary);
+        for (int iter=0; iter<jobT; ++iter)
+        {
+            dctr[iter]-=boundary[iter];
+        }
 #endif
         
-        MPI_Ssend(dctr->data, jobPointsT, MPI_DOUBLE, 0, 100+cRank, MPI_COMM_WORLD);
+        MPI_Ssend(dctr.data, jobPointsT, MPI_LONG_DOUBLE, 0, 100+cRank, MPI_COMM_WORLD);
         
     }
     
     if (0==cRank)
     {
-        //MPI_Sendrecv(GLocal->data, jobPointsR, MPI_DOUBLE, 0, 200, G->data, 1, RblockType[0], 0, 200, MPI_COMM_WORLD, &status);
+        //MPI_Sendrecv(GLocal->data, jobPointsR, MPI_LONG_DOUBLE, 0, 200, G->data, 1, RblockType[0], 0, 200, MPI_COMM_WORLD,& status);
         for (int iterf=0; iterf<NumField; ++iterf)
         {
             for (int iter=0; iter<jobPointsRl; ++iter)
             {
-                G->data[iter+iterf*NumPoints]=GLocal->data[iter+iterf*jobPointsRl];
+                G.data[iter+iterf*NumPoints]=GLocal.data[iter+iterf*jobPointsRl];
             }
         }
         for (int iterCPU=1; iterCPU<numOfProcessR; ++iterCPU)
         {
-            MPI_Recv(G->data, 1, RblockType[iterCPU], iterCPU*2, 100+iterCPU*2, MPI_COMM_WORLD, &status);
+            MPI_Recv(G.data, 1, RblockType[iterCPU], iterCPU*2, 100+iterCPU*2, MPI_COMM_WORLD,& status);
         }
         for (int iterCPU=0; iterCPU<numOfProcessT; ++iterCPU)
         {
-            MPI_Recv(result->data, 1, TblockType[iterCPU], iterCPU*2+1, iterCPU*2+101, MPI_COMM_WORLD, &status);
+            MPI_Recv(result.data, 1, TblockType[iterCPU], iterCPU*2+1, iterCPU*2+101, MPI_COMM_WORLD,& status);
         }
-        gsl_matrix_add(result, G);
+        result+=G;
     }
 }

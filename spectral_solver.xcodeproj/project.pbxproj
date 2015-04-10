@@ -13,7 +13,6 @@
 		A2C8B97B1AAF0FFD0035B0E6 /* iteration.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2C8B97A1AAF0FFD0035B0E6 /* iteration.cpp */; };
 		A2C8B97D1AB0156C0035B0E6 /* initialization.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2C8B97C1AB0156C0035B0E6 /* initialization.cpp */; };
 		A2C8B97F1AB015BF0035B0E6 /* printstatus.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2C8B97E1AB015BF0035B0E6 /* printstatus.cpp */; };
-		A2D9AD2D1ACD2A7C009D0770 /* matrix.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2D9AD2B1ACD2A7C009D0770 /* matrix.cpp */; };
 		A2F33DDC1AAD74F80006A46C /* fun.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2F33DDB1AAD74F80006A46C /* fun.cpp */; };
 		A2F33DDE1AAD78950006A46C /* odesolver.cpp in Sources */ = {isa = PBXBuildFile; fileRef = A2F33DDD1AAD78950006A46C /* odesolver.cpp */; };
 /* End PBXBuildFile section */
@@ -37,10 +36,10 @@
 		A27187AF1AA990EC0027CC49 /* solver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = solver.cpp; sourceTree = "<group>"; };
 		A27187B11AA9911B0027CC49 /* parameters.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = parameters.h; sourceTree = "<group>"; };
 		A27187B21AA9CA660027CC49 /* derivative.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = derivative.cpp; sourceTree = "<group>"; };
+		A299E5861AD567590065FB26 /* makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; name = makefile; path = spectral_solver/makefile; sourceTree = "<group>"; };
 		A2C8B97A1AAF0FFD0035B0E6 /* iteration.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = iteration.cpp; sourceTree = "<group>"; };
 		A2C8B97C1AB0156C0035B0E6 /* initialization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = initialization.cpp; sourceTree = "<group>"; };
 		A2C8B97E1AB015BF0035B0E6 /* printstatus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = printstatus.cpp; sourceTree = "<group>"; };
-		A2D9AD2B1ACD2A7C009D0770 /* matrix.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = matrix.cpp; sourceTree = "<group>"; };
 		A2D9AD2C1ACD2A7C009D0770 /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
 		A2F33DDB1AAD74F80006A46C /* fun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fun.cpp; sourceTree = "<group>"; };
 		A2F33DDD1AAD78950006A46C /* odesolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = odesolver.cpp; sourceTree = "<group>"; };
@@ -60,6 +59,7 @@
 		A271879B1AA98DAC0027CC49 = {
 			isa = PBXGroup;
 			children = (
+				A299E5861AD567590065FB26 /* makefile */,
 				A27187A61AA98DAC0027CC49 /* spectral_solver */,
 				A27187A51AA98DAC0027CC49 /* Products */,
 			);
@@ -86,7 +86,6 @@
 				A2C8B97A1AAF0FFD0035B0E6 /* iteration.cpp */,
 				A2C8B97C1AB0156C0035B0E6 /* initialization.cpp */,
 				A2C8B97E1AB015BF0035B0E6 /* printstatus.cpp */,
-				A2D9AD2B1ACD2A7C009D0770 /* matrix.cpp */,
 				A2D9AD2C1ACD2A7C009D0770 /* matrix.h */,
 			);
 			path = spectral_solver;
@@ -153,7 +152,6 @@
 				A2C8B97D1AB0156C0035B0E6 /* initialization.cpp in Sources */,
 				A2C8B97B1AAF0FFD0035B0E6 /* iteration.cpp in Sources */,
 				A2F33DDE1AAD78950006A46C /* odesolver.cpp in Sources */,
-				A2D9AD2D1ACD2A7C009D0770 /* matrix.cpp in Sources */,
 				A2C8B97F1AB015BF0035B0E6 /* printstatus.cpp in Sources */,
 				A27187B01AA990EC0027CC49 /* solver.cpp in Sources */,
 				A27187A81AA98DAC0027CC49 /* main.cpp in Sources */,
