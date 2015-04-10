@@ -11,8 +11,8 @@
 
  //Add punish term can sometimes speed up
 //#define MULTIPROCESS
-#define LINEAR_TEST_MODEL
-//#define FU_MODEL
+//#define LINEAR_TEST_MODEL
+#define FU_MODEL
 #include <cmath>
 
 

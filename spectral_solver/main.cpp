@@ -29,10 +29,10 @@ int main(int argc, const char  *argv[])
     //test1.printdebugM(test1.dFields, "df1.txt");
     //test1.printstatus();
     //test1.timeIdx=16384*128*48;
-    test1->solve(1000);
+    test1->solve(16384*32*24);
     //test1->RK4Step();
     //++test1->timeIdx;
-    test1->printstatus();
+    //test1->printstatus();
     //test1->Fun(test1->k1);
     //test1->printdebugM(&test1->k1, "k1.txt");
     time(&ctime2);

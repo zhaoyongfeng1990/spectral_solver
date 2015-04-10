@@ -50,8 +50,8 @@ void solver::solve(int totaliter)
 
 void solver::setBoundary()
 {
-    drWOA();
-    //dr(1);
+    //drWOA();
+    dr(1);
 #ifdef MULTIPROCESS
 #pragma omp parallel for
 #endif
