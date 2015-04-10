@@ -9,8 +9,8 @@
 #ifndef spectral_solver_parameters_h
 #define spectral_solver_parameters_h
 
-//#define LINEAR_TEST_MODEL
-#define FU_MODEL
+#define LINEAR_TEST_MODEL
+//#define FU_MODEL
 //#define INTERACTION_MODIFIED_FU
 
 #include <cmath>

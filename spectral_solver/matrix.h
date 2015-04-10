@@ -9,7 +9,7 @@
 #ifndef __spectral_solver__matrix__
 #define __spectral_solver__matrix__
 
-#define CHECK_FOR_ROBUSTNESS
+//#define CHECK_FOR_ROBUSTNESS
 
 template <typename DType>
 struct complex
@@ -27,28 +27,28 @@ public:
     
     ~math_vector();
     
-    /*inline*/ void alloc(int size1);
+    inline void alloc(int size1);
     
-    /*inline*/ DType& operator[](int idx);
-    /*inline*/ math_vector<DType>& operator=(math_vector<DType> const& cp);
+    inline DType& operator[](int idx);
+    inline math_vector<DType>& operator=(math_vector<DType> const& cp);
     
-    /*inline*/ void operator*=(DType factor);
-    /*inline*/ void operator/=(DType factor);
-    /*inline*/ void operator*=(int factor);
-    /*inline*/ void operator/=(int factor);
-    /*inline*/ void operator*=(double factor);
-    /*inline*/ void operator/=(double factor);
+    inline void operator*=(DType factor);
+    inline void operator/=(DType factor);
+    inline void operator*=(int factor);
+    inline void operator/=(int factor);
+    inline void operator*=(double factor);
+    inline void operator/=(double factor);
     
-    /*inline*/ void operator+=(math_vector<DType> const& matrixB);
-    /*inline*/ void operator-=(math_vector<DType> const& matrixB);
+    inline void operator+=(math_vector<DType> const& matrixB);
+    inline void operator-=(math_vector<DType> const& matrixB);
     
-    /*inline*/ void eleMultiply(math_vector<DType> const& matrixB);
-    /*inline*/ void eleDivide(math_vector<DType> const& matrixB);
+    inline void eleMultiply(math_vector<DType> const& matrixB);
+    inline void eleDivide(math_vector<DType> const& matrixB);
     
-    /*inline*/ void add(math_vector<DType> const& mA, math_vector<DType> const& mB);
-    /*inline*/ void minus(math_vector<DType> const& mA, math_vector<DType> const& mB);
-    /*inline*/ void eleMultiply(math_vector<DType> const& mA, math_vector<DType> const& mB);
-    /*inline*/ void eleDivide(math_vector<DType> const& mA, math_vector<DType> const& mB);
+    inline void add(math_vector<DType> const& mA, math_vector<DType> const& mB);
+    inline void minus(math_vector<DType> const& mA, math_vector<DType> const& mB);
+    inline void eleMultiply(math_vector<DType> const& mA, math_vector<DType> const& mB);
+    inline void eleDivide(math_vector<DType> const& mA, math_vector<DType> const& mB);
     
     DType* data;
     int size;
@@ -66,52 +66,52 @@ public:
     
     ~math_vector_complex();
     
-    /*inline*/ void alloc(int size1);
+    inline void alloc(int size1);
     
-    /*inline*/ DType& operator[](int idx);
-    /*inline*/ math_vector_complex<DType>& operator=(math_vector<DType> const& cp);
-    /*inline*/ math_vector_complex<DType>& operator=(math_vector_complex<DType> const& cp);
+    inline DType& operator[](int idx);
+    inline math_vector_complex<DType>& operator=(math_vector<DType> const& cp);
+    inline math_vector_complex<DType>& operator=(math_vector_complex<DType> const& cp);
     
-    /*inline*/ void operator*=(DType factor);
-    /*inline*/ void operator/=(DType factor);
-    /*inline*/ void operator*=(int factor);
-    /*inline*/ void operator/=(int factor);
-    /*inline*/ void operator*=(double factor);
-    /*inline*/ void operator/=(double factor);
+    inline void operator*=(DType factor);
+    inline void operator/=(DType factor);
+    inline void operator*=(int factor);
+    inline void operator/=(int factor);
+    inline void operator*=(double factor);
+    inline void operator/=(double factor);
     
-    /*inline*/ void operator*=(const complex<DType>& factor);
-    /*inline*/ void operator/=(const complex<DType>& factor);
+    inline void operator*=(const complex<DType>& factor);
+    inline void operator/=(const complex<DType>& factor);
     
-    /*inline*/ void operator+=(math_vector_complex<DType> const& matrixB);
-    /*inline*/ void operator-=(math_vector_complex<DType> const& matrixB);
-    /*inline*/ void operator+=(math_vector<DType> const& matrixB);
-    /*inline*/ void operator-=(math_vector<DType> const& matrixB);
+    inline void operator+=(math_vector_complex<DType> const& matrixB);
+    inline void operator-=(math_vector_complex<DType> const& matrixB);
+    inline void operator+=(math_vector<DType> const& matrixB);
+    inline void operator-=(math_vector<DType> const& matrixB);
     
-    /*inline*/ void eleMultiply(math_vector<DType> const& matrixB);
-    /*inline*/ void eleDivide(math_vector<DType> const& matrixB);
-    /*inline*/ void eleMultiply(math_vector_complex<DType> const& matrixB);
-    /*inline*/ void eleDivide(math_vector_complex<DType> const& matrixB);
+    inline void eleMultiply(math_vector<DType> const& matrixB);
+    inline void eleDivide(math_vector<DType> const& matrixB);
+    inline void eleMultiply(math_vector_complex<DType> const& matrixB);
+    inline void eleDivide(math_vector_complex<DType> const& matrixB);
     
-    /*inline*/ void add(math_vector<DType> const& mA, math_vector<DType> const& mB);
-    /*inline*/ void minus(math_vector<DType> const& mA, math_vector<DType> const& mB);
-    /*inline*/ void eleMultiply(math_vector<DType> const& mA, math_vector<DType> const& mB);
-    /*inline*/ void eleDivide(math_vector<DType> const& mA, math_vector<DType> const& mB);
+    inline void add(math_vector<DType> const& mA, math_vector<DType> const& mB);
+    inline void minus(math_vector<DType> const& mA, math_vector<DType> const& mB);
+    inline void eleMultiply(math_vector<DType> const& mA, math_vector<DType> const& mB);
+    inline void eleDivide(math_vector<DType> const& mA, math_vector<DType> const& mB);
     
-    /*inline*/ void add(math_vector<DType> const& mA, math_vector_complex<DType> const& mB);
-    /*inline*/ void minus(math_vector<DType> const& mA, math_vector_complex<DType> const& mB);
-    /*inline*/ void minus(math_vector_complex<DType> const& mA, math_vector<DType> const& mB);
-    /*inline*/ void eleMultiply(math_vector<DType> const& mA, math_vector_complex<DType> const& mB);
-    /*inline*/ void eleDivide(math_vector<DType> const& mA, math_vector_complex<DType> const& mB);
-    /*inline*/ void eleDivide(math_vector_complex<DType> const& mA, math_vector<DType> const& mB);
+    inline void add(math_vector<DType> const& mA, math_vector_complex<DType> const& mB);
+    inline void minus(math_vector<DType> const& mA, math_vector_complex<DType> const& mB);
+    inline void minus(math_vector_complex<DType> const& mA, math_vector<DType> const& mB);
+    inline void eleMultiply(math_vector<DType> const& mA, math_vector_complex<DType> const& mB);
+    inline void eleDivide(math_vector<DType> const& mA, math_vector_complex<DType> const& mB);
+    inline void eleDivide(math_vector_complex<DType> const& mA, math_vector<DType> const& mB);
     
-    /*inline*/ void add(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB);
-    /*inline*/ void minus(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB);
-    /*inline*/ void eleMultiply(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB);
-    /*inline*/ void eleDivide(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB);
+    inline void add(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB);
+    inline void minus(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB);
+    inline void eleMultiply(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB);
+    inline void eleDivide(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB);
     
-    /*inline*/ complex<DType> ele(int idx);
-    /*inline*/ DType& ReEle(int idx);
-    /*inline*/ DType& ImEle(int idx);
+    inline complex<DType> ele(int idx);
+    inline DType& ReEle(int idx);
+    inline DType& ImEle(int idx);
     
     DType* data;
     int size;
@@ -128,36 +128,36 @@ public:
     
     ~matrix();
     
-    /*inline*/ void alloc(int size1, int size2);
+    inline void alloc(int size1, int size2);
     
-    /*inline*/ DType& operator[](int idx);
-    /*inline*/ matrix<DType>& operator=(const matrix<DType>& cp);
+    inline DType& operator[](int idx);
+    inline matrix<DType>& operator=(const matrix<DType>& cp);
     
-    /*inline*/ void operator*=(DType factor);
-    /*inline*/ void operator/=(DType factor);
-    /*inline*/ void operator*=(int factor);
-    /*inline*/ void operator/=(int factor);
-    /*inline*/ void operator*=(double factor);
-    /*inline*/ void operator/=(double factor);
+    inline void operator*=(DType factor);
+    inline void operator/=(DType factor);
+    inline void operator*=(int factor);
+    inline void operator/=(int factor);
+    inline void operator*=(double factor);
+    inline void operator/=(double factor);
     
-    /*inline*/ void operator+=(const matrix<DType>& matrixB);
-    /*inline*/ void operator-=(const matrix<DType>& matrixB);
+    inline void operator+=(const matrix<DType>& matrixB);
+    inline void operator-=(const matrix<DType>& matrixB);
     
-    /*inline*/ void eleMultiply(const matrix<DType>& matrixB);
-    /*inline*/ void eleDivide(const matrix<DType>& matrixB);
+    inline void eleMultiply(const matrix<DType>& matrixB);
+    inline void eleDivide(const matrix<DType>& matrixB);
     
-    /*inline*/ void add(const matrix<DType>& mA, const matrix<DType>& mB);
-    /*inline*/ void minus(const matrix<DType>& mA, const matrix<DType>& mB);
-    /*inline*/ void eleMultiply(const matrix<DType>& mA, const matrix<DType>& mB);
-    /*inline*/ void eleDivide(const matrix<DType>& mA, const matrix<DType>& mB);
+    inline void add(const matrix<DType>& mA, const matrix<DType>& mB);
+    inline void minus(const matrix<DType>& mA, const matrix<DType>& mB);
+    inline void eleMultiply(const matrix<DType>& mA, const matrix<DType>& mB);
+    inline void eleDivide(const matrix<DType>& mA, const matrix<DType>& mB);
     
-    /*inline*/ DType& ele(int y, int x);
+    inline DType& ele(int y, int x);
     
-    /*inline*/ void setRow(int Idx, DType number);
-    /*inline*/ void setCol(int Idx, DType number);
-    /*inline*/ void scaleRow(int Idx, DType number);
-    /*inline*/ void scaleCol(int Idx, DType number);
-    /*inline*/ void allSet(DType number);
+    inline void setRow(int Idx, DType number);
+    inline void setCol(int Idx, DType number);
+    inline void scaleRow(int Idx, DType number);
+    inline void scaleCol(int Idx, DType number);
+    inline void allSet(DType number);
     
     DType* data;
     int sizex;
@@ -177,57 +177,57 @@ public:
     
     ~matrix_complex();
     
-    /*inline*/ void alloc(int size1, int size2);
+    inline void alloc(int size1, int size2);
     
-    /*inline*/ DType& operator[](int idx);
-    /*inline*/ matrix_complex<DType>& operator=(const matrix<DType>& cp);
-    /*inline*/ matrix_complex<DType>& operator=(matrix_complex<DType> const& cp);
+    inline DType& operator[](int idx);
+    inline matrix_complex<DType>& operator=(const matrix<DType>& cp);
+    inline matrix_complex<DType>& operator=(matrix_complex<DType> const& cp);
     
-    /*inline*/ void operator*=(DType factor);
-    /*inline*/ void operator/=(DType factor);
-    /*inline*/ void operator*=(int factor);
-    /*inline*/ void operator/=(int factor);
-    /*inline*/ void operator*=(double factor);
-    /*inline*/ void operator/=(double factor);
+    inline void operator*=(DType factor);
+    inline void operator/=(DType factor);
+    inline void operator*=(int factor);
+    inline void operator/=(int factor);
+    inline void operator*=(double factor);
+    inline void operator/=(double factor);
     
-    /*inline*/ void operator*=(const complex<DType>& factor);
-    /*inline*/ void operator/=(const complex<DType>& factor);
+    inline void operator*=(const complex<DType>& factor);
+    inline void operator/=(const complex<DType>& factor);
     
-    /*inline*/ void operator+=(matrix_complex<DType> const& matrixB);
-    /*inline*/ void operator-=(matrix_complex<DType> const& matrixB);
-    /*inline*/ void operator+=(const matrix<DType>& matrixB);
-    /*inline*/ void operator-=(const matrix<DType>& matrixB);
+    inline void operator+=(matrix_complex<DType> const& matrixB);
+    inline void operator-=(matrix_complex<DType> const& matrixB);
+    inline void operator+=(const matrix<DType>& matrixB);
+    inline void operator-=(const matrix<DType>& matrixB);
     
-    /*inline*/ void eleMultiply(const matrix<DType>& matrixB);
-    /*inline*/ void eleDivide(const matrix<DType>& matrixB);
-    /*inline*/ void eleMultiply(matrix_complex<DType> const& matrixB);
-    /*inline*/ void eleDivide(matrix_complex<DType> const& matrixB);
+    inline void eleMultiply(const matrix<DType>& matrixB);
+    inline void eleDivide(const matrix<DType>& matrixB);
+    inline void eleMultiply(matrix_complex<DType> const& matrixB);
+    inline void eleDivide(matrix_complex<DType> const& matrixB);
     
-    /*inline*/ void add(const matrix<DType>& mA, const matrix<DType>& mB);
-    /*inline*/ void minus(const matrix<DType>& mA, const matrix<DType>& mB);
-    /*inline*/ void eleMultiply(const matrix<DType>& mA, const matrix<DType>& mB);
-    /*inline*/ void eleDivide(const matrix<DType>& mA, const matrix<DType>& mB);
+    inline void add(const matrix<DType>& mA, const matrix<DType>& mB);
+    inline void minus(const matrix<DType>& mA, const matrix<DType>& mB);
+    inline void eleMultiply(const matrix<DType>& mA, const matrix<DType>& mB);
+    inline void eleDivide(const matrix<DType>& mA, const matrix<DType>& mB);
     
-    /*inline*/ void add(const matrix<DType>& mA, matrix_complex<DType> const& mB);
-    /*inline*/ void minus(const matrix<DType>& mA, matrix_complex<DType> const& mB);
-    /*inline*/ void minus(matrix_complex<DType> const& mA, const matrix<DType>& mB);
-    /*inline*/ void eleMultiply(const matrix<DType>& mA, matrix_complex<DType> const& mB);
-    /*inline*/ void eleDivide(const matrix<DType>& mA, matrix_complex<DType> const& mB);
-    /*inline*/ void eleDivide(matrix_complex<DType> const& mA, const matrix<DType>& mB);
+    inline void add(const matrix<DType>& mA, matrix_complex<DType> const& mB);
+    inline void minus(const matrix<DType>& mA, matrix_complex<DType> const& mB);
+    inline void minus(matrix_complex<DType> const& mA, const matrix<DType>& mB);
+    inline void eleMultiply(const matrix<DType>& mA, matrix_complex<DType> const& mB);
+    inline void eleDivide(const matrix<DType>& mA, matrix_complex<DType> const& mB);
+    inline void eleDivide(matrix_complex<DType> const& mA, const matrix<DType>& mB);
     
-    /*inline*/ void add(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB);
-    /*inline*/ void minus(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB);
-    /*inline*/ void eleMultiply(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB);
-    /*inline*/ void eleDivide(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB);
+    inline void add(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB);
+    inline void minus(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB);
+    inline void eleMultiply(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB);
+    inline void eleDivide(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB);
     
-    /*inline*/ complex<DType> ele(int y, int x);
-    /*inline*/ DType& ReEle(int y, int x);
-    /*inline*/ DType& ImEle(int y, int x);
+    inline complex<DType> ele(int y, int x);
+    inline DType& ReEle(int y, int x);
+    inline DType& ImEle(int y, int x);
     
-    /*inline*/ void setRow(int Idx, DType Re, DType Im);
-    /*inline*/ void setCol(int Idx, DType Re, DType Im);
-    /*inline*/ void scaleRow(int Idx, DType Re, DType Im);
-    /*inline*/ void scaleCol(int Idx, DType Re, DType Im);
+    inline void setRow(int Idx, DType Re, DType Im);
+    inline void setCol(int Idx, DType Re, DType Im);
+    inline void scaleRow(int Idx, DType Re, DType Im);
+    inline void scaleCol(int Idx, DType Re, DType Im);
     
     DType* data;
     int sizex;
@@ -261,7 +261,7 @@ matrix<DType>::matrix(int size1, int size2)
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::alloc(int size1, int size2)
+inline void matrix<DType>::alloc(int size1, int size2)
 {
     sizex=size2;
     sizey=size1;
@@ -300,13 +300,13 @@ matrix<DType>::~matrix()
 }
 
 template <typename DType>
-/*inline*/ DType& matrix<DType>::operator[](int idx)
+inline DType& matrix<DType>::operator[](int idx)
 {
     return data[idx];
 }
 
 template <typename DType>
-/*inline*/ matrix<DType>& matrix<DType>::operator=(matrix<DType> const& cp)
+inline matrix<DType>& matrix<DType>::operator=(matrix<DType> const& cp)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -333,7 +333,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::operator*=(DType factor)
+inline void matrix<DType>::operator*=(DType factor)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -342,7 +342,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::operator/=(DType factor)
+inline void matrix<DType>::operator/=(DType factor)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -351,7 +351,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::operator*=(int factor)
+inline void matrix<DType>::operator*=(int factor)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -360,7 +360,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::operator/=(int factor)
+inline void matrix<DType>::operator/=(int factor)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -369,7 +369,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::operator*=(double factor)
+inline void matrix<DType>::operator*=(double factor)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -378,7 +378,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::operator/=(double factor)
+inline void matrix<DType>::operator/=(double factor)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -387,7 +387,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::operator+=(matrix<DType> const& matrixB)
+inline void matrix<DType>::operator+=(matrix<DType> const& matrixB)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -396,7 +396,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::operator-=(matrix<DType> const& matrixB)
+inline void matrix<DType>::operator-=(matrix<DType> const& matrixB)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -405,7 +405,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::eleMultiply(matrix<DType> const& matrixB)
+inline void matrix<DType>::eleMultiply(matrix<DType> const& matrixB)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -414,7 +414,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::eleDivide(matrix<DType> const& matrixB)
+inline void matrix<DType>::eleDivide(matrix<DType> const& matrixB)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -423,7 +423,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::add(matrix<DType> const& mA, matrix<DType> const& mB)
+inline void matrix<DType>::add(matrix<DType> const& mA, matrix<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -449,7 +449,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::minus(matrix<DType> const& mA, matrix<DType> const& mB)
+inline void matrix<DType>::minus(matrix<DType> const& mA, matrix<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -475,7 +475,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::eleMultiply(matrix<DType> const& mA, matrix<DType> const& mB)
+inline void matrix<DType>::eleMultiply(matrix<DType> const& mA, matrix<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -501,7 +501,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::eleDivide(matrix<DType> const& mA, matrix<DType> const& mB)
+inline void matrix<DType>::eleDivide(matrix<DType> const& mA, matrix<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -527,13 +527,13 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ DType& matrix<DType>::ele(int y, int x)
+inline DType& matrix<DType>::ele(int y, int x)
 {
     return data[x+y*sizex];
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::setRow(int Idx, DType number)
+inline void matrix<DType>::setRow(int Idx, DType number)
 {
     for (int iter=Idx*sizex; iter<Idx*sizex+sizex; ++iter)
     {
@@ -542,7 +542,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::setCol(int Idx, DType number)
+inline void matrix<DType>::setCol(int Idx, DType number)
 {
     for (int iter=Idx; iter<NumE+Idx; iter+=sizex)
     {
@@ -551,7 +551,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::scaleRow(int Idx, DType number)
+inline void matrix<DType>::scaleRow(int Idx, DType number)
 {
     for (int iter=Idx*sizex; iter<Idx*sizex+sizex; ++iter)
     {
@@ -560,7 +560,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::scaleCol(int Idx, DType number)
+inline void matrix<DType>::scaleCol(int Idx, DType number)
 {
     for (int iter=Idx; iter<NumE+Idx; iter+=sizex)
     {
@@ -569,7 +569,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::allSet(DType number)
+inline void matrix<DType>::allSet(DType number)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -604,7 +604,7 @@ matrix_complex<DType>::matrix_complex(int size1, int size2)
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::alloc(int size1, int size2)
+inline void matrix_complex<DType>::alloc(int size1, int size2)
 {
     sizex=size2;
     sizey=size1;
@@ -678,13 +678,13 @@ matrix_complex<DType>::~matrix_complex()
 }
 
 template <typename DType>
-/*inline*/ DType& matrix_complex<DType>::operator[](int idx)
+inline DType& matrix_complex<DType>::operator[](int idx)
 {
     return data[idx];
 }
 
 template <typename DType>
-/*inline*/ matrix_complex<DType>& matrix_complex<DType>::operator=(matrix<DType> const& cp)
+inline matrix_complex<DType>& matrix_complex<DType>::operator=(matrix<DType> const& cp)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -715,7 +715,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ matrix_complex<DType>& matrix_complex<DType>::operator=(matrix_complex<DType> const& cp)
+inline matrix_complex<DType>& matrix_complex<DType>::operator=(matrix_complex<DType> const& cp)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -746,7 +746,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator*=(DType factor)
+inline void matrix_complex<DType>::operator*=(DType factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -755,7 +755,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator/=(DType factor)
+inline void matrix_complex<DType>::operator/=(DType factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -764,7 +764,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator*=(int factor)
+inline void matrix_complex<DType>::operator*=(int factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -773,7 +773,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator/=(int factor)
+inline void matrix_complex<DType>::operator/=(int factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -782,7 +782,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator*=(double factor)
+inline void matrix_complex<DType>::operator*=(double factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -791,7 +791,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator/=(double factor)
+inline void matrix_complex<DType>::operator/=(double factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -800,7 +800,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator*=(const complex<DType>& factor)
+inline void matrix_complex<DType>::operator*=(const complex<DType>& factor)
 {
     DType& fRe=factor.data[0];
     DType& fIm=factor.data[1];
@@ -816,7 +816,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator/=(const complex<DType>& factor)
+inline void matrix_complex<DType>::operator/=(const complex<DType>& factor)
 {
     DType& fRe=factor.data[0];
     DType& fIm=factor.data[1];
@@ -835,7 +835,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator+=(matrix_complex<DType> const& matrixB)
+inline void matrix_complex<DType>::operator+=(matrix_complex<DType> const& matrixB)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -844,7 +844,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator-=(matrix_complex<DType> const& matrixB)
+inline void matrix_complex<DType>::operator-=(matrix_complex<DType> const& matrixB)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -853,7 +853,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator+=(matrix<DType> const& matrixB)
+inline void matrix_complex<DType>::operator+=(matrix<DType> const& matrixB)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -862,7 +862,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::operator-=(matrix<DType> const& matrixB)
+inline void matrix_complex<DType>::operator-=(matrix<DType> const& matrixB)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -871,7 +871,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleMultiply(matrix<DType> const& matrixB)
+inline void matrix_complex<DType>::eleMultiply(matrix<DType> const& matrixB)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -881,7 +881,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleDivide(matrix<DType> const& matrixB)
+inline void matrix_complex<DType>::eleDivide(matrix<DType> const& matrixB)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -891,7 +891,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleMultiply(matrix_complex<DType> const& matrixB)
+inline void matrix_complex<DType>::eleMultiply(matrix_complex<DType> const& matrixB)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -907,7 +907,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleDivide(matrix_complex<DType> const& matrixB)
+inline void matrix_complex<DType>::eleDivide(matrix_complex<DType> const& matrixB)
 {
     for (int iter=0; iter<NumE; ++iter)
     {
@@ -924,7 +924,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::add(matrix<DType> const& mA, matrix<DType> const& mB)
+inline void matrix_complex<DType>::add(matrix<DType> const& mA, matrix<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -955,7 +955,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::minus(matrix<DType> const& mA, matrix<DType> const& mB)
+inline void matrix_complex<DType>::minus(matrix<DType> const& mA, matrix<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -986,7 +986,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleMultiply(matrix<DType> const& mA, matrix<DType> const& mB)
+inline void matrix_complex<DType>::eleMultiply(matrix<DType> const& mA, matrix<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1017,7 +1017,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleDivide(matrix<DType> const& mA, matrix<DType> const& mB)
+inline void matrix_complex<DType>::eleDivide(matrix<DType> const& mA, matrix<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1048,7 +1048,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::add(matrix<DType> const& mA, matrix_complex<DType> const& mB)
+inline void matrix_complex<DType>::add(matrix<DType> const& mA, matrix_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1079,7 +1079,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::minus(matrix<DType> const& mA, matrix_complex<DType> const& mB)
+inline void matrix_complex<DType>::minus(matrix<DType> const& mA, matrix_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1110,7 +1110,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::minus(matrix_complex<DType> const& mA, matrix<DType> const& mB)
+inline void matrix_complex<DType>::minus(matrix_complex<DType> const& mA, matrix<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1141,7 +1141,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleMultiply(matrix<DType> const& mA, matrix_complex<DType> const& mB)
+inline void matrix_complex<DType>::eleMultiply(matrix<DType> const& mA, matrix_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1172,7 +1172,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleDivide(matrix_complex<DType> const& mA, matrix<DType> const& mB)
+inline void matrix_complex<DType>::eleDivide(matrix_complex<DType> const& mA, matrix<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1203,7 +1203,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleDivide(matrix<DType> const& mA, matrix_complex<DType> const& mB)
+inline void matrix_complex<DType>::eleDivide(matrix<DType> const& mA, matrix_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1237,7 +1237,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::add(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB)
+inline void matrix_complex<DType>::add(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1267,7 +1267,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::minus(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB)
+inline void matrix_complex<DType>::minus(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1297,7 +1297,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleMultiply(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB)
+inline void matrix_complex<DType>::eleMultiply(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1332,7 +1332,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::eleDivide(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB)
+inline void matrix_complex<DType>::eleDivide(matrix_complex<DType> const& mA, matrix_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1368,7 +1368,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ complex<DType> matrix_complex<DType>::ele(int y, int x)
+inline complex<DType> matrix_complex<DType>::ele(int y, int x)
 {
     complex<DType> result;
     result.data[0]=data[2*x+y*width];
@@ -1377,19 +1377,19 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ DType& matrix_complex<DType>::ReEle(int y, int x)
+inline DType& matrix_complex<DType>::ReEle(int y, int x)
 {
     return data[2*x+y*width];
 }
 
 template <typename DType>
-/*inline*/ DType& matrix_complex<DType>::ImEle(int y, int x)
+inline DType& matrix_complex<DType>::ImEle(int y, int x)
 {
     return data[2*x+1+y*width];
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::setRow(int Idx, DType Re, DType Im)
+inline void matrix_complex<DType>::setRow(int Idx, DType Re, DType Im)
 {
     for (int iter=Idx*width; iter<Idx*width+width; iter+=2)
     {
@@ -1399,7 +1399,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::setCol(int Idx, DType Re, DType Im)
+inline void matrix_complex<DType>::setCol(int Idx, DType Re, DType Im)
 {
     for (int iter=Idx*2; iter<NumD; iter+=width)
     {
@@ -1409,7 +1409,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::scaleRow(int Idx, DType Re, DType Im)
+inline void matrix_complex<DType>::scaleRow(int Idx, DType Re, DType Im)
 {
     for (int iter=Idx*width; iter<Idx*width+width; iter+=2)
     {
@@ -1423,7 +1423,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix_complex<DType>::scaleCol(int Idx, DType Re, DType Im)
+inline void matrix_complex<DType>::scaleCol(int Idx, DType Re, DType Im)
 {
     for (int iter=Idx*2; iter<NumD; iter+=width)
     {
@@ -1455,7 +1455,7 @@ math_vector<DType>::math_vector(int size1)
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::alloc(int size1)
+inline void math_vector<DType>::alloc(int size1)
 {
     size=size1;
     if (data!=0)
@@ -1490,13 +1490,13 @@ math_vector<DType>::~math_vector()
 }
 
 template <typename DType>
-/*inline*/ DType& math_vector<DType>::operator[](int idx)
+inline DType& math_vector<DType>::operator[](int idx)
 {
     return data[idx];
 }
 
 template <typename DType>
-/*inline*/ math_vector<DType>& math_vector<DType>::operator=(math_vector<DType> const& cp)
+inline math_vector<DType>& math_vector<DType>::operator=(math_vector<DType> const& cp)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1519,7 +1519,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::operator*=(DType factor)
+inline void math_vector<DType>::operator*=(DType factor)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1528,7 +1528,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::operator/=(DType factor)
+inline void math_vector<DType>::operator/=(DType factor)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1537,7 +1537,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::operator*=(int factor)
+inline void math_vector<DType>::operator*=(int factor)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1546,7 +1546,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::operator/=(int factor)
+inline void math_vector<DType>::operator/=(int factor)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1555,7 +1555,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::operator*=(double factor)
+inline void math_vector<DType>::operator*=(double factor)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1564,7 +1564,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::operator/=(double factor)
+inline void math_vector<DType>::operator/=(double factor)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1573,7 +1573,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::operator+=(math_vector<DType> const& math_vectorB)
+inline void math_vector<DType>::operator+=(math_vector<DType> const& math_vectorB)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1582,7 +1582,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::operator-=(math_vector<DType> const& math_vectorB)
+inline void math_vector<DType>::operator-=(math_vector<DType> const& math_vectorB)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1591,7 +1591,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::eleMultiply(math_vector<DType> const& math_vectorB)
+inline void math_vector<DType>::eleMultiply(math_vector<DType> const& math_vectorB)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1600,7 +1600,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::eleDivide(math_vector<DType> const& math_vectorB)
+inline void math_vector<DType>::eleDivide(math_vector<DType> const& math_vectorB)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1609,7 +1609,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::add(math_vector<DType> const& mA, math_vector<DType> const& mB)
+inline void math_vector<DType>::add(math_vector<DType> const& mA, math_vector<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1631,7 +1631,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::minus(math_vector<DType> const& mA, math_vector<DType> const& mB)
+inline void math_vector<DType>::minus(math_vector<DType> const& mA, math_vector<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1653,7 +1653,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::eleMultiply(math_vector<DType> const& mA, math_vector<DType> const& mB)
+inline void math_vector<DType>::eleMultiply(math_vector<DType> const& mA, math_vector<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1675,7 +1675,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector<DType>::eleDivide(math_vector<DType> const& mA, math_vector<DType> const& mB)
+inline void math_vector<DType>::eleDivide(math_vector<DType> const& mA, math_vector<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1717,7 +1717,7 @@ math_vector_complex<DType>::math_vector_complex(int size1)
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::alloc(int size1)
+inline void math_vector_complex<DType>::alloc(int size1)
 {
     size=size1;
     NumD=2*size;
@@ -1779,13 +1779,13 @@ math_vector_complex<DType>::~math_vector_complex()
 }
 
 template <typename DType>
-/*inline*/ DType& math_vector_complex<DType>::operator[](int idx)
+inline DType& math_vector_complex<DType>::operator[](int idx)
 {
     return data[idx];
 }
 
 template <typename DType>
-/*inline*/ math_vector_complex<DType>& math_vector_complex<DType>::operator=(math_vector<DType> const& cp)
+inline math_vector_complex<DType>& math_vector_complex<DType>::operator=(math_vector<DType> const& cp)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1810,7 +1810,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ math_vector_complex<DType>& math_vector_complex<DType>::operator=(math_vector_complex<DType> const& cp)
+inline math_vector_complex<DType>& math_vector_complex<DType>::operator=(math_vector_complex<DType> const& cp)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -1835,7 +1835,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator*=(DType factor)
+inline void math_vector_complex<DType>::operator*=(DType factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -1844,7 +1844,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator/=(DType factor)
+inline void math_vector_complex<DType>::operator/=(DType factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -1853,7 +1853,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator*=(int factor)
+inline void math_vector_complex<DType>::operator*=(int factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -1862,7 +1862,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator/=(int factor)
+inline void math_vector_complex<DType>::operator/=(int factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -1871,7 +1871,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator*=(double factor)
+inline void math_vector_complex<DType>::operator*=(double factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -1880,7 +1880,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator/=(double factor)
+inline void math_vector_complex<DType>::operator/=(double factor)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -1889,7 +1889,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator*=(const complex<DType>& factor)
+inline void math_vector_complex<DType>::operator*=(const complex<DType>& factor)
 {
     DType& fRe=factor.data[0];
     DType& fIm=factor.data[1];
@@ -1905,7 +1905,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator/=(const complex<DType>& factor)
+inline void math_vector_complex<DType>::operator/=(const complex<DType>& factor)
 {
     DType& fRe=factor.data[0];
     DType& fIm=factor.data[1];
@@ -1924,7 +1924,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator+=(math_vector_complex<DType> const& math_vectorB)
+inline void math_vector_complex<DType>::operator+=(math_vector_complex<DType> const& math_vectorB)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -1933,7 +1933,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator-=(math_vector_complex<DType> const& math_vectorB)
+inline void math_vector_complex<DType>::operator-=(math_vector_complex<DType> const& math_vectorB)
 {
     for (int iter=0; iter<NumD; ++iter)
     {
@@ -1942,7 +1942,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator+=(math_vector<DType> const& math_vectorB)
+inline void math_vector_complex<DType>::operator+=(math_vector<DType> const& math_vectorB)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1951,7 +1951,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::operator-=(math_vector<DType> const& math_vectorB)
+inline void math_vector_complex<DType>::operator-=(math_vector<DType> const& math_vectorB)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1960,7 +1960,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleMultiply(math_vector<DType> const& math_vectorB)
+inline void math_vector_complex<DType>::eleMultiply(math_vector<DType> const& math_vectorB)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1970,7 +1970,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleDivide(math_vector<DType> const& math_vectorB)
+inline void math_vector_complex<DType>::eleDivide(math_vector<DType> const& math_vectorB)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1980,7 +1980,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleMultiply(math_vector_complex<DType> const& math_vectorB)
+inline void math_vector_complex<DType>::eleMultiply(math_vector_complex<DType> const& math_vectorB)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -1996,7 +1996,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleDivide(math_vector_complex<DType> const& math_vectorB)
+inline void math_vector_complex<DType>::eleDivide(math_vector_complex<DType> const& math_vectorB)
 {
     for (int iter=0; iter<size; ++iter)
     {
@@ -2013,7 +2013,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::add(math_vector<DType> const& mA, math_vector<DType> const& mB)
+inline void math_vector_complex<DType>::add(math_vector<DType> const& mA, math_vector<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2038,7 +2038,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::minus(math_vector<DType> const& mA, math_vector<DType> const& mB)
+inline void math_vector_complex<DType>::minus(math_vector<DType> const& mA, math_vector<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2063,7 +2063,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleMultiply(math_vector<DType> const& mA, math_vector<DType> const& mB)
+inline void math_vector_complex<DType>::eleMultiply(math_vector<DType> const& mA, math_vector<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2088,7 +2088,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleDivide(math_vector<DType> const& mA, math_vector<DType> const& mB)
+inline void math_vector_complex<DType>::eleDivide(math_vector<DType> const& mA, math_vector<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2113,7 +2113,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::add(math_vector<DType> const& mA, math_vector_complex<DType> const& mB)
+inline void math_vector_complex<DType>::add(math_vector<DType> const& mA, math_vector_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2138,7 +2138,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::minus(math_vector<DType> const& mA, math_vector_complex<DType> const& mB)
+inline void math_vector_complex<DType>::minus(math_vector<DType> const& mA, math_vector_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2163,7 +2163,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::minus(math_vector_complex<DType> const& mA, math_vector<DType> const& mB)
+inline void math_vector_complex<DType>::minus(math_vector_complex<DType> const& mA, math_vector<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2188,7 +2188,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleMultiply(math_vector<DType> const& mA, math_vector_complex<DType> const& mB)
+inline void math_vector_complex<DType>::eleMultiply(math_vector<DType> const& mA, math_vector_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2213,7 +2213,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleDivide(math_vector_complex<DType> const& mA, math_vector<DType> const& mB)
+inline void math_vector_complex<DType>::eleDivide(math_vector_complex<DType> const& mA, math_vector<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2238,7 +2238,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleDivide(math_vector<DType> const& mA, math_vector_complex<DType> const& mB)
+inline void math_vector_complex<DType>::eleDivide(math_vector<DType> const& mA, math_vector_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2266,7 +2266,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::add(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB)
+inline void math_vector_complex<DType>::add(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2290,7 +2290,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::minus(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB)
+inline void math_vector_complex<DType>::minus(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2314,7 +2314,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleMultiply(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB)
+inline void math_vector_complex<DType>::eleMultiply(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2343,7 +2343,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void math_vector_complex<DType>::eleDivide(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB)
+inline void math_vector_complex<DType>::eleDivide(math_vector_complex<DType> const& mA, math_vector_complex<DType> const& mB)
 {
 #ifdef CHECK_FOR_ROBUSTNESS
     if (data==0)
@@ -2373,7 +2373,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ complex<DType> math_vector_complex<DType>::ele(int idx)
+inline complex<DType> math_vector_complex<DType>::ele(int idx)
 {
     complex<DType> result;
     result.data[0]=data[2*idx];
@@ -2382,13 +2382,13 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ DType& math_vector_complex<DType>::ReEle(int idx)
+inline DType& math_vector_complex<DType>::ReEle(int idx)
 {
     return data[2*idx];
 }
 
 template <typename DType>
-/*inline*/ DType& math_vector_complex<DType>::ImEle(int idx)
+inline DType& math_vector_complex<DType>::ImEle(int idx)
 {
     return data[2*idx+1];
 }
