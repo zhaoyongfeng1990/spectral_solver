@@ -25,9 +25,9 @@ void solver::HGFuns()
         //Calculation for H functions. Use f[] to express.
 #ifdef FU_MODEL
         //Term in front of dField 1
-        long doublepowfm1=pow(f[1]/Kh,M-1);
-        long doublepowfm=powfm1*f[1]/Kh;
-        long doublepowfmp1=powfm+1;
+        long double powfm1=pow(f[1]/Kh,M-1);
+        long double powfm=powfm1*f[1]/Kh;
+        long double powfmp1=powfm+1;
         Hij[0]->data[iter]=(Drho+Drho0*powfm)/powfmp1;
         Hij[0]->data[iter+NumPoints]=0;
         Hij[0]->data[iter+2*NumPoints]=0;
@@ -40,7 +40,7 @@ void solver::HGFuns()
         Hij[2]->data[iter+NumPoints]=0;
         Hij[2]->data[iter+2*NumPoints]=Dn;
         
-        long doublef2=f[2]*f[2];
+        long double f2=f[2]*f[2];
         //Ending
         //Calculation for G function.
         G[iter]=Gamma*f2*f[0]/(f2+Kn2);

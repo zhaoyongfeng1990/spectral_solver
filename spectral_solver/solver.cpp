@@ -12,7 +12,7 @@
 solver::solver() : timefile("time.txt")
 {
     fftwl_init_threads();
-    fftwl_plan_with_nthreads(8);
+    fftwl_plan_with_nthreads(2);
     
     time=0;
     StepT=iniStepT;
