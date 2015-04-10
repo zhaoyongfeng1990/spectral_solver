@@ -11,63 +11,58 @@
 
 solver::solver() : timefile("time.txt")
 {
-    fftw_init_threads();
-    fftw_plan_with_nthreads(2);
+    fftwl_init_threads();
+    fftwl_plan_with_nthreads(8);
     
     time=0;
     StepT=iniStepT;
     timeIdx=0;
     
-    Fields=gsl_matrix_calloc(matrixH, Ntheta);
-    gsl_matrix_set_zero(Fields);
-    dFields=gsl_matrix_calloc(matrixH, Ntheta);
-    gsl_matrix_set_zero(dFields);
-    tempFields=gsl_matrix_calloc(matrixH, Ntheta);
-    gsl_matrix_set_zero(tempFields);
-    caltempFields=gsl_matrix_calloc(matrixH, Ntheta);
-    gsl_matrix_set_zero(caltempFields);
-    G=gsl_matrix_calloc(matrixH, Ntheta);
-    gsl_matrix_set_zero(G);
+    Fields.alloc(matrixH, Ntheta);
+    dFields.alloc(matrixH, Ntheta);
+    tempFields.alloc(matrixH, Ntheta);
+    caltempFields.alloc(matrixH, Ntheta);
+    G.alloc(matrixH, Ntheta);
     
-    k1=gsl_matrix_alloc(matrixH, Ntheta);
-    k2=gsl_matrix_alloc(matrixH, Ntheta);
-    k3=gsl_matrix_alloc(matrixH, Ntheta);
-    k4=gsl_matrix_alloc(matrixH, Ntheta);
-    k5=gsl_matrix_alloc(matrixH, Ntheta);
-    k6=gsl_matrix_alloc(matrixH, Ntheta);
-    k7=gsl_matrix_alloc(matrixH, Ntheta);
-    k8=gsl_matrix_alloc(matrixH, Ntheta);
+    k1.alloc(matrixH, Ntheta);
+    k2.alloc(matrixH, Ntheta);
+    k3.alloc(matrixH, Ntheta);
+    k4.alloc(matrixH, Ntheta);
+    k5.alloc(matrixH, Ntheta);
+    k6.alloc(matrixH, Ntheta);
+    k7.alloc(matrixH, Ntheta);
+    k8.alloc(matrixH, Ntheta);
     
-    odetempField=gsl_matrix_alloc(matrixH, Ntheta);
-    odetempField2=gsl_matrix_alloc(matrixH, Ntheta);
+    odetempField.alloc(matrixH, Ntheta);
+    odetempField2.alloc(matrixH, Ntheta);
     
-    boundary=gsl_matrix_calloc(NumField, Ntheta);
+    boundary.alloc(NumField, Ntheta);
     
-    for (int iter=0; iter<NumField; ++iter)
-    {
-        dFieldView[iter]=gsl_matrix_submatrix(dFields, iter*Nrp, 0, Nrp, Ntheta);
-        ctFieldView[iter]=gsl_matrix_submatrix(caltempFields, iter*Nrp, 0, Nrp, Ntheta);
-    }
+    //for (int iter=0; iter<NumField; ++iter)
+    //{
+    //    dFieldView[iter]=matrix<long double>_submatrix(dFields, iter*Nrp, 0, Nrp, Ntheta);
+    //    ctFieldView[iter]=matrix<long double>_submatrix(caltempFields, iter*Nrp, 0, Nrp, Ntheta);
+    //}
     
-    r=gsl_vector_calloc(Nrp);
-    r2=gsl_vector_calloc(Nrp);
+    r.alloc(Nrp);
+    r2.alloc(Nrp);
     for (int iter=0; iter<Nrp; ++iter)
     {
-        r->data[iter]=cos(iter*PI/logicNr);
-        r2->data[iter]=cos(iter*PI/logicNr)*cos(iter*PI/logicNr);
+        r[iter]=cos(iter*PI/logicNr);
+        r2[iter]=r[iter]*r[iter];
     }
     
-    theta=gsl_vector_calloc(Ntheta);
+    theta.alloc(Ntheta);
     for (int iter=0; iter<Ntheta; ++iter)
     {
-        theta->data[iter]=2*PI*iter/Ntheta;
+        theta[iter]=2*PI*iter/Ntheta;
     }
     
     HistoryFields.resize(5);
     for (int iterh=0; iterh<5; ++iterh)
     {
-        HistoryFields[iterh]=gsl_matrix_calloc(matrixH, Ntheta);
-        gsl_matrix_set_zero(HistoryFields[iterh]);
+        HistoryFields[iterh]=new matrix<long double>();
+        HistoryFields[iterh]->alloc(matrixH, Ntheta);
     }
     
     if (IncreaseTimes!=0)
@@ -75,88 +70,65 @@ solver::solver() : timefile("time.txt")
         DoubledHistoryFields.resize(3);
         for (int iterh=0; iterh<3; ++iterh)
         {
-            DoubledHistoryFields[iterh]=gsl_matrix_calloc(matrixH, Ntheta);
-            gsl_matrix_set_zero(DoubledHistoryFields[iterh]);
+            DoubledHistoryFields[iterh]=new matrix<long double>();
+            DoubledHistoryFields[iterh]->alloc(matrixH, Ntheta);\
         }
     }
     
     Hij.resize(NumField);
     for (int iterh=0; iterh<NumField; ++iterh)
     {
-        Hij[iterh]=gsl_matrix_calloc(matrixH, Ntheta);
-        gsl_matrix_set_zero(Hij[iterh]);
+        Hij[iterh]=new matrix<long double>();
+        Hij[iterh]->alloc(matrixH, Ntheta);
     }
     
     int n1[]={Nr};
     int n2[]={Ntheta};
     
-    dctr=gsl_matrix_calloc(Nr, Ntheta*NumField);
-    fftc=gsl_matrix_complex_calloc(matrixH, Ntheta/2+1);
+    dctr.alloc(Nr, Ntheta*NumField);
+    fftc.alloc(matrixH, Ntheta/2+1);
     
-    fftr2c=fftw_plan_many_dft_r2c(1, n2, matrixH, Fields->data, n2, 1, Ntheta, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
-    tempfftr2c=fftw_plan_many_dft_r2c(1, n2, matrixH, tempFields->data, n2, 1, Ntheta, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
+    fftr2c=fftwl_plan_many_dft_r2c(1, n2, matrixH, Fields.data, n2, 1, Ntheta, (fftwl_complex *)fftc.data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
+    tempfftr2c=fftwl_plan_many_dft_r2c(1, n2, matrixH, tempFields.data, n2, 1, Ntheta, (fftwl_complex *)fftc.data, n2, 1, Ntheta/2+1, FFTW_MEASURE);
     
-    ifftc2r=fftw_plan_many_dft_c2r(1, n2, matrixH, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, dFields->data, n2, 1, Ntheta, FFTW_MEASURE);
-    tempifftc2r=fftw_plan_many_dft_c2r(1, n2, matrixH, (fftw_complex *)fftc->data, n2, 1, Ntheta/2+1, dFields->data, n2, 1, Ntheta, FFTW_MEASURE);
+    ifftc2r=fftwl_plan_many_dft_c2r(1, n2, matrixH, (fftwl_complex *)fftc.data, n2, 1, Ntheta/2+1, dFields.data, n2, 1, Ntheta, FFTW_MEASURE);
+    tempifftc2r=fftwl_plan_many_dft_c2r(1, n2, matrixH, (fftwl_complex *)fftc.data, n2, 1, Ntheta/2+1, dFields.data, n2, 1, Ntheta, FFTW_MEASURE);
     
-    fftw_r2r_kind kind[]={FFTW_REDFT00};
+    fftwl_r2r_kind kind[]={FFTW_REDFT00};
     
-    dctr2r=fftw_plan_many_r2r(1, n1, matrixW, dctr->data, n1, matrixW, 1, dctr->data, n1, matrixW, 1, kind, FFTW_MEASURE);
+    dctr2r=fftwl_plan_many_r2r(1, n1, matrixW, dctr.data, n1, matrixW, 1, dctr.data, n1, matrixW, 1, kind, FFTW_MEASURE);
     
-    tempstore=gsl_vector_alloc(matrixW);
-    tempstore2=gsl_vector_alloc(matrixW);
+    //tempstore=gsl_vector_alloc(matrixW);
+    //tempstore2=gsl_vector_alloc(matrixW);
 }
 
 solver::~solver()
 {
-    fftw_cleanup_threads();
+    fftwl_cleanup_threads();
     
-    fftw_destroy_plan(fftr2c);
-    fftw_destroy_plan(ifftc2r);
-    fftw_destroy_plan(tempfftr2c);
-    fftw_destroy_plan(tempifftc2r);
-    fftw_destroy_plan(dctr2r);
-    
-    gsl_vector_free(r);
-    gsl_vector_free(r2);
-    gsl_vector_free(theta);
-    gsl_matrix_free(Fields);
-    gsl_matrix_free(dFields);
-    gsl_matrix_free(tempFields);
-    gsl_matrix_free(caltempFields);
-    gsl_matrix_free(G);
-    gsl_matrix_free(dctr);
-    gsl_matrix_complex_free(fftc);
-    gsl_matrix_free(boundary);
-    
-    gsl_matrix_free(k1);
-    gsl_matrix_free(k2);
-    gsl_matrix_free(k3);
-    gsl_matrix_free(k4);
-    gsl_matrix_free(k5);
-    gsl_matrix_free(k6);
-    gsl_matrix_free(k7);
-    gsl_matrix_free(k8);
-    gsl_matrix_free(odetempField);
-    gsl_matrix_free(odetempField2);
+    fftwl_destroy_plan(fftr2c);
+    fftwl_destroy_plan(ifftc2r);
+    fftwl_destroy_plan(tempfftr2c);
+    fftwl_destroy_plan(tempifftc2r);
+    fftwl_destroy_plan(dctr2r);
     
     for (int iterh=0; iterh<5; ++iterh)
     {
-        gsl_matrix_free(HistoryFields[iterh]);
+        delete HistoryFields[iterh];
     }
     if (IncreaseTimes!=0)
     {
         for (int iterh=0; iterh<3; ++iterh)
         {
-            gsl_matrix_free(DoubledHistoryFields[iterh]);
+            delete DoubledHistoryFields[iterh];
         }
     }
     
     for (int iterh=0; iterh<NumField; ++iterh)
     {
-        gsl_matrix_free(Hij[iterh]);
+        delete Hij[iterh];
     }
     
-    gsl_vector_free(tempstore);
-    gsl_vector_free(tempstore2);
+    //gsl_vector_free(tempstore);
+    //gsl_vector_free(tempstore2);
 }

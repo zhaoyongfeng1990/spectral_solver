@@ -11,8 +11,9 @@
 
 #define HAVE_INLINE
 
-#include <gsl/gsl_matrix.h>
-#include <gsl/gsl_vector.h>
+//#include <gsl/matrix<long double>.h>
+//#include <gsl/gsl_vector.h>
+#include "matrix.h"
 #include <vector>
 #include <fftw3.h>
 #include "parameters.h"
@@ -32,7 +33,7 @@ public:
     solver();
     ~solver();
     
-    void Fun(gsl_matrix *result);
+    void Fun(matrix<long double>& result);
     void HGFuns();
     void dr(bool ifFirst);
     void drWOA();
@@ -51,52 +52,49 @@ public:
     void DoubleTimeStepBDF6();
     
     void printstatus();
-    void printdebugM(gsl_matrix* m, const string filename);
-    void printdebugCM(gsl_matrix_complex* m, const string filename);
+    void printdebugM(matrix<long double>* m, const string filename);
+    void printdebugCM(matrix_complex<long double>* m, const string filename);
     void readFile(const string filename);
     
-    gsl_matrix *Fields;
-    gsl_matrix *dFields;
-    gsl_matrix *tempFields;
-    gsl_matrix *caltempFields;
-    gsl_matrix *boundary;
+    matrix<long double> Fields;
+    matrix<long double> dFields;
+    matrix<long double> tempFields;
+    matrix<long double> caltempFields;
+    matrix<long double> boundary;
     
-    gsl_matrix_view dFieldView[NumField];
-    gsl_matrix_view ctFieldView[NumField];
+    matrix<long double> k1;
+    matrix<long double> k2;
+    matrix<long double> k3;
+    matrix<long double> k4;
+    matrix<long double> k5;
+    matrix<long double> k6;
+    matrix<long double> k7;
+    matrix<long double> k8;
+    matrix<long double> odetempField;
+    matrix<long double> odetempField2;
     
-    gsl_matrix *k1;
-    gsl_matrix *k2;
-    gsl_matrix *k3;
-    gsl_matrix *k4;
-    gsl_matrix *k5;
-    gsl_matrix *k6;
-    gsl_matrix *k7;
-    gsl_matrix *k8;
-    gsl_matrix *odetempField;
-    gsl_matrix *odetempField2;
+    vector <matrix<long double>*> HistoryFields;
+    vector <matrix<long double>*> DoubledHistoryFields;
+    vector <matrix<long double>*> Hij;
+    matrix<long double>G;
+    math_vector<long double> r;
+    math_vector<long double> r2;
+    math_vector<long double> theta;
     
-    vector <gsl_matrix*> HistoryFields;
-    vector <gsl_matrix*> DoubledHistoryFields;
-    vector <gsl_matrix*> Hij;
-    gsl_matrix *G;
-    gsl_vector *r;
-    gsl_vector *r2;
-    gsl_vector *theta;
+    fftwl_plan fftr2c;
+    fftwl_plan ifftc2r;
+    fftwl_plan tempfftr2c;
+    fftwl_plan tempifftc2r;
+    fftwl_plan dctr2r;
     
-    fftw_plan fftr2c;
-    fftw_plan ifftc2r;
-    fftw_plan tempfftr2c;
-    fftw_plan tempifftc2r;
-    fftw_plan dctr2r;
+    matrix_complex<long double> fftc;
+    matrix<long double>dctr;
     
-    gsl_matrix_complex *fftc;
-    gsl_matrix *dctr;
+    //math_vector<long double> tempstore;
+    //math_vector<long double> tempstore2;
     
-    gsl_vector* tempstore;
-    gsl_vector* tempstore2;
-    
-    double StepT;
-    double time;
+    long double StepT;
+    long double time;
     int timeIdx;
     ofstream timefile;
 };

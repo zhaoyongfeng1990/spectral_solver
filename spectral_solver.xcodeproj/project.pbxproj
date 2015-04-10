@@ -40,6 +40,7 @@
 		A2C8B97C1AB0156C0035B0E6 /* initialization.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = initialization.cpp; sourceTree = "<group>"; };
 		A2C8B97E1AB015BF0035B0E6 /* printstatus.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = printstatus.cpp; sourceTree = "<group>"; };
 		A2D9AD2E1ACD5748009D0770 /* makefile */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.make; name = makefile; path = spectral_solver/makefile; sourceTree = "<group>"; };
+		A2EC96961AD7A9770083588F /* matrix.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = matrix.h; sourceTree = "<group>"; };
 		A2F33DDB1AAD74F80006A46C /* fun.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = fun.cpp; sourceTree = "<group>"; };
 		A2F33DDD1AAD78950006A46C /* odesolver.cpp */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.cpp.cpp; path = odesolver.cpp; sourceTree = "<group>"; };
 /* End PBXFileReference section */
@@ -75,6 +76,7 @@
 		A27187A61AA98DAC0027CC49 /* spectral_solver */ = {
 			isa = PBXGroup;
 			children = (
+				A2EC96961AD7A9770083588F /* matrix.h */,
 				A27187A71AA98DAC0027CC49 /* main.cpp */,
 				A27187AE1AA98DD10027CC49 /* solver.h */,
 				A27187AF1AA990EC0027CC49 /* solver.cpp */,
@@ -245,10 +247,8 @@
 				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				OTHER_LDFLAGS = (
 					"-lm",
-					"-lgsl",
-					"-lgslcblas",
-					"-lfftw3",
-					"-lfftw3_threads",
+					"-lfftw3l",
+					"-lfftw3l_threads",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};
@@ -267,10 +267,8 @@
 				LIBRARY_SEARCH_PATHS = /usr/local/lib/;
 				OTHER_LDFLAGS = (
 					"-lm",
-					"-lgsl",
-					"-lgslcblas",
-					"-lfftw3",
-					"-lfftw3_threads",
+					"-lfftw3l",
+					"-lfftw3l_threads",
 				);
 				PRODUCT_NAME = "$(TARGET_NAME)";
 			};

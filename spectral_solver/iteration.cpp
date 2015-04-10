@@ -17,7 +17,7 @@ void solver::solve(int totaliter)
     
     for (int iter=0; iter<3; ++iter)
     {
-        gsl_matrix_memcpy(HistoryFields[iter],Fields);
+        *HistoryFields[iter]=Fields;
         RK4Step();
         setBoundary();
         ++timeIdx;
@@ -50,20 +50,19 @@ void solver::solve(int totaliter)
 
 void solver::setBoundary()
 {
-    //drWOA();
-    dr(1);
+    drWOA();
+    //dr(1);
 #ifdef MULTIPROCESS
 #pragma omp parallel for
 #endif
-    for (int iter=0; iter<Ntheta; ++iter)
-    {
         for (int iterField=0; iterField<NumField; ++iterField)
         {
-            double d0=gsl_matrix_get(dFields, iterField*Nrp, iter);
+            for (int iter=0; iter<Ntheta; ++iter)
+            {
+            long double d0=dFields.ele(iterField*Nrp, iter);
             d0/=-Nr*(Nr-2);
             d0*=3;
-            d0+=gsl_matrix_get(Fields, iterField*Nrp, iter);
-            gsl_matrix_set(Fields, iterField*Nrp, iter, d0);
+            Fields.ele(iterField*Nrp, iter)+=d0;
         }
     }
 }
@@ -80,7 +79,7 @@ void solver::DoubleTimeStepBDF4()
     }
     for (int iterh=0; iterh<3; ++iterh)
     {
-        gsl_matrix_memcpy(DoubledHistoryFields[iterh], Fields);
+        *DoubledHistoryFields[iterh]=Fields;
         for (int iter=0; iter<2; ++iter)
         {
             BDF4Step();
@@ -90,12 +89,12 @@ void solver::DoubleTimeStepBDF4()
         }
     }
     StepT*=2;
-    gsl_matrix *swapTemp;
+    long double* swapTemp;
     for (int iter=0; iter<3; ++iter)
     {
-        swapTemp=DoubledHistoryFields[iter];
-        DoubledHistoryFields[iter]=HistoryFields[iter];
-        HistoryFields[iter]=swapTemp;
+        swapTemp=DoubledHistoryFields[iter]->data;
+        DoubledHistoryFields[iter]->data=HistoryFields[iter]->data;
+        HistoryFields[iter]->data=swapTemp;
     }
 }
 
@@ -111,7 +110,7 @@ void solver::DoubleTimeStepBDF6()
     }
     for (int iterh=0; iterh<5; ++iterh)
     {
-        gsl_matrix_memcpy(DoubledHistoryFields[iterh], Fields);
+        *DoubledHistoryFields[iterh]=Fields;
         for (int iter=0; iter<2; ++iter)
         {
             BDF6Step();
@@ -121,11 +120,11 @@ void solver::DoubleTimeStepBDF6()
         }
     }
     StepT*=2;
-    gsl_matrix *swapTemp;
+    long double* swapTemp;
     for (int iter=0; iter<5; ++iter)
     {
-        swapTemp=DoubledHistoryFields[iter];
-        DoubledHistoryFields[iter]=HistoryFields[iter];
-        HistoryFields[iter]=swapTemp;
+        swapTemp=DoubledHistoryFields[iter]->data;
+        DoubledHistoryFields[iter]->data=HistoryFields[iter]->data;
+        HistoryFields[iter]->data=swapTemp;
     }
 }

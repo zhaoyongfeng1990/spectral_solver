@@ -7,52 +7,37 @@
 //
 
 #include "solver.h"
+#include <iostream>
+using namespace std;
 
 void solver::dr(bool ifFirst)
 {
-    gsl_matrix* cFields;
+    matrix<long double>* cFields;
     if (ifFirst)
     {
-        cFields=Fields;
+        cFields=&Fields;
     }
     else
     {
-        cFields=tempFields;
+        cFields=&tempFields;
     }
     
     for (int iterf=0; iterf<NumField; ++iterf)
     {
-        gsl_matrix_view datablock=gsl_matrix_submatrix(cFields, iterf*Nrp, 0, Nrp, Ntheta);
-        gsl_matrix_view destiny=gsl_matrix_submatrix(dctr, 0, iterf*Ntheta, Nrp, Ntheta);
-        gsl_matrix_memcpy(&destiny.matrix, &datablock.matrix);
+        dctr.blockCopy(0, Nrp, iterf*Ntheta, iterf*Ntheta+Ntheta, *cFields, iterf*Nrp, 0);
     }
-    
 #ifdef MULTIPROCESS
 #pragma omp parallel for
 #endif
     for (int iterr=0; iterr<Nrp; ++iterr)
     {
-        gsl_vector_view datablock=gsl_matrix_row(dctr, iterr);
-        gsl_vector_view destiny=gsl_matrix_row(dctr, Nr-iterr-1);
-        gsl_vector_memcpy(&destiny.vector, &datablock.vector);
+        for (int itert=0; itert<matrixW; ++itert)
+        {
+            dctr.ele(Nr-iterr-1, itert)=dctr.ele(iterr, itert);
+        }
     }
     
-    //#ifdef MULTIPROCESS
-    //#pragma omp parallel for
-    //#endif
-    //    for (int iter=0; iter<totalPoints; ++iter)
-    //    {
-    //        int iterx=iter%Ntheta;
-    //        int itery=(iter-iterx)/Ntheta;
-    //        int iteryp=itery%Nrp;
-    //        int iterf=(itery-iteryp)/Nrp;
-    //        iterx=iterx+iterf*Ntheta;
-    //        iteryp=iteryp*matrixW;
-    //        dctr->data[iterx+iteryp]=cFields->data[iter];
-    //        dctr->data[iterx+logicNr*matrixW-iteryp]=cFields->data[iter];
-    //    }
-    
-    fftw_execute(dctr2r);
+    fftwl_execute(dctr2r);
     //printdebugM(dctr, "dctr.txt");
     //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
     
@@ -60,31 +45,31 @@ void solver::dr(bool ifFirst)
 #ifdef MULTIPROCESS
 #pragma omp parallel for
 #endif
-    for (int itert=0; itert<matrixW; ++itert)
+    for (int iterr=aliasingr-1; iterr<Nr; ++iterr)
     {
-        for (int iterr=aliasingr-1; iterr<Nr; ++iterr)
-        {
-            gsl_matrix_set(dctr, iterr, itert, 0);
-        }
+        dctr.setRow(iterr, 0);
     }
     
-    gsl_vector_view lastRow; //=gsl_matrix_row(dctr, aliasingr-1);
+    //gsl_vector_view lastRow; //=matrix<long double>_row(dctr, aliasingr-1);
     //gsl_vector_set_zero(&lastRow.vector);
     
     for (int iterr=aliasingr-3; iterr>0; iterr-=2)
     {
-        gsl_vector_view nextLastRow=gsl_matrix_row(dctr, iterr+1);
-        lastRow=gsl_matrix_row(dctr,iterr+2);
-        gsl_vector_view cRow=gsl_matrix_row(dctr, iterr);
+        //gsl_vector_view nextLastRow=matrix<long double>_row(dctr, iterr+1);
+        //lastRow=matrix<long double>_row(dctr,iterr+2);
+        //gsl_vector_view cRow=matrix<long double>_row(dctr, iterr);
         
         for (int iter=0; iter<matrixW; ++iter)
         {
-            cRow.vector.data[iter]=nextLastRow.vector.data[iter]*2.0*(iterr+1)/logicNr+lastRow.vector.data[iter];
-            nextLastRow.vector.data[iter]=0;
+            //cRow.vector.data[iter]=nextLastRow.vector.data[iter]*2.0*(iterr+1)/logicNr+lastRow.vector.data[iter];
+            //nextLastRow.vector.data[iter]=0;
+            dctr.ele(iterr,iter)=dctr.ele(iterr+1,iter)*2.0*(iterr+1)/logicNr+dctr.ele(iterr+2,iter);
         }
+        dctr.setRow(iterr+1, 0);
     }
-    lastRow=gsl_matrix_row(dctr, 0);
-    gsl_vector_set_zero(&lastRow.vector);
+    //lastRow=matrix<long double>_row(dctr, 0);
+    //gsl_vector_set_zero(&lastRow.vector);
+    dctr.setRow(0, 0);
     
     
 #ifdef MULTIPROCESS
@@ -92,11 +77,12 @@ void solver::dr(bool ifFirst)
 #endif
     for (int iter=1; iter<aliasingr-2; iter+=2)
     {
-        gsl_vector_view temp=gsl_matrix_row(dctr, iter);
-        gsl_vector_scale(&temp.vector, 0.5);
+        //gsl_vector_view temp=matrix<long double>_row(dctr, iter);
+        //gsl_vector_scale(&temp.vector, 0.5);
+        dctr.scaleRow(iter, 0.5);
     }
     
-    fftw_execute(dctr2r);
+    fftwl_execute(dctr2r);
     
     
 #ifdef MULTIPROCESS
@@ -104,9 +90,7 @@ void solver::dr(bool ifFirst)
 #endif
     for (int iterf=0; iterf<NumField; ++iterf)
     {
-        gsl_matrix_view datablock=gsl_matrix_submatrix(dFields, iterf*Nrp, 0, Nrp, Ntheta);
-        gsl_matrix_view destiny=gsl_matrix_submatrix(dctr, 0, iterf*Ntheta, Nrp, Ntheta);
-        gsl_matrix_memcpy(&datablock.matrix, &destiny.matrix);
+        dFields.blockCopy(iterf*Nrp, iterf*Nrp+Nrp, 0, Ntheta, dctr, 0, iterf*Ntheta);
     }
 }
 
@@ -114,42 +98,33 @@ void solver::dtheta(bool ifFirst)
 {
     if (ifFirst)
     {
-        fftw_execute(fftr2c);
+        fftwl_execute(fftr2c);
     }
     else
     {
-        fftw_execute(tempfftr2c);
+        fftwl_execute(tempfftr2c);
     }
     
 #ifdef MULTIPROCESS
 #pragma omp parallel for
 #endif
-    for (int iterr=0; iterr<matrixH; ++iterr)
+    // dealiasing
+    for (int itertheta=0; itertheta<aliasingt; ++itertheta)
     {
-        // aliasing
-        for (int itertheta=0; itertheta<aliasingt; ++itertheta)
-        {
-            gsl_complex temp=gsl_matrix_complex_get(fftc, iterr, itertheta);
-            //a'=a*ik
-            double swap=temp.dat[0];
-            temp.dat[0]=-temp.dat[1]*itertheta/Ntheta;
-            temp.dat[1]=swap*itertheta/Ntheta;
-            gsl_matrix_complex_set(fftc, iterr, itertheta, temp);
-        }
-        for (int itertheta=aliasingt; itertheta<Ntheta/2+1; ++itertheta)
-        {
-            fftc->data[(iterr*(Ntheta/2+1)+itertheta)*2]=0;
-            fftc->data[(iterr*(Ntheta/2+1)+itertheta)*2+1]=0;
-        }
+        fftc.scaleCol(itertheta, 0, (double)itertheta/(double)Ntheta);
+    }
+    for (int itertheta=aliasingt; itertheta<Ntheta/2+1; ++itertheta)
+    {
+        fftc.setCol(itertheta, 0, 0);
     }
     
     if (ifFirst)
     {
-        fftw_execute(ifftc2r);
+        fftwl_execute(ifftc2r);
     }
     else
     {
-        fftw_execute(tempifftc2r);
+        fftwl_execute(tempifftc2r);
     }
 }
 
@@ -157,9 +132,7 @@ void solver::drWOA()
 {
     for (int iterf=0; iterf<NumField; ++iterf)
     {
-        gsl_matrix_view datablock=gsl_matrix_submatrix(Fields, iterf*Nrp, 0, Nrp, Ntheta);
-        gsl_matrix_view destiny=gsl_matrix_submatrix(dctr, 0, iterf*Ntheta, Nrp, Ntheta);
-        gsl_matrix_memcpy(&destiny.matrix, &datablock.matrix);
+        dctr.blockCopy(0, Nrp, iterf*Ntheta, iterf*Ntheta+Ntheta, Fields, iterf*Nrp, 0);
     }
     
 #ifdef MULTIPROCESS
@@ -167,9 +140,13 @@ void solver::drWOA()
 #endif
     for (int iterr=0; iterr<Nrp; ++iterr)
     {
-        gsl_vector_view datablock=gsl_matrix_row(dctr, iterr);
-        gsl_vector_view destiny=gsl_matrix_row(dctr, Nr-iterr-1);
-        gsl_vector_memcpy(&destiny.vector, &datablock.vector);
+        for (int iterr=0; iterr<Nrp; ++iterr)
+        {
+            for (int itert=0; itert<matrixW; ++itert)
+            {
+                dctr.ele(Nr-iterr-1, itert)=dctr.ele(iterr, itert);
+            }
+        }
     }
     
     //#ifdef MULTIPROCESS
@@ -183,31 +160,27 @@ void solver::drWOA()
     //        int iterf=(itery-iteryp)/Nrp;
     //        iterx=iterx+iterf*Ntheta;
     //        iteryp=iteryp*matrixW;
-    //        dctr->data[iterx+iteryp]=cFields->data[iter];
-    //        dctr->data[iterx+logicNr*matrixW-iteryp]=cFields->data[iter];
+    //        dctr[iterx+iteryp]=cFields[iter];
+    //        dctr[iterx+logicNr*matrixW-iteryp]=cFields[iter];
     //    }
     
-    fftw_execute(dctr2r);
+    fftwl_execute(dctr2r);
     //printdebugM(dctr, "dctr.txt");
     //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
     
-    gsl_vector_view lastRow=gsl_matrix_row(dctr, Nr-1);
-    gsl_vector_set_zero(&lastRow.vector);
+    //gsl_vector_view lastRow=matrix<long double>_row(dctr, Nr-1);
+    //gsl_vector_set_zero(&lastRow.vector);
+    dctr.setRow(Nr-1, 0);
     
     for (int iterr=Nr-3; iterr>0; iterr-=2)
     {
-        gsl_vector_view nextLastRow=gsl_matrix_row(dctr, iterr+1);
-        lastRow=gsl_matrix_row(dctr,iterr+2);
-        gsl_vector_view cRow=gsl_matrix_row(dctr, iterr);
-        
         for (int iter=0; iter<matrixW; ++iter)
         {
-            cRow.vector.data[iter]=nextLastRow.vector.data[iter]*2.0*(iterr+1)/logicNr+lastRow.vector.data[iter];
-            nextLastRow.vector.data[iter]=0;
+            dctr.ele(iterr,iter)=dctr.ele(iterr+1,iter)*2.0*(iterr+1)/logicNr+dctr.ele(iterr+2,iter);
         }
+        dctr.setRow(iterr+1, 0);
     }
-    lastRow=gsl_matrix_row(dctr, 0);
-    gsl_vector_set_zero(&lastRow.vector);
+    dctr.setRow(0, 0);
     
     
 #ifdef MULTIPROCESS
@@ -215,11 +188,10 @@ void solver::drWOA()
 #endif
     for (int iter=1; iter<Nr-2; iter+=2)
     {
-        gsl_vector_view temp=gsl_matrix_row(dctr, iter);
-        gsl_vector_scale(&temp.vector, 0.5);
+        dctr.scaleRow(iter, 0.5);
     }
     
-    fftw_execute(dctr2r);
+    fftwl_execute(dctr2r);
     
     
 #ifdef MULTIPROCESS
@@ -227,8 +199,6 @@ void solver::drWOA()
 #endif
     for (int iterf=0; iterf<NumField; ++iterf)
     {
-        gsl_matrix_view datablock=gsl_matrix_submatrix(dFields, iterf*Nrp, 0, Nrp, Ntheta);
-        gsl_matrix_view destiny=gsl_matrix_submatrix(dctr, 0, iterf*Ntheta, Nrp, Ntheta);
-        gsl_matrix_memcpy(&datablock.matrix, &destiny.matrix);
+        dFields.blockCopy(iterf*Nrp, iterf*Nrp+Nrp, 0, Ntheta, dctr, 0, iterf*Ntheta);
     }
 }
