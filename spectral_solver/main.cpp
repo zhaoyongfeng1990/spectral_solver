@@ -25,7 +25,7 @@ int main(int argc, const char  *argv[])
     //    test1->readFile("0.txt");
         //test1->printstatus();
     //}
-    //test1->setBoundary();
+    test1->setBoundary();
     
     //test1->timeIdx+=100;
     if (test1->cRank==0)
@@ -35,8 +35,9 @@ int main(int argc, const char  *argv[])
     //test1->readFile("48.txt");
     //test1->timeIdx=16384*128*48;
     //test1->solve(16384*16);
-    //test1->solve(5);
-    test1->RK4Step();
+    //test1->solve(4000);
+    //test1->RK4Step();
+    
     //test1->setBoundary();
     //++test1->timeIdx;
     

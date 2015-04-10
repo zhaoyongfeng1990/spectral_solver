@@ -9,8 +9,8 @@
 #ifndef spectral_solver_parameters_h
 #define spectral_solver_parameters_h
 
-#define LINEAR_TEST_MODEL
-//#define FU_MODEL
+//#define LINEAR_TEST_MODEL
+#define FU_MODEL
 //#define INTERACTION_MODIFIED_FU
 
 #include <cmath>
@@ -18,7 +18,7 @@
 #ifdef FU_MODEL
 //#define PUNISHTERM
 const int Ntheta=16;
-const int Nr=81*9+1;
+const int Nr=81*5+1;
 const long double StepT=1.0/16384/16;
 const int NumField=3;
 const long double radius=3;

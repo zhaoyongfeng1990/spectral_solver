@@ -533,7 +533,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::setRow(int Idx,DType number)
+/*inline*/ void matrix<DType>::setRow(int Idx, DType number)
 {
     for (int iter=Idx*sizex; iter<Idx*sizex+sizex; ++iter)
     {
@@ -542,7 +542,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::setCol(int Idx,DType number)
+/*inline*/ void matrix<DType>::setCol(int Idx, DType number)
 {
     for (int iter=Idx; iter<NumE+Idx; iter+=sizex)
     {
@@ -551,7 +551,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::scaleRow(int Idx,DType number)
+/*inline*/ void matrix<DType>::scaleRow(int Idx, DType number)
 {
     for (int iter=Idx*sizex; iter<Idx*sizex+sizex; ++iter)
     {
@@ -560,7 +560,7 @@ template <typename DType>
 }
 
 template <typename DType>
-/*inline*/ void matrix<DType>::scaleCol(int Idx,DType number)
+/*inline*/ void matrix<DType>::scaleCol(int Idx, DType number)
 {
     for (int iter=Idx; iter<NumE+Idx; iter+=sizex)
     {

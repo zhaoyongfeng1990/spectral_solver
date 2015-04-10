@@ -372,7 +372,7 @@ void solver::Fun(matrix<long double> &result)
             for (int iterr=0; iterr<Nrp; ++iterr)
             {
                 //tempdctr.ele(iterr, iter)/=r[iterr];
-                tempdctr.scaleRow(iterr, 1.0/r[iterr]);
+                dctr.scaleRow(iterr, 1.0/r[iterr]);
             }
         //}
         
