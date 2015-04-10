@@ -217,7 +217,7 @@ void solver::Fun(matrix<long double>& result)
     //#endif
     for (int iter=0; iter<NumField; ++iter)
     {
-        for (int itert=0; itert<Ntheta; ++iter)
+        for (int itert=0; itert<Ntheta; ++itert)
         {
             G.ele(iter*Nrp, itert)-=boundary.ele(iter, itert);
         }
