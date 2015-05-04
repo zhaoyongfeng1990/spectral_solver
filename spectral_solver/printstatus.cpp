@@ -26,7 +26,7 @@ void solver::printstatus()
     }
     outfile.close();
     
-    timefile << setprecision(20) << time << endl;
+    //timefile << setprecision(20) << time << endl;
 }
 
 void solver::printdebugM(matrix<long double>* m, const string filename)

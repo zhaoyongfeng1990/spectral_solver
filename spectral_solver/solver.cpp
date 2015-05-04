@@ -12,7 +12,7 @@
 solver::solver() : timefile("time.txt")
 {
     fftwl_init_threads();
-    fftwl_plan_with_nthreads(2);
+    fftwl_plan_with_nthreads(4);
     
     time=0;
     StepT=iniStepT;
@@ -97,6 +97,7 @@ solver::solver() : timefile("time.txt")
     fftwl_r2r_kind kind[]={FFTW_REDFT00};
     
     dctr2r=fftwl_plan_many_r2r(1, n1, matrixW, dctr.data, n1, matrixW, 1, dctr.data, n1, matrixW, 1, kind, FFTW_MEASURE);
+    
     
     //tempstore=gsl_vector_alloc(matrixW);
     //tempstore2=gsl_vector_alloc(matrixW);

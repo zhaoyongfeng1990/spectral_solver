@@ -24,7 +24,7 @@ int main(int argc, const char  *argv[])
     //test1->dtheta(1);
     //test1.printdebugM(test1.dFields, "df.txt");
     //test1.setBoundary();
-    test1->printstatus();
+    //test1->printstatus();
     //test1.dr(1);
     //test1.printdebugM(test1.dFields, "df1.txt");
     //test1.printstatus();

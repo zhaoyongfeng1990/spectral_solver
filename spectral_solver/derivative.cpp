@@ -38,7 +38,6 @@ void solver::dr(bool ifFirst)
     }
     
     fftwl_execute(dctr2r);
-    //printdebugM(dctr, "dctr.txt");
     //The first and last row should divide 2, but since the first row will be dropped, and the last row is simply 0, so we omit it.
     
     // aliasing
@@ -83,7 +82,6 @@ void solver::dr(bool ifFirst)
     }
     
     fftwl_execute(dctr2r);
-    
     
 #ifdef MULTIPROCESS
 #pragma omp parallel for

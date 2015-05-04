@@ -18,9 +18,9 @@
 
 #ifdef FU_MODEL
 #define PUNISHTERM
-const int Ntheta=16;
+const int Ntheta=1;
 const int Nr=81*5+1;
-const long double iniStepT=1.0/16384/32;
+const long double iniStepT=1.0/16384/64;
 const int NumField=3;
 const long double radius=3;
 
@@ -35,7 +35,7 @@ const long double Dn=0.008*3.6;
 const long double Kh=4;
 const long double M=20;
 #ifdef PUNISHTERM
-const long double punish=50;
+const long double punish=100;
 #endif
 #endif
 
@@ -55,7 +55,7 @@ const long double punish=50;
 
 
 //for solver
-const long double tolerance=1e-8;
+const long double tolerance=1e-10;
 
 
 const int logicNr=Nr-1;
