@@ -1,7 +1,7 @@
 # spectral_solver
 Solver for nonlinear diffusion equations on disk, using pseudo spectral method with Chebyshev-Fourier series.
 
-It solves multiple equations forms as:
+It solves N equations forms as:
 
 \partial_t f_i=\sum_{k=1}^N\nabla\cdot(h_{ik}\nabla f_k)+g_i(f_1,f_2,\cdots,f_N)
 
