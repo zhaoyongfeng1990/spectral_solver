@@ -19,7 +19,7 @@ void solver::solve(int totaliter)
     {
         *HistoryFields[iter]=Fields;
         RK4Step();
-        setBoundary();
+        //setBoundary();
         ++timeIdx;
 //        printstatus();
     }
@@ -35,7 +35,7 @@ void solver::solve(int totaliter)
     {
         BDF4Step();
         //RK6Step();
-        setBoundary();
+        //setBoundary();
         ++timeIdx;
 //        printstatus();
         //cout << timeIdx << endl;

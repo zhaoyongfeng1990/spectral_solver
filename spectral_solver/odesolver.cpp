@@ -18,12 +18,14 @@ void solver::RK4Step()
         k1[iter]*=0.5*StepT;
         Fields[iter]=odetempField[iter]+k1[iter];
     }
+    setBoundary();
     Fun(k2);
     for (int iter=0; iter<totalPoints; ++iter)
     {
         k2[iter]*=0.5*StepT;
         Fields[iter]=odetempField[iter]+k2[iter];
     }
+    setBoundary();
     Fun(k3);
     time+=StepT/2;
     for (int iter=0; iter<totalPoints; ++iter)
@@ -31,12 +33,14 @@ void solver::RK4Step()
         k3[iter]*=StepT;
         Fields[iter]=odetempField[iter]+k3[iter];
     }
+    setBoundary();
     Fun(k4);
     for (int iter=0; iter<totalPoints; ++iter)
     {
         k4[iter]*=0.5*StepT;
         Fields[iter]=odetempField[iter]+(k1[iter]+k2[iter]*2+k3[iter]+k4[iter])/3.0;
     }
+    setBoundary();
 }
 
 void solver::RK6Step()
@@ -116,6 +120,7 @@ void solver::BDF4Step()
         {
             Fields[iter]*=0.48*StepT;
             Fields[iter]+=odetempField2[iter]*1.92-HistoryFields[2]->data[iter]*1.44+HistoryFields[1]->data[iter]*0.64-HistoryFields[0]->data[iter]*0.12;
+            setBoundary();
             k1[iter]-=Fields[iter];
             if (k1[iter]<0)
             {
