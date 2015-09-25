@@ -10,7 +10,7 @@
 #define spectral_solver_parameters_h
 
  //Add punish term can sometimes speed up
-//#define MULTIPROCESS
+#define MULTIPROCESS
 //#define LINEAR_TEST_MODEL
 //#define FU_MODEL
 //#define INTERACTION_MODIFIED_FU
