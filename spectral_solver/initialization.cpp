@@ -23,6 +23,16 @@ void solver::initialization()
             Fields.ele(Nrp+iterr, itert)=exp(-10*r[iterr]*r[iterr]);
             Fields.ele(2*Nrp+iterr, itert)=exp(-10*r[iterr]*r[iterr]);
 #endif
+#ifdef INTERACTION_MODIFIED_FU
+            Fields.ele(iterr, itert)=2*exp(-r[iterr]*r[iterr]/(0.04/radius/radius));
+            Fields.ele(Nrp+iterr, itert)=2*exp(-r[iterr]*r[iterr]/(0.04/radius/radius));
+            Fields.ele(4*Nrp+iterr, itert)=15;
+#endif
+#ifdef MASA_CROSSTALK
+            Fields.ele(iterr, itert)=2*exp(-r[iterr]*r[iterr]/(0.04/radius/radius));
+            Fields.ele(Nrp+iterr, itert)=2*exp(-r[iterr]*r[iterr]/(0.04/radius/radius));
+            Fields.ele(4*Nrp+iterr, itert)=15;
+#endif
         }
     }
 }

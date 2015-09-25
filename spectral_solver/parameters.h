@@ -13,7 +13,8 @@
 //#define MULTIPROCESS
 //#define LINEAR_TEST_MODEL
 //#define FU_MODEL
-#define INTERACTION_MODIFIED_FU
+//#define INTERACTION_MODIFIED_FU
+#define MASA_CROSSTALK
 #include <cmath>
 
 
@@ -57,7 +58,7 @@ const long double punish=50;
 //#define PUNISHTERM
 const int Ntheta=1;
 const int Nr=81*9+1;
-const long double StepT=1.0/16384/512;
+const long double iniStepT=1.0/16384/512;
 const int NumField=5;
 const long double radius=3;
 
@@ -82,6 +83,48 @@ const long double KC1=0.0089*3.6*3;
 const long double KC2=1.5;
 const long double KD1=0.0089*3.6*3;
 const long double KD2=1.5;
+#ifdef PUNISHTERM
+const long double punish=100;
+#endif
+#endif
+
+#ifdef MASA_CROSSTALK
+//#define PUNISHTERM
+const int Ntheta=1;
+const int Nr=81*11+1;
+const long double iniStepT=1.0/16384/1024;
+const int NumField=5;
+const long double radius=3;
+
+const long double Dh1=0.004*3.6;
+const long double Dh2=0.004*3.6;
+const long double Dn=0.008*3.6;
+const long double Gamma1=0.8;
+const long double Gamma2=0.7;
+const long double Kn1=100;
+const long double Kn2=100;
+const long double Alpha1=2.08;
+const long double Alpha2=2.08;
+const long double Beta1=2.08;
+const long double Beta2=2.08;
+const long double Drho1=0.000004*3.6;
+const long double Drho2=0.000004*3.6;
+const long double KA1=0;
+const long double KA2=1.5;
+const long double KB1=0.0089*3.6*3;
+const long double KB2=1.5;
+const long double KC1=0.0089*3.6*3;
+const long double KC2=1.5;
+const long double KD1=0.0089*3.6*3;
+const long double KD2=1500;
+const long double KA1KA2=KA1/KA2;
+const long double KB1KB2=KB1/KB2;
+const long double KC1KC2=KC1/KC2;
+const long double KD1KD2=KD1/KD2;
+const long double KA1C1A2=(KA1-KC1)/KA2;
+const long double KB1D1B2=(KB1-KD1)/KB2;
+const long double KC1A1C2=(KC1-KA1)/KC2;
+const long double KD1B1D2=(KD1-KB1)/KD2;
 #ifdef PUNISHTERM
 const long double punish=100;
 #endif

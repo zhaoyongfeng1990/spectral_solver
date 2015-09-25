@@ -21,6 +21,8 @@ int main(int argc, const char  *argv[])
     time(&ctime1);
     solver* test1=new solver();
     test1->initialization();
+    //test1->readFile("96.txt");
+    //test1->timeIdx=2097152*96;
     //test1->dtheta(1);
     //test1.printdebugM(test1.dFields, "df.txt");
     //test1.setBoundary();

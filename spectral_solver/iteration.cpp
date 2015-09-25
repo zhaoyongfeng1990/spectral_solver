@@ -39,11 +39,11 @@ void solver::solve(int totaliter)
         ++timeIdx;
 //        printstatus();
         //cout << timeIdx << endl;
-        if (timeIdx%4194304==0)
+        if (timeIdx%2097152==0)
         {
-            timeIdx=timeIdx/4194304;
+            timeIdx=timeIdx/2097152;
             printstatus();
-            timeIdx=timeIdx*4194304;
+            timeIdx=timeIdx*2097152;
         }
     }
 }

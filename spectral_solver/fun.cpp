@@ -121,11 +121,71 @@ void solver::HGFuns()
         double f2=f[4]*f[4];
         //Ending
         //Calculation for G function.
-        G->data[idx[0]]=Gamma1*f2*f[0]/(f2+Kn1);
-        G->data[idx[1]]=Gamma2*f2*f[1]/(f2+Kn2);
-        G->data[idx[2]]=Alpha1*f[0]-Beta1*f[2];
-        G->data[idx[3]]=Alpha2*f[1]-Beta2*f[3];
-        G->data[idx[4]]=-GLocal->data[idx[0]]-GLocal->data[idx[1]];
+        G.data[idx[0]]=Gamma1*f2*f[0]/(f2+Kn1);
+        G.data[idx[1]]=Gamma2*f2*f[1]/(f2+Kn2);
+        G.data[idx[2]]=Alpha1*f[0]-Beta1*f[2];
+        G.data[idx[3]]=Alpha2*f[1]-Beta2*f[3];
+        G.data[idx[4]]=-G.data[idx[0]]-G.data[idx[1]];
+#endif
+#ifdef MASA_CROSSTALK
+        //Term in front of dField 1
+        long double h1KA2=f[2]/KA2;
+	long double h1KB2=f[2]/KB2;
+	long double h2KC2=f[3]/KC2;
+	long double h2KD2=f[3]/KD2;
+	
+	long double h1KA2s=h1KA2*h1KA2;
+	long double h1KB2s=h1KB2*h1KB2;
+	long double h2KC2s=h2KC2*h2KC2;
+	long double h2KD2s=h2KD2*h2KD2;
+
+        Hij[0]->data[idx[0]]=Drho1+(KA1*h1KA2s+KC1*h2KC2s)/(1+h1KA2s+h2KC2s);
+        Hij[0]->data[idx[1]]=0;
+        Hij[0]->data[idx[2]]=0;
+        Hij[0]->data[idx[3]]=0;
+        Hij[0]->data[idx[4]]=0;
+        
+        //Term in front of dField 2
+        Hij[1]->data[idx[0]]=0;
+        Hij[1]->data[idx[1]]=Drho1+(KB1*h1KB2s+KD1*h2KD2s)/(1+h1KB2s+h2KD2s);
+        Hij[1]->data[idx[2]]=0;
+        Hij[1]->data[idx[3]]=0;
+        Hij[1]->data[idx[4]]=0;
+        
+        //Term in front of dField 3
+	long double deno1=(h2KC2s+(h1KA2s+1));
+	deno1=2*f[0]/deno1/deno1;
+	long double deno2=(h2KD2s+(h1KB2s+1));
+	deno2=2*f[1]/deno2/deno2;
+	
+        Hij[2]->data[idx[0]]=h1KA2*(h2KC2s*KA1C1A2+KA1KA2)*deno1;
+        Hij[2]->data[idx[1]]=h1KB2*(h2KD2s*KB1D1B2+KB1KB2)*deno2;
+        Hij[2]->data[idx[2]]=Dh1;
+        Hij[2]->data[idx[3]]=0;
+        Hij[2]->data[idx[4]]=0;
+        
+        //Term in front of dField 4
+        Hij[3]->data[idx[0]]=h2KC2*(h1KA2s*KC1A1C2+KC1KC2)*deno1;
+        Hij[3]->data[idx[1]]=h2KD2*(h1KB2s*KD1B1D2+KD1KD2)*deno2;
+        Hij[3]->data[idx[2]]=0;
+        Hij[3]->data[idx[3]]=Dh2;
+        Hij[3]->data[idx[4]]=0;
+        
+        //Term in front of dField 5
+        Hij[4]->data[idx[0]]=0;
+        Hij[4]->data[idx[1]]=0;
+        Hij[4]->data[idx[2]]=0;
+        Hij[4]->data[idx[3]]=0;
+        Hij[4]->data[idx[4]]=Dn;
+        
+        double f2=f[4]*f[4];
+        //Ending
+        //Calculation for G function.
+        G.data[idx[0]]=Gamma1*f2*f[0]/(f2+Kn1);
+        G.data[idx[1]]=Gamma2*f2*f[1]/(f2+Kn2);
+        G.data[idx[2]]=Alpha1*f[0]-Beta1*f[2];
+        G.data[idx[3]]=Alpha2*f[1]-Beta2*f[3];
+        G.data[idx[4]]=-G.data[idx[0]]-G.data[idx[1]];
 #endif
 
         //....
